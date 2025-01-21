@@ -24,7 +24,3 @@ public class MainActivity extends AppCompatActivity {
 }
 
 
-//moshes branchfdbfdbfd
-=======
-//polinaaaaaaa
-//new comment
