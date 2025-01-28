@@ -2,7 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/navgraph"
+    android:id="@+id/mainnavgraph"
     app:startDestination="@id/homePageFragment">
 
     <fragment
@@ -13,6 +13,12 @@
         <action
             android:id="@+id/action_homePageFragment_to_regFragment"
             app:destination="@id/regFragment" />
+        <action
+            android:id="@+id/action_homePageFragment_to_clientHomePage"
+            app:destination="@id/clientHomePage" />
+        <action
+            android:id="@+id/action_homePageFragment_to_barberHomePage"
+            app:destination="@id/barberHomePage" />
     </fragment>
     <fragment
         android:id="@+id/regFragment"
@@ -23,4 +29,14 @@
             android:id="@+id/action_regFragment_to_homePageFragment"
             app:destination="@id/homePageFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/clientHomePage"
+        android:name="com.example.stylescheduler.Fragments.ClientHomePage"
+        android:label="fragment_client_home_page"
+        tools:layout="@layout/fragment_client_home_page" />
+    <fragment
+        android:id="@+id/barberHomePage"
+        android:name="com.example.stylescheduler.Fragments.BarberHomePage"
+        android:label="fragment_barber_home_page"
+        tools:layout="@layout/fragment_barber_home_page" />
 </navigation>
