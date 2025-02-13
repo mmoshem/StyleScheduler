@@ -63,7 +63,10 @@ public class HomePageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+
         Button btRegister = view.findViewById(R.id.buttonRegistration);
+        Button btLogIn= view.findViewById(R.id.buttonLogIn);
+
         btRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,8 +74,25 @@ public class HomePageFragment extends Fragment {
             }
         });
 
+        btLogIn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(IsBarber()) {
+                    Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
+                }
+                else{
+                    Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);
+                }
+            }
+        });
 
 
         return view;
     }
+
+    private boolean IsBarber(){
+        return true;
+    }
+
 }

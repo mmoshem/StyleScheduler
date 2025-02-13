@@ -75,7 +75,7 @@ public class RegFragment extends Fragment {
 
         // Find the RadioGroup and EditText views
         RadioGroup rgAccountType = view.findViewById(R.id.rg_account_type);
-        final EditText etWorkAddress = view.findViewById(R.id.et_work_address);
+        EditText etWorkAddress = view.findViewById(R.id.et_work_address);
 
         // Set the listener to toggle the visibility of the workplace address field
         rgAccountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
