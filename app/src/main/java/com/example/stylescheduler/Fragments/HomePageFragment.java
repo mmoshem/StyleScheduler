@@ -43,7 +43,7 @@ public class HomePageFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment HomePageFragment.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static HomePageFragment newInstance(String param1, String param2) {
         HomePageFragment fragment = new HomePageFragment();
         Bundle args = new Bundle();
@@ -70,7 +70,7 @@ public class HomePageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
 
-        //ToDo add textview email
+
         TextView textViewEmail = view.findViewById(R.id.editTextTextEmailAddress);
         String emailString = textViewEmail.getText().toString();
         Button btRegister = view.findViewById(R.id.buttonRegistration);
