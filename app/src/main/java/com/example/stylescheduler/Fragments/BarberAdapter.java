@@ -1,4 +1,4 @@
-/*package com.example.stylescheduler.Adapters;
+package com.example.stylescheduler.Fragments;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +22,7 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.BarberView
     @NonNull
     @Override
     public BarberViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardrow, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.barberlistcard, parent, false);
         return new BarberViewHolder(view);
     }
 
@@ -69,4 +69,3 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.BarberView
         }
     }
 }
-*/
