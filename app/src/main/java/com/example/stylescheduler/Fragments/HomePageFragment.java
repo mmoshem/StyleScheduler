@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -70,7 +71,8 @@ public class HomePageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
 
         //ToDo add textview email
-
+        TextView textViewEmail = view.findViewById(R.id.editTextTextEmailAddress);
+        String emailString = textViewEmail.getText().toString();
         Button btRegister = view.findViewById(R.id.buttonRegistration);
         Button btLogIn= view.findViewById(R.id.buttonLogIn);
 
@@ -85,7 +87,7 @@ public class HomePageFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 //ToDo
-                if(IsBarber()) {
+                if(IsBarber(emailString)) {
                     Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
                 }
                 else{
@@ -98,7 +100,7 @@ public class HomePageFragment extends Fragment {
         return view;
     }
 
-    private boolean IsBarber(){
+    private boolean IsBarber(String email){
         //ToDO check who is it
         return false;
     }
