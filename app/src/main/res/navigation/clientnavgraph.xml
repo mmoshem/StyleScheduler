@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clientnavgraph"
+    app:startDestination="@id/barberListFragment">
+
+    <fragment
+        android:id="@+id/barberListFragment"
+        android:name="com.example.stylescheduler.Fragments.BarberListFragment"
+        android:label="fragment_barber_list"
+        tools:layout="@layout/fragment_barber_list" >
+        <action
+            android:id="@+id/action_barberListFragment_to_clientAppointments"
+            app:destination="@id/clientAppointments" />
+    </fragment>
+    <fragment
+        android:id="@+id/clientAppointments"
+        android:name="com.example.stylescheduler.Fragments.ClientAppointments"
+        android:label="fragment_client_appointments"
+        tools:layout="@layout/fragment_client_appointments" />
+</navigation>
