@@ -23,7 +23,7 @@
     <!-- Name Field -->
     <EditText
         android:id="@+id/et_name"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="59dp"
         android:layout_marginTop="65dp"
         android:hint="Name"
@@ -35,38 +35,38 @@
     <!-- Phone Field -->
     <EditText
         android:id="@+id/et_phone"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="59dp"
+        android:layout_marginTop="22dp"
         android:hint="Phone"
         android:inputType="phone"
-        app:layout_constraintTop_toBottomOf="@id/et_name"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="22dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_name" />
 
     <!-- Email Field -->
     <EditText
         android:id="@+id/et_email"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="59dp"
+        android:layout_marginTop="22dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@id/et_phone"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="22dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_phone" />
 
     <!-- Password Field -->
     <EditText
         android:id="@+id/et_password"
-        android:layout_width="363dp"
+        android:layout_width="0dp"
         android:layout_height="59dp"
+        android:layout_marginTop="22dp"
         android:hint="Password"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@id/et_email"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="22dp"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_email" />
 
     <!-- Account Type Selection -->
     <RadioGroup
