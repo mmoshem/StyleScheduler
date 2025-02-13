@@ -3,10 +3,12 @@ package com.example.stylescheduler.Fragments;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.stylescheduler.R;
 
@@ -25,7 +27,6 @@ public class HomePageFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     public HomePageFragment() {
         // Required empty public constructor
     }
@@ -61,6 +62,17 @@ public class HomePageFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home_page, container, false);
+        View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+        Button btRegister = view.findViewById(R.id.buttonRegistration);
+        btRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_regFragment);
+            }
+        });
+
+
+
+        return view;
     }
 }
