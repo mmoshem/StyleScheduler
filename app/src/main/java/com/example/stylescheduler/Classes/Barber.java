@@ -6,13 +6,49 @@ class Barber extends User {
     private String shopName;
     private String shopAddress;
     private WorkSchedule workSchedule;
+    private String m_phoneNumber;
 
-    public Barber(int userID, String name, String email, String password, String shopName, String shopAddress) {
+
+    public Barber(int userID, String name, String email, String password, String shopName, String shopAddress, String phoneNumber) {
         super(userID, name, email, password, "barber");
         this.shopName = shopName;
         this.shopAddress = shopAddress;
         this.workSchedule = new WorkSchedule();
+        this.m_phoneNumber = phoneNumber;
+
     }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getShopAddress() {
+        return shopAddress;
+    }
+    public String getPhoneNumber(){
+        return m_phoneNumber;
+    }
+
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
+    }
+
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
+    }
+
+    public void setWorkSchedule(WorkSchedule workSchedule) {
+        this.workSchedule = workSchedule;
+    }
+
 
     // 📌 **קבלת זמני עבודה פנויים - שימוש ב-Date במקום LocalDate**
     public List<Date> getAvailableAppointments(Date startDate, int daysRange) {
@@ -85,6 +121,8 @@ class Barber extends User {
     public boolean login() {
         return false; // בהמשך נוסיף לוגיקה לחיבור
     }
+
+
 }
 
 

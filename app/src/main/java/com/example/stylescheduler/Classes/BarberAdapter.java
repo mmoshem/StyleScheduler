@@ -1,11 +1,11 @@
-package com.example.stylescheduler.Fragments;
+package com.example.stylescheduler.Classes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.stylescheduler.Classes.Barber;
+
 import com.example.stylescheduler.R;
 import java.text.SimpleDateFormat;
 import java.util.Date;
