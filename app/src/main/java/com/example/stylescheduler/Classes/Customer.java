@@ -2,6 +2,7 @@ package com.example.stylescheduler.Classes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 class Customer extends User {
@@ -30,14 +31,35 @@ class Customer extends User {
     }
 
     // Book an appointment
-    public void bookAppointment(Barber barber, String serviceType, LocalDateTime time, AppointmentSystem appointmentSystem) {
-      //ToDO : check if already have existing appointment in the same time if no then add if exists , don't allow to add
+    public void bookAppointment(Barber barber, String serviceType, Date time, AppointmentSystem appointmentSystem) {
+        // בדיקה האם השעה כבר תפוסה
+        if (!appointmentSystem.isSlotAvailable(barber, time)) {
+            System.out.println("This slot is already booked!");
+            return;
+        }
 
-        Appointment newAppointment = new Appointment(appointmentSystem.generateAppointmentID(), this, barber, serviceType, time);
-        appointmentSystem.addAppointment(newAppointment);  // Add to central appointment system
-        this.appointments.add(newAppointment);  // Add to the customer's list of appointments
+        // יצירת התור החדש עם `Date` במקום `LocalDateTime`
+        Appointment newAppointment = new Appointment(
+                appointmentSystem.generateAppointmentID(), this, barber, serviceType, time
+        );
+
+        // הוספת התור למערכת התורים המרכזית ולרשימת התורים של הלקוח
+        appointmentSystem.addAppointment(newAppointment);
+        this.appointments.add(newAppointment);
     }
 
+
+    public void addAppointment(Appointment appointment) {
+        appointments.add(appointment);
+    }
+
+    public void cancelAppointment(Appointment appointment) {
+        appointments.remove(appointment);
+    }
+
+    public List<Appointment> getUpcomingAppointments() {
+        return appointments;
+    }
     public List<Appointment> viewMyAppointments() {
         return appointments;
     }

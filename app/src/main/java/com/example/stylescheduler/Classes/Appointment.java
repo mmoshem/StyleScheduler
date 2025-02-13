@@ -1,15 +1,16 @@
 package com.example.stylescheduler.Classes;
-import java.time.LocalDateTime;
+
+import java.util.Date;
 
 class Appointment {
     private int appointmentID;
     private Customer customer;
     private Barber barber;
     private String serviceType;  // e.g., "haircut", "coloring"
-    private LocalDateTime appointmentTime;
+    private Date appointmentTime;
     private String status;  // "booked", "cancelled", "completed"
 
-    public Appointment(int appointmentID, Customer customer, Barber barber, String serviceType, LocalDateTime appointmentTime) {
+    public Appointment(int appointmentID, Customer customer, Barber barber, String serviceType, Date appointmentTime) {
         this.appointmentID = appointmentID;
         this.customer = customer;
         this.barber = barber;
@@ -18,21 +19,23 @@ class Appointment {
         this.status = "booked";
     }
 
-    // Methods to manage appointments
+    // 📌 **ביטול תור**
     public void cancel() {
         this.status = "cancelled";
     }
 
+    // 📌 **אישור תור**
     public void confirm() {
         this.status = "completed";
     }
 
-    public void reschedule(LocalDateTime newTime) {
+    // 📌 **שינוי זמן התור - שימוש ב-Date במקום LocalDateTime**
+    public void reschedule(Date newTime) {
         this.appointmentTime = newTime;
     }
 
-    // Getters
-    public LocalDateTime getAppointmentTime() {
+    // 📌 **מתודה לקבלת זמן התור**
+    public Date getAppointmentDate() {
         return appointmentTime;
     }
 
@@ -48,4 +51,3 @@ class Appointment {
         return serviceType;
     }
 }
-
