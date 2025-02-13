@@ -2,11 +2,15 @@ package com.example.stylescheduler.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.RadioGroup;
 
 import com.example.stylescheduler.R;
 
@@ -63,5 +67,27 @@ public class RegFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_reg, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Find the RadioGroup and EditText views
+        RadioGroup rgAccountType = view.findViewById(R.id.rg_account_type);
+        final EditText etWorkAddress = view.findViewById(R.id.et_work_address);
+
+        // Set the listener to toggle the visibility of the workplace address field
+        rgAccountType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // If the worker radio button is selected, show the address field; otherwise hide it
+                if (checkedId == R.id.rb_worker) {
+                    etWorkAddress.setVisibility(View.VISIBLE);
+                } else {
+                    etWorkAddress.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 }
