@@ -31,12 +31,14 @@ class Customer extends User {
 
     // Book an appointment
     public void bookAppointment(Barber barber, String serviceType, LocalDateTime time, AppointmentSystem appointmentSystem) {
+      //ToDO : check if already have existing appointment in the same time if no then add if exists , don't allow to add
+
         Appointment newAppointment = new Appointment(appointmentSystem.generateAppointmentID(), this, barber, serviceType, time);
         appointmentSystem.addAppointment(newAppointment);  // Add to central appointment system
         this.appointments.add(newAppointment);  // Add to the customer's list of appointments
     }
 
-    public List<Appointment> viewAppointments() {
+    public List<Appointment> viewMyAppointments() {
         return appointments;
     }
 }

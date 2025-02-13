@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.stylescheduler.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +29,8 @@ public class HomePageFragment extends Fragment {
     private String mParam1;
     private String mParam2;
     public HomePageFragment() {
+//    private FirebaseAuth mAuth;
+
         // Required empty public constructor
     }
 
@@ -56,6 +59,8 @@ public class HomePageFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+//        mAuth = FirebaseAuth.getInstance();
+
     }
 
     @Override
@@ -63,6 +68,8 @@ public class HomePageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_page, container, false);
+
+        //ToDo add textview email
 
         Button btRegister = view.findViewById(R.id.buttonRegistration);
         Button btLogIn= view.findViewById(R.id.buttonLogIn);
@@ -77,7 +84,7 @@ public class HomePageFragment extends Fragment {
         btLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //ToDo
                 if(IsBarber()) {
                     Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
                 }
@@ -92,7 +99,8 @@ public class HomePageFragment extends Fragment {
     }
 
     private boolean IsBarber(){
-        return true;
+        //ToDO check who is it
+        return false;
     }
 
 }
