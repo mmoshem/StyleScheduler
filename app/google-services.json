@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "480181030656",
-    "project_id": "stylescheduler-b3f71",
-    "storage_bucket": "stylescheduler-b3f71.firebasestorage.app"
+    "project_number": "846279635946",
+    "project_id": "stylescheduler-74c58",
+    "storage_bucket": "stylescheduler-74c58.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:480181030656:android:971485033a1e9c1ff4ede5",
+        "mobilesdk_app_id": "1:846279635946:android:9894db2f66f604cdab3893",
         "android_client_info": {
           "package_name": "com.example.stylescheduler"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCYbFE_O1ipix394FqgscP5xnSNwzOl7ck"
+          "current_key": "AIzaSyDPZfTESTxNGDYlUZC5k7OmYjXnY7kRzY0"
         }
       ],
       "services": {

@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="785b06d5-2be0-465e-a2e7-d08aeb4f46db" name="Changes" comment="" />
+    <list default="true" id="785b06d5-2be0-465e-a2e7-d08aeb4f46db" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/google-services.json" beforeDir="false" afterPath="$PROJECT_DIR$/google-services.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/stylescheduler/Classes/Barber.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/stylescheduler/Classes/Barber.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/stylescheduler/Classes/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/stylescheduler/Classes/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/stylescheduler/Fragments/RegFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/stylescheduler/Fragments/RegFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/res/layout/fragment_reg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/res/layout/fragment_reg.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,9 +24,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2rw0rNvt0ZpZGJvrmg7P38lpYAA" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -32,7 +40,7 @@
     "android.gradle.sync.needed": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "moshe2tryblank",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Polina/Desktop/StyleScheduler/app"
   }
