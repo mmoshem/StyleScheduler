@@ -1,33 +1,41 @@
 package com.example.stylescheduler.Classes;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 class AppointmentSystem {
     private List<Appointment> appointments;
-    private int appointmentIDCounter;
+    private DatabaseReference databaseRef;
 
     public AppointmentSystem() {
         this.appointments = new ArrayList<>();
-        this.appointmentIDCounter = 1;  // Start appointment IDs from 1
+        this.databaseRef = FirebaseDatabase.getInstance().getReference("appointments");
     }
 
-    public int generateAppointmentID() {
-        return appointmentIDCounter++;
-    }
-
-    public void addAppointment(Appointment appointment) {
-        appointments.add(appointment);
-    }
-
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
-    public void displayAppointmentsForBarber(Barber barber) {
+    public void cancelAppointmentsForSickDay(Barber barber, LocalDateTime sickDay) {
+        List<Appointment> toCancel = new ArrayList<>();
         for (Appointment appointment : appointments) {
-            if (appointment.getBarber().equals(barber)) {
-                System.out.println("Appointment for " + appointment.getCustomer().name + " at " + appointment.getAppointmentTime());
+            if (appointment.getBarber().equals(barber) && appointment.getAppointmentTime().toLocalDate().equals(sickDay.toLocalDate())) {
+                appointment.cancel();
+                toCancel.add(appointment);
+                sendCancellationNotification(appointment.getCustomer(), barber);
             }
         }
+        appointments.removeAll(toCancel);
+    }
+
+    private void sendCancellationNotification(Customer customer, Barber barber) {
+        String message = "Your appointment with " + barber.getShopName() + " has been canceled due to illness.";
+        FirebaseMessaging.getInstance().send(
+                new com.google.firebase.messaging.Message.Builder()
+                        .putData("title", "Appointment Canceled")
+                        .putData("body", message)
+                        .setTopic(customer.getEmail().replace("@", "_"))
+                        .build()
+        );
     }
 }
