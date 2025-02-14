@@ -4,12 +4,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-class Customer extends User {
+public class Customer extends User {
     private String phoneNumber;
     private List<Appointment> appointments;
 
-    public Customer(int userID, String name, String email, String password, String phoneNumber) {
-        super(userID, name, email, password, "customer");
+    public Customer( String name, String email, String password, String phoneNumber) {
+        super(name, email, password, "customer");
         this.phoneNumber = phoneNumber;
         this.appointments = new ArrayList<>();  // Initialize the list
     }

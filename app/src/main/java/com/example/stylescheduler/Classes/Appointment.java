@@ -1,7 +1,7 @@
 package com.example.stylescheduler.Classes;
 import java.time.LocalDateTime;
 
-class Appointment {
+public class Appointment {
     private int appointmentID;
     private Customer customer;
     private Barber barber;
