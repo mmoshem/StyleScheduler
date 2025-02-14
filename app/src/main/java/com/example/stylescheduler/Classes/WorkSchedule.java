@@ -1,11 +1,13 @@
 package com.example.stylescheduler.Classes;
 
+import android.icu.util.LocaleData;
+
 import java.util.*;
 
 public class WorkSchedule {
     private Map<Integer, List<Integer>> workingHours; // שעות עבודה לכל יום (Sunday = 1, Monday = 2, ...)
     private Set<Date> vacationDays; // ימים חופשיים
-    private List<Appointment> bookedAppointments; // רשימת תורים קיימים
+    private ArrayList<Appointment> bookedAppointments; // רשימת תורים קיימים
 
     public WorkSchedule() {
         this.workingHours = new HashMap<>();
@@ -39,7 +41,7 @@ public class WorkSchedule {
     }
 
     // 📌 **קבלת רשימת תורים קיימים**
-    public List<Appointment> getBookedAppointments() {
+    public ArrayList<Appointment> getBookedAppointments() {
         return new ArrayList<>(bookedAppointments);
     }
 
@@ -51,8 +53,8 @@ public class WorkSchedule {
     }
 
     // 📌 **קבלת רשימת זמנים פנויים לשבועיים הקרובים**
-    public List<Date> getAvailableTimeSlots(Date startDate, int daysRange) {
-        List<Date> availableSlots = new ArrayList<>();
+    public ArrayList<Date> getAvailableTimeSlots(Date startDate, int daysRange) {
+        ArrayList<Date> availableSlots = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
 

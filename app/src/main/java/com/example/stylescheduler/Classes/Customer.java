@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 class Customer extends User {
-    private String phoneNumber;
-    private List<Appointment> appointments;
+    private ArrayList<Appointment> appointments;
 
-    public Customer(int userID, String name, String email, String password, String phoneNumber) {
-        super(userID, name, email, password, "customer");
-        this.phoneNumber = phoneNumber;
+    public Customer(int userID, String name, String email, String password, String i_phoneNumber) {
+        super(userID, name, email, password, "customer", i_phoneNumber);
         this.appointments = new ArrayList<>();  // Initialize the list
     }
 
@@ -26,7 +24,7 @@ class Customer extends User {
     }
 
     // View list of barbers
-    public List<Barber> viewBarbersList(List<Barber> barbers) {
+    public ArrayList<Barber> viewBarbersList(ArrayList<Barber> barbers) {
         return barbers;
     }
 
@@ -57,10 +55,10 @@ class Customer extends User {
         appointments.remove(appointment);
     }
 
-    public List<Appointment> getUpcomingAppointments() {
+    public ArrayList<Appointment> getUpcomingAppointments() {
         return appointments;
     }
-    public List<Appointment> viewMyAppointments() {
+    public ArrayList<Appointment> viewMyAppointments() {
         return appointments;
     }
 }

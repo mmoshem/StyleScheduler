@@ -1,21 +1,21 @@
 package com.example.stylescheduler.Classes;
 
+import android.view.InputQueue;
+
 import java.util.*;
 
-class Barber extends User {
+public class Barber extends User {
     private String shopName;
     private String shopAddress;
     private WorkSchedule workSchedule;
-    private String m_phoneNumber;
 
 
-    public Barber(int userID, String name, String email, String password, String shopName, String shopAddress, String phoneNumber) {
-        super(userID, name, email, password, "barber");
+
+    public Barber(int userID, String name, String email, String password, String shopName, String shopAddress, String i_PhoneNumber) {
+        super(userID, name, email, password, "barber", i_PhoneNumber);
         this.shopName = shopName;
         this.shopAddress = shopAddress;
         this.workSchedule = new WorkSchedule();
-        this.m_phoneNumber = phoneNumber;
-
     }
 
     public String getShopName() {
@@ -34,7 +34,7 @@ class Barber extends User {
         return shopAddress;
     }
     public String getPhoneNumber(){
-        return m_phoneNumber;
+        return m_PhoneNumber;
     }
 
     public void setShopAddress(String shopAddress) {
@@ -46,12 +46,19 @@ class Barber extends User {
     }
 
     public void setWorkSchedule(WorkSchedule workSchedule) {
+        WorkSchedule w = new WorkSchedule();
+        ArrayList<Integer> l= new ArrayList<>();
+        l.add(8);
+        l.add(9);
+        w.setWorkingHours(1,l);
         this.workSchedule = workSchedule;
     }
 
 
+
+
     // 📌 **קבלת זמני עבודה פנויים - שימוש ב-Date במקום LocalDate**
-    public List<Date> getAvailableAppointments(Date startDate, int daysRange) {
+    public ArrayList<Date> getAvailableAppointments(Date startDate, int daysRange) {
         return workSchedule.getAvailableTimeSlots(startDate, daysRange);
     }
 
@@ -105,7 +112,7 @@ class Barber extends User {
 
     // 📌 **צפייה בכל התורים שנקבעו לספר**
     public void viewScheduledAppointments() {
-        List<Appointment> bookedAppointments = workSchedule.getBookedAppointments();
+        ArrayList<Appointment> bookedAppointments = workSchedule.getBookedAppointments();
         System.out.println("Appointments for " + this.name + ":");
         for (Appointment appointment : bookedAppointments) {
             System.out.println("📅 " + appointment.getAppointmentDate() + " - " + appointment.getCustomer().name);

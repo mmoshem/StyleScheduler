@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.stylescheduler.R;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.BarberViewHolder> {
-    private List<Barber> barberList;
+    private ArrayList<Barber> barberList;
 
-    public BarberAdapter(List<Barber> barberList) {
+    public BarberAdapter(ArrayList<Barber> barberList) {
         this.barberList = barberList;
     }
 

@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 class AppointmentSystem {
-    private List<Appointment> appointments;
+    private ArrayList<Appointment> appointments;
     private int appointmentIDCounter;
 
     public AppointmentSystem() {
@@ -21,7 +21,7 @@ class AppointmentSystem {
         appointments.add(appointment);
     }
 
-    public List<Appointment> getAppointments() {
+    public ArrayList<Appointment> getAppointments() {
         return appointments;
     }
 
