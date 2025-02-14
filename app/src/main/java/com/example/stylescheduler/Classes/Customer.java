@@ -1,5 +1,7 @@
 package com.example.stylescheduler.Classes;
 
+import com.example.stylescheduler.Classes.Appointment;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +35,7 @@ public class Customer extends User {
     public void bookAppointment(Barber barber, String serviceType, LocalDateTime time, AppointmentSystem appointmentSystem) {
       //ToDO : check if already have existing appointment in the same time if no then add if exists , don't allow to add
 
-        Appointment newAppointment = new Appointment(appointmentSystem.generateAppointmentID(), this, barber, serviceType, time);
+        Appointment newAppointment = new Appointment(appointmentSystem.generateAppointmentID(), barber, this, serviceType, time);
         appointmentSystem.addAppointment(newAppointment);  // Add to central appointment system
         this.appointments.add(newAppointment);  // Add to the customer's list of appointments
     }

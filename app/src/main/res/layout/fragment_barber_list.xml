@@ -1,14 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".Fragments.BarberListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Title for the Barber List -->
     <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Available Barbers"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="16dp"/>
+
+    <!-- Progress Bar (optional, for loading state) -->
+    <ProgressBar
+        android:id="@+id/progressBarLoading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <!-- RecyclerView for displaying barbers -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewBarbers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:padding="8dp"
+        android:scrollbars="vertical"/>
+</LinearLayout>

@@ -1,66 +1,82 @@
 package com.example.stylescheduler.Fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.stylescheduler.Classes.Barber;
+import com.example.stylescheduler.Classes.Customer;
 import com.example.stylescheduler.R;
+import com.example.stylescheduler.Adapters.ClientAppointmentsAdapter;
+import com.example.stylescheduler.Classes.Appointment;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ClientAppointments#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClientAppointments extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private RecyclerView recyclerView;
+    private ClientAppointmentsAdapter adapter;
+    private List<Appointment> appointmentList;
 
     public ClientAppointments() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ClientAppointments.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ClientAppointments newInstance(String param1, String param2) {
-        ClientAppointments fragment = new ClientAppointments();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_client_appointments, container, false);
+        View view = inflater.inflate(R.layout.fragment_client_appointments, container, false);
+
+        recyclerView = view.findViewById(R.id.recyclerViewAppointments);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        // Initialize list and adapter
+        appointmentList = new ArrayList<>();
+        adapter = new ClientAppointmentsAdapter(appointmentList);
+        recyclerView.setAdapter(adapter);
+
+        // Load dummy data (Replace with Firebase data fetching logic)
+        loadAppointments();
+
+        return view;
     }
+
+    private void loadAppointments() {
+        // Creating dummy barber and customer
+        Barber barber1 = new Barber("John Doe", "john@example.com", "password", "John's Barber Shop", "123 Main St");
+        Customer customer1 = new Customer("Alice", "alice@example.com", "password", "1234567890");
+
+        Barber barber2 = new Barber("Jane Smith", "jane@example.com", "password", "Jane's Cuts", "456 Elm St");
+        Customer customer2 = new Customer("Bob", "bob@example.com", "password", "9876543210");
+
+        // Creating appointment objects with proper parameters
+        // Creating appointment objects with proper parameter order (Barber first, then Customer)
+        // Creating appointment objects with proper parameter order (Barber first, then Customer)
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            appointmentList.add(new Appointment(1, barber1, customer1, "Haircut",
+                    LocalDateTime.of(2024, 3, 12, 15, 0)));
+            appointmentList.add(new Appointment(2, barber2, customer2, "Beard Trim",
+                    LocalDateTime.of(2024, 3, 14, 10, 0)));
+        } else {
+            // Handle older Android versions (Convert to another format, e.g., using Strings or Date)
+            // Example: Save as String or use Calendar API
+        }
+
+
+        adapter.notifyDataSetChanged();
+    }
+
 }

@@ -62,12 +62,22 @@
             android:textColor="@android:color/darker_gray"
             android:paddingTop="4dp"/>
 
-        <!-- Working Days + Hours -->
+        <!-- Working Days -->
+        <TextView
+            android:id="@+id/textViewBarberSchedule"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🗓️ Working Days: Mon - Fri"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="2dp"/>
+
+        <!-- Working Hours -->
         <TextView
             android:id="@+id/barber_working_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🕒 Working Days: Mon - Fri | Hours: 09:00 - 18:00"
+            android:text="🕒 Hours: 09:00 - 18:00"
             android:textSize="16sp"
             android:textColor="@android:color/darker_gray"
             android:paddingTop="2dp"/>
@@ -82,4 +92,5 @@
             android:textColor="@android:color/holo_blue_dark"
             android:paddingTop="8dp"/>
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>

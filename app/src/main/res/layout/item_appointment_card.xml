@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <!-- Barber Name -->
+        <TextView
+            android:id="@+id/textViewBarberName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Barber Name"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"/>
+
+        <!-- Barber Address -->
+        <TextView
+            android:id="@+id/textViewBarberAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📍 Address"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="4dp"/>
+
+        <!-- Appointment Date & Time -->
+        <TextView
+            android:id="@+id/textViewAppointmentTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📅 Date &amp; Time"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="4dp"/>
+
+        <!-- Service Type -->
+        <TextView
+            android:id="@+id/textViewServiceType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✂️ Service Type"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="4dp"/>
+
+        <!-- Cancel Appointment Button -->
+        <Button
+            android:id="@+id/buttonCancelAppointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cancel Appointment"
+            android:textSize="14sp"
+            android:layout_gravity="end"
+            android:paddingTop="8dp"/>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
