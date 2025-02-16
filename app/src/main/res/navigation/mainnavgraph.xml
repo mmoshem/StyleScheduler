@@ -38,5 +38,18 @@
         android:id="@+id/barberHomePage"
         android:name="com.example.stylescheduler.Fragments.BarberHomePage"
         android:label="fragment_barber_home_page"
-        tools:layout="@layout/fragment_barber_home_page" />
+        tools:layout="@layout/fragment_barber_home_page" >
+        <action
+            android:id="@+id/action_barberHomePage_to_editShopFragment"
+            app:destination="@id/editShopFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editShopFragment"
+        android:name="com.example.stylescheduler.Fragments.EditShopFragment"
+        android:label="fragment_edit_shop"
+        tools:layout="@layout/fragment_edit_shop" >
+        <action
+            android:id="@+id/action_editShopFragment_to_barberHomePage"
+            app:destination="@id/barberHomePage" />
+    </fragment>
 </navigation>

@@ -1,6 +1,7 @@
 package com.example.stylescheduler.Fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,11 @@ import com.example.stylescheduler.Classes.Customer;
 import com.example.stylescheduler.R;
 import com.example.stylescheduler.Adapters.ClientAppointmentsAdapter;
 import com.example.stylescheduler.Classes.Appointment;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -49,34 +55,32 @@ public class ClientAppointments extends Fragment {
         recyclerView.setAdapter(adapter);
 
         // Load dummy data (Replace with Firebase data fetching logic)
-        loadAppointments();
 
         return view;
     }
 
     private void loadAppointments() {
-        // Creating dummy barber and customer
-        Barber barber1 = new Barber("John Doe", "john@example.com", "password", "John's Barber Shop", "123 Main St");
-        Customer customer1 = new Customer("Alice", "alice@example.com", "password", "1234567890");
+        FirebaseDatabase.getInstance().getReference("appointments")
+                .orderByChild("customerId").equalTo(FirebaseAuth.getInstance().getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        appointmentList.clear();
+                        for (DataSnapshot appointmentSnapshot : snapshot.getChildren()) {
+                            Appointment appointment = appointmentSnapshot.getValue(Appointment.class);
+                            appointmentList.add(appointment);
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
 
-        Barber barber2 = new Barber("Jane Smith", "jane@example.com", "password", "Jane's Cuts", "456 Elm St");
-        Customer customer2 = new Customer("Bob", "bob@example.com", "password", "9876543210");
-
-        // Creating appointment objects with proper parameters
-        // Creating appointment objects with proper parameter order (Barber first, then Customer)
-        // Creating appointment objects with proper parameter order (Barber first, then Customer)
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            appointmentList.add(new Appointment(1, barber1, customer1, "Haircut",
-                    LocalDateTime.of(2024, 3, 12, 15, 0)));
-            appointmentList.add(new Appointment(2, barber2, customer2, "Beard Trim",
-                    LocalDateTime.of(2024, 3, 14, 10, 0)));
-        } else {
-            // Handle older Android versions (Convert to another format, e.g., using Strings or Date)
-            // Example: Save as String or use Calendar API
-        }
-
-
-        adapter.notifyDataSetChanged();
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("ClientAppointments", "Failed to load appointments: " + error.getMessage());
+                    }
+                });
     }
+
+
+
 
 }

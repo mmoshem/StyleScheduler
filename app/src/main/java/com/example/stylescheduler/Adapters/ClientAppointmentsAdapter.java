@@ -31,17 +31,23 @@ public class ClientAppointmentsAdapter extends RecyclerView.Adapter<ClientAppoin
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Appointment appointment = appointmentList.get(position);
 
-        holder.textViewBarberName.setText(appointment.getBarber().getName());
-        holder.textViewBarberAddress.setText(appointment.getBarber().getShopAddress());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            holder.textViewAppointmentTime.setText(appointment.getAppointmentTime().getHour());
+        if (appointment.getBarber() != null) {
+            holder.textViewBarberName.setText(appointment.getBarber().getName());
+            holder.textViewBarberAddress.setText(appointment.getBarber().getShopAddress());
+        } else {
+            holder.textViewBarberName.setText("Unknown Barber");
+            holder.textViewBarberAddress.setText("No Address Available");
         }
-        holder.textViewServiceType.setText(appointment.getServiceType());
 
-        holder.buttonCancelAppointment.setOnClickListener(v -> {
-            // Handle appointment cancellation logic
-            removeAppointment(position);
-        });
+        if (appointment.getAppointmentTime() != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.textViewAppointmentTime.setText(appointment.getAppointmentTime().toString());
+        } else {
+            holder.textViewAppointmentTime.setText("Unknown Time");
+        }
+
+        holder.textViewServiceType.setText(appointment.getServiceType() != null ? appointment.getServiceType() : "No Service");
+
+        holder.buttonCancelAppointment.setOnClickListener(v -> removeAppointment(position));
     }
 
     @Override

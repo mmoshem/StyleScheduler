@@ -18,5 +18,9 @@
         android:id="@+id/clientAppointments"
         android:name="com.example.stylescheduler.Fragments.ClientAppointments"
         android:label="fragment_client_appointments"
-        tools:layout="@layout/fragment_client_appointments" />
+        tools:layout="@layout/fragment_client_appointments" >
+        <action
+            android:id="@+id/action_clientAppointments_to_barberListFragment"
+            app:destination="@id/barberListFragment" />
+    </fragment>
 </navigation>

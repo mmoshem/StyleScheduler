@@ -1,10 +1,12 @@
 package com.example.stylescheduler.Adapters;
 
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
@@ -28,9 +30,14 @@ public class BarberListAdapter extends RecyclerView.Adapter<BarberListAdapter.Vi
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Barber barber = barberList.get(position);
-        holder.textViewBarberName.setText(barber.getName());
+        holder.textViewBarberName.setText(barber.getShopName());
         holder.textViewBarberAddress.setText(barber.getShopAddress());
-        holder.textViewBarberSchedule.setText(barber.getWorkingDays()); // Adjust based on actual data
+
+        holder.itemView.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("barberId", barber.getId()); // Pass barber ID
+            Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_bookingFragment, bundle);
+        });
     }
 
     @Override
@@ -39,13 +46,12 @@ public class BarberListAdapter extends RecyclerView.Adapter<BarberListAdapter.Vi
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textViewBarberName, textViewBarberAddress, textViewBarberSchedule;
+        TextView textViewBarberName, textViewBarberAddress;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewBarberName = itemView.findViewById(R.id.textViewBarberName);
             textViewBarberAddress = itemView.findViewById(R.id.textViewBarberAddress);
-            textViewBarberSchedule = itemView.findViewById(R.id.textViewBarberSchedule);
         }
     }
 }

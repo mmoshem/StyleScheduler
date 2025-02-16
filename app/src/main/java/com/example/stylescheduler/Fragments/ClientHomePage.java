@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import com.example.stylescheduler.R;
@@ -15,21 +14,18 @@ public class ClientHomePage extends Fragment {
 
     private TabLayout tabLayout;
 
-    public ClientHomePage() {
-        // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public ClientHomePage() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_client_home_page, container, false);
-
         tabLayout = view.findViewById(R.id.tabLayout);
+
+        // Load BarberListFragment by default
+        if (savedInstanceState == null) {
+            loadFragment(new BarberListFragment());
+        }
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -37,10 +33,10 @@ public class ClientHomePage extends Fragment {
                 FragmentTransaction transaction = getParentFragmentManager().beginTransaction();
                 switch (tab.getPosition()) {
                     case 0:
-                        transaction.replace(R.id.fragmentContainerView, new BarberListFragment()).commit();
+                        loadFragment(new BarberListFragment());
                         break;
                     case 1:
-                        transaction.replace(R.id.fragmentContainerView, new ClientAppointments()).commit();
+                        loadFragment(new ClientAppointments());
                         break;
                 }
             }
@@ -52,13 +48,12 @@ public class ClientHomePage extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        // Load default fragment
-        if (savedInstanceState == null) {
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.fragmentContainerView, new BarberListFragment())
-                    .commit();
-        }
-
         return view;
+    }
+
+    private void loadFragment(Fragment fragment) {
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainerView, fragment)
+                .commit();
     }
 }
