@@ -11,6 +11,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.example.stylescheduler.Classes.Barber;
+import com.example.stylescheduler.Classes.Customer;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -66,36 +69,24 @@ public class RegFragment extends Fragment {
             if (task.isSuccessful()) {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    String userId = user.getUid();
-                    Map<String, Object> userData = new HashMap<>();
-                    userData.put("name", name);
-                    userData.put("email", email);
-                    userData.put("phone", phone);
-                    userData.put("role", isBarber ? "barber" : "client");
-
+                    String userId = user.getUid();  // Get Firebase-generated UID
                     if (isBarber) {
-                        userData.put("shopName", name);
-                        userData.put("shopAddress", workAddress.isEmpty() ? "Not Set" : workAddress);
-                        userData.put("workingDays", new HashMap<>()); // Empty initially
-                        userData.put("appointments", new HashMap<>()); // Empty initially
+                        Barber barber = new Barber(userId, name, email, password, name, workAddress.isEmpty() ? "Not Set" : workAddress);
+                        FirebaseDatabase.getInstance().getReference("users").child(userId).setValue(barber);
                     } else {
-                        userData.put("appointments", new HashMap<>()); // Clients also have appointments
+                        Customer customer = new Customer(userId, name, email, password, phone);
+                        FirebaseDatabase.getInstance().getReference("users").child(userId).setValue(customer);
                     }
 
-                    databaseRef.child(userId).setValue(userData).addOnCompleteListener(task1 -> {
-                        if (task1.isSuccessful()) {
-                            Toast.makeText(getContext(), "Registration successful! Please log in.", Toast.LENGTH_SHORT).show();
-                            navigateToLogin(view);
-                        } else {
-                            Toast.makeText(getContext(), "Error saving data", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(getContext(), "Registration successful! Please log in.", Toast.LENGTH_SHORT).show();
+                    navigateToLogin(view);  // Go to login instead of auto-login
                 }
             } else {
                 Toast.makeText(getContext(), "Registration failed", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 
     private void navigateToLogin(View view) {
         Navigation.findNavController(view).navigate(R.id.action_regFragment_to_homePageFragment);

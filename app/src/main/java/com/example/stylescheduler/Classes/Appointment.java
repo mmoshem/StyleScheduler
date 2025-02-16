@@ -1,38 +1,43 @@
 package com.example.stylescheduler.Classes;
 
-import com.example.stylescheduler.Classes.Barber;
-import com.example.stylescheduler.Classes.Customer;
-
 import java.time.LocalDateTime;
 
 public class Appointment {
-    private int appointmentID;
-    private Barber barber;  // Store Barber object instead of just name
-    private Customer customer;  // Store Customer object
+    private String appointmentID;  // Firebase-generated ID
+    private String barberId;       // Stores barber's Firebase UID
+    private String customerId;     // Stores customer's Firebase UID
     private String serviceType;
-    private LocalDateTime appointmentTime;  // Use LocalDateTime for time
+    private LocalDateTime appointmentTime;
     private String status;  // "booked", "cancelled", "completed"
 
-    public Appointment(int appointmentID, Barber barber, Customer customer, String serviceType, LocalDateTime appointmentTime) {
+    // Constructor
+    public Appointment(String appointmentId, String barberId, String customerId, String serviceType, LocalDateTime appointmentTime) {
         this.appointmentID = appointmentID;
-        this.barber = barber;
-        this.customer = customer;
+        this.barberId = barberId;
+        this.customerId = customerId;
         this.serviceType = serviceType;
         this.appointmentTime = appointmentTime;
-        this.status = "booked";
+        this.status = "booked"; // Default status
     }
 
+
+
+
+
+    // Default constructor (needed for Firebase)
+    public Appointment() {}
+
     // Getters
-    public int getAppointmentID() {
+    public String getAppointmentID() {
         return appointmentID;
     }
 
-    public Barber getBarber() {
-        return barber;
+    public String getBarberId() {
+        return barberId;
     }
 
-    public Customer getCustomer() {
-        return customer;
+    public String getCustomerId() {
+        return customerId;
     }
 
     public String getServiceType() {
@@ -48,16 +53,16 @@ public class Appointment {
     }
 
     // Setters
-    public void setAppointmentID(int appointmentID) {
+    public void setAppointmentID(String appointmentID) {
         this.appointmentID = appointmentID;
     }
 
-    public void setBarber(Barber barber) {
-        this.barber = barber;
+    public void setBarberId(String barberId) {
+        this.barberId = barberId;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCustomerId(String customerId) {
+        this.customerId = customerId;
     }
 
     public void setServiceType(String serviceType) {

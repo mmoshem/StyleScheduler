@@ -1,12 +1,20 @@
 package com.example.stylescheduler.Classes;
 
+import android.os.Build;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.time.LocalDateTime;
 import com.example.stylescheduler.Classes.Appointment;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -35,20 +43,41 @@ public class AppointmentSystem {
     }
 
     // Cancel all appointments for a barber's sick day
-    public void cancelAppointmentsForSickDay(Barber barber, LocalDateTime sickDay) {
+    public void cancelAppointmentsForSickDay(String barberId, LocalDateTime sickDay) {
         List<Appointment> toCancel = new ArrayList<>();
+
         for (Appointment appointment : appointments) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                if (appointment.getBarber().equals(barber) &&
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (appointment.getBarberId().equals(barberId) &&
                         appointment.getAppointmentTime().toLocalDate().equals(sickDay.toLocalDate())) {
+
                     appointment.cancel();
                     toCancel.add(appointment);
-                    sendCancellationNotification(appointment.getCustomer(), barber);
+
+                    // Fetch customer details to send notification
+                    FirebaseDatabase.getInstance().getReference("users")
+                            .child(appointment.getCustomerId())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists()) {
+                                        Customer customer = snapshot.getValue(Customer.class);
+                                        sendCancellationNotification(customer, barberId);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Log.e("AppointmentSystem", "Failed to fetch customer details: " + error.getMessage());
+                                }
+                            });
                 }
             }
         }
+
         appointments.removeAll(toCancel);
     }
+
 
     // Send a push notification when an appointment is canceled due to a sick day
     private void sendCancellationNotification(Customer customer, Barber barber) {

@@ -54,7 +54,7 @@ public class BarberListFragment extends Fragment {
                         for (DataSnapshot barberSnapshot : snapshot.getChildren()) {
                             Barber barber = barberSnapshot.getValue(Barber.class);
                             if (barber != null) {
-                                barber.setId(barberSnapshot.getKey());
+                                barber.setId(barberSnapshot.getKey()); // 🔹 Assign Firebase key as ID
                                 barberList.add(barber);
                             }
                         }
@@ -67,4 +67,5 @@ public class BarberListFragment extends Fragment {
                     }
                 });
     }
+
 }
