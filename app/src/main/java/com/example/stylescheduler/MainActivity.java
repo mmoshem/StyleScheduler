@@ -37,61 +37,6 @@ public class MainActivity extends AppCompatActivity {
         });
         mAuth = FirebaseAuth.getInstance();
     }
-
-
-//
-//    public void login(View view){
-//
-//        String email=((EditText)findViewById(R.id.EmailAddressfrag1)).getText().toString();
-//        String password=((EditText)findViewById(R.id.TextPassword)).getText().toString();
-//
-//        mAuth.signInWithEmailAndPassword(email, password)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//                            Navigation.findNavController(view).navigate(R.id.action_fragment1_to_fragment3);
-//                            Toast.makeText(MainActivity.this,"login ok",Toast.LENGTH_LONG).show();
-//
-//                        } else {
-//                            // If sign in fails, display a message to the user.
-//                            Toast.makeText(MainActivity.this,"login fail",Toast.LENGTH_LONG).show();
-//                        }
-//                    }
-//                });
-//
-//
-//        //Navigation.findNavController(view).navigate(R.id.action_fragment1_to_fragment3);
-//
-//    }
-
-
-//
-//    public void reg(View view) {
-//        mAuth.createUserWithEmailAndPassword(email, password)
-//                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-//                    @Override
-//                    public void onComplete(@NonNull Task<AuthResult> task) {
-//                        if (task.isSuccessful()) {
-//                            // Sign in success, update UI with the signed-in user's information
-//
-//                            FirebaseUser user = mAuth.getCurrentUser();
-//
-//                        }
-//                        else {
-//
-//                             }
-//                    }
-//                });
-//    }
-
-
-
-
-
-
-
 }
 
 
