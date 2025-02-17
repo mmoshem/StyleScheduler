@@ -48,7 +48,7 @@ public class HomePageFragment extends Fragment {
             if (!email.isEmpty() && !password.isEmpty()) {
                 loginUser(email, password, view);
             } else {
-                Toast.makeText(getContext(), "OOPS!SOMETHING WRONG!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "OOPS! SOMETHING WRONG!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -76,7 +76,8 @@ public class HomePageFragment extends Fragment {
             barbersRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult().exists()) {
                     Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
-                } else {
+                }
+                else {
                     customersRef.get().addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful() && task2.getResult().exists()) {
                             Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);
