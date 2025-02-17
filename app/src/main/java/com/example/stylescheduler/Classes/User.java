@@ -1,13 +1,13 @@
 package com.example.stylescheduler.Classes;
 
 abstract class User {
-    protected int userID;
+    protected String userID;
     protected String name;
     protected String email;
     protected String password;
     protected String role;  // "barber" or "customer"
 
-    public User(int userID, String name, String email, String password, String role) {
+    public User(String userID, String name, String email, String password, String role) {
         this.userID = userID;
         this.name = name;
         this.email = email;

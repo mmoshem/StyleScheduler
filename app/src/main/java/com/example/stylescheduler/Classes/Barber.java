@@ -9,7 +9,7 @@ public class Barber extends User {
     private String phoneNumber;
 
 
-    public Barber(int userID, String name, String email, String password, String shopName, String shopAddress) {
+    public Barber(String userID, String name, String email, String password, String shopName, String shopAddress) {
         super(userID, name, email, password, "barber");
         this.shopName = shopName;
         this.shopAddress = shopAddress;

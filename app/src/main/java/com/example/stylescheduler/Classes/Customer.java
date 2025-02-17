@@ -9,7 +9,7 @@ class Customer extends User {
     private String phoneNumber;
     private ArrayList<Appointment> appointments;
 
-    public Customer(int userID, String name, String email, String password, String phoneNumber) {
+    public Customer(String userID, String name, String email, String password, String phoneNumber) {
         super(userID, name, email, password, "customer");
         this.phoneNumber = phoneNumber;
         this.appointments = new ArrayList<>();  // Initialize the list

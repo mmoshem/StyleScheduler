@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
+
+import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -86,15 +88,17 @@ public class RegFragment extends Fragment {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
                     String userId = user.getUid();
-                    DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
-                    dbRef.child("name").setValue(name);
-                    dbRef.child("email").setValue(email);
-                    dbRef.child("phone").setValue(phone);
-                    dbRef.child("role").setValue(role);
+
+//                    dbRef.child("name").setValue(name);
+//                    dbRef.child("email").setValue(email);
+//                    dbRef.child("phone").setValue(phone);
+               //     dbRef.child("role").setValue(role);
                     if (role.equals("barber")) {
-                        dbRef.child("workAddress").setValue(workAddress);
-                    }
+                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child("barbers").child(email);
+                        Barber barber= new Barber(userId,name,email,password,"",workAddress);
+                        dbRef.setValue(barber);
+                   }
 
                     Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
                     Navigation.findNavController(view).navigate(R.id.homePageFragment);
