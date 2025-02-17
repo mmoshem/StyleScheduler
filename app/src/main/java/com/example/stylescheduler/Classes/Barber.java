@@ -6,6 +6,7 @@ public class Barber extends User {
     private String shopName;
     private String shopAddress;
     private WorkSchedule workSchedule;
+    private String phoneNumber;
 
 
     public Barber(int userID, String name, String email, String password, String shopName, String shopAddress) {
@@ -101,43 +102,4 @@ public class Barber extends User {
             System.out.println("📅 " + appointment.getAppointmentDate() + " - " + appointment.getCustomer().name);
         }
     }
-
-    @Override
-    public void register() {
-        // להוסיף בהמשך אינטגרציה עם Firebase אם צריך
-    }
-
-    @Override
-    public boolean login() {
-        return false; // בהמשך נוסיף לוגיקה לחיבור
-    }
 }
-
-
-    /*
-    public void setWorkingDays(List<String> workingDays) {
-       this.workingDays = workingDays;
-
-    public void setAvailableTimeSlots(List<LocalDateTime> availableTimeSlots) {
-        this.availableTimeSlots = availableTimeSlots;
-    }
-
-    public void viewScheduledAppointments(List<Appointment> appointments) {
-        for (Appointment appointment : appointments) {
-            if (appointment.getBarber().equals(this)) {
-                System.out.println("Appointment for customer: " + appointment.getCustomer().name + " at " + appointment.getAppointmentTime());
-            }
-        }
-    }
-
-    @Override
-    public void register() {
-
-    }
-
-    @Override
-    public boolean login() {
-        return false;
-    }
-}
-*/

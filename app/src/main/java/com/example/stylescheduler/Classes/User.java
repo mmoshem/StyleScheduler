@@ -16,6 +16,6 @@ abstract class User {
     }
 
     // Methods for registration and login
-    public abstract void register();
-    public abstract boolean login();
+   // public abstract void register();
+  //  public abstract boolean login();
 }

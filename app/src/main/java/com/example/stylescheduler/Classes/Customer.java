@@ -15,16 +15,6 @@ class Customer extends User {
         this.appointments = new ArrayList<>();  // Initialize the list
     }
 
-    @Override
-    public void register() {
-
-    }
-
-    @Override
-    public boolean login() {
-        return false;
-    }
-
     // View list of barbers
     public ArrayList<Barber> viewBarbersList(ArrayList<Barber> barbers) {
         return barbers;
