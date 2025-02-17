@@ -68,20 +68,25 @@ public class HomePageFragment extends Fragment {
     private void checkUserRoleAndNavigate(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(user.getUid());
+            String safeEmail = user.getEmail().replace(".", "_");
 
-            userRef.get().addOnCompleteListener(task -> {
+            DatabaseReference barbersRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+            DatabaseReference customersRef = FirebaseDatabase.getInstance().getReference("customers").child(safeEmail);
+
+            barbersRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult().exists()) {
-                    String role = task.getResult().child("role").getValue(String.class);
-                    if ("barber".equals(role)) {
-                        Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
-                    } else {
-                        Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);
-                    }
+                    Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
                 } else {
-                    Toast.makeText(getContext(), "User role not found", Toast.LENGTH_SHORT).show();
+                    customersRef.get().addOnCompleteListener(task2 -> {
+                        if (task2.isSuccessful() && task2.getResult().exists()) {
+                            Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);
+                        } else {
+                            Toast.makeText(getContext(), "User role not found", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
     }
+
 }

@@ -14,21 +14,14 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <!-- Business Name (Bigger Font) -->
-        <TextView
-            android:id="@+id/shop_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Business Name"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/black"/>
+
 
         <!-- Barber Name + Phone Number in One Line -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:textSize="20sp"
             android:gravity="center_vertical"
             android:paddingTop="4dp">
 
@@ -39,8 +32,9 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Barber Name"
-                android:textSize="16sp"
-                android:textColor="@android:color/darker_gray"/>
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
 
             <!-- Phone Number -->
             <TextView

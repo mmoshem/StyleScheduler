@@ -89,16 +89,10 @@ public class RegFragment extends Fragment {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
                     String userId = user.getUid();
-
-
-//                    dbRef.child("name").setValue(name);
-//                    dbRef.child("email").setValue(email);
-//                    dbRef.child("phone").setValue(phone);
-                    //     dbRef.child("role").setValue(role);
                     String safeEmail = email.replace(".", "_");
                     FirebaseDatabase database=FirebaseDatabase.getInstance();
                     if (role.equals("barber")) {
-                        Barber barber = new Barber(userId, name, email,password, "", workAddress, phone);
+                        Barber barber = new Barber(userId, name, email,password, workAddress, phone);
                         database.getReference("barbers").child(safeEmail).setValue(barber);
                     }
                     else {

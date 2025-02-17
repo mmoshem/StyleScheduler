@@ -3,19 +3,18 @@ package com.example.stylescheduler.Classes;
 import java.util.*;
 
 public class Barber extends User {
-    private String shopName;
     private String shopAddress;
     private WorkSchedule workSchedule;
 
-
-
-    public Barber(String userID, String name, String email, String password, String shopName, String shopAddress,String phoneNumber) {
+    public Barber(String userID, String name, String email, String password,String shopAddress,String phoneNumber) {
         super(userID, name, email, password, "barber",phoneNumber);
-        this.shopName = shopName;
         this.shopAddress = shopAddress;
         this.workSchedule = new WorkSchedule();
     }
 
+    public Barber() {
+        super();
+    }
     // 📌 **הוספת חופשה - שימוש ב-Date במקום LocalDate**
     public void addVacation(Date date) {
         workSchedule.addVacationDay(date);
@@ -29,9 +28,6 @@ public class Barber extends User {
 
     public String getEmail(){
         return this.email;
-    }
-    public String getShopName() {
-        return this.shopName;
     }
 
     public String getPhoneNumber() {

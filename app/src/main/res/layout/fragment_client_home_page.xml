@@ -8,6 +8,7 @@
     tools:context=".Fragments.ClientHomePage">
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -15,12 +16,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@color/black"
-            android:text="Monday" />
+            android:text="BARBER LIST" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tuesday" />
+            android:text="YOUR APPOINTMENT" />
 
     </com.google.android.material.tabs.TabLayout>
 

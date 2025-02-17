@@ -18,12 +18,8 @@ abstract class User {
         this.role = role;
         this.phoneNumber = phoneNumber;
     }
-    
-
+    public User(){}
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-    // Methods for registration and login
-   // public abstract void register();
-  //  public abstract boolean login();
 }
