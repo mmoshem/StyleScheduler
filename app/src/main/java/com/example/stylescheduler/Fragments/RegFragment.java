@@ -98,11 +98,11 @@ public class RegFragment extends Fragment {
                     String safeEmail = email.replace(".", "_");
                     FirebaseDatabase database=FirebaseDatabase.getInstance();
                     if (role.equals("barber")) {
-                        Barber barber = new Barber(userId, name, email, password, "", workAddress, phone);
+                        Barber barber = new Barber(userId, name, email,password, "", workAddress, phone);
                         database.getReference("barbers").child(safeEmail).setValue(barber);
                     }
                     else {
-                        Customer customer = new Customer(userId, name, email, password, phone);
+                        Customer customer = new Customer(userId, name, email,password ,phone);
                         database.getReference("customers").child(safeEmail).setValue(customer);
                     }
 

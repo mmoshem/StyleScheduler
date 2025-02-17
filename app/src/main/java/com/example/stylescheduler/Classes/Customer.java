@@ -12,6 +12,19 @@ public class Customer extends User {
         super(userID, name, email, password, "customer",phoneNumber);
         this.appointments = new ArrayList<>();  // Initialize the list
     }
+    public String getName(){
+        return this.name;
+    }
+    public String getRole(){
+        return this.role;
+    }
+    public String getEmail(){
+        return this.email;
+    }
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
 
     // View list of barbers
     public ArrayList<Barber> viewBarbersList(ArrayList<Barber> barbers) {
