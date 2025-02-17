@@ -146,7 +146,7 @@ public class BookingFragment extends Fragment {
             String appointmentId = FirebaseDatabase.getInstance().getReference().push().getKey();
 
             // Create appointment object with correct data types
-            Appointment appointment = new Appointment(appointmentId, barberId, customerId, selectedService, selectedDateTime);
+            Appointment appointment  = new Appointment(appointmentId, barberId, customerId, selectedService, selectedDateTime);
 
             FirebaseDatabase.getInstance().getReference("appointments")
                     .child(appointmentId).setValue(appointment)
