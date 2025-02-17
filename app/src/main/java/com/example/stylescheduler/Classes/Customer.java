@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-class Customer extends User {
+public class Customer extends User {
     private ArrayList<Appointment> appointments;
 
     public Customer(String userID, String name, String email, String password, String phoneNumber) {

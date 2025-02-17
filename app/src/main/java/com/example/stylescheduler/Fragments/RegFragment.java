@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.stylescheduler.Classes.Barber;
+import com.example.stylescheduler.Classes.Customer;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -93,13 +94,17 @@ public class RegFragment extends Fragment {
 //                    dbRef.child("name").setValue(name);
 //                    dbRef.child("email").setValue(email);
 //                    dbRef.child("phone").setValue(phone);
-               //     dbRef.child("role").setValue(role);
+                    //     dbRef.child("role").setValue(role);
+                    String safeEmail = email.replace(".", "_");
+                    FirebaseDatabase database=FirebaseDatabase.getInstance();
                     if (role.equals("barber")) {
-                        String safeEmail = email.replace(".", "_");
-                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
-                        Barber barber= new Barber(userId,name,email,password,"",workAddress,phone);
-                        dbRef.setValue(barber);
-                   }
+                        Barber barber = new Barber(userId, name, email, password, "", workAddress, phone);
+                        database.getReference("barbers").child(safeEmail).setValue(barber);
+                    }
+                    else {
+                        Customer customer = new Customer(userId, name, email, password, phone);
+                        database.getReference("customers").child(safeEmail).setValue(customer);
+                    }
 
                     Toast.makeText(getContext(), "Registration successful", Toast.LENGTH_SHORT).show();
                     Navigation.findNavController(view).navigate(R.id.homePageFragment);
