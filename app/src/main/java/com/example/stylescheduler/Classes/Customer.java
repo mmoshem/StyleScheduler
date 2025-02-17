@@ -6,12 +6,10 @@ import java.util.Date;
 import java.util.List;
 
 class Customer extends User {
-    private String phoneNumber;
     private ArrayList<Appointment> appointments;
 
     public Customer(String userID, String name, String email, String password, String phoneNumber) {
-        super(userID, name, email, password, "customer");
-        this.phoneNumber = phoneNumber;
+        super(userID, name, email, password, "customer",phoneNumber);
         this.appointments = new ArrayList<>();  // Initialize the list
     }
 

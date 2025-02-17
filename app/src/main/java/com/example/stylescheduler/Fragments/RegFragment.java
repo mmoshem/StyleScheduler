@@ -95,8 +95,9 @@ public class RegFragment extends Fragment {
 //                    dbRef.child("phone").setValue(phone);
                //     dbRef.child("role").setValue(role);
                     if (role.equals("barber")) {
-                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("users").child("barbers").child(email);
-                        Barber barber= new Barber(userId,name,email,password,"",workAddress);
+                        String safeEmail = email.replace(".", "_");
+                        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+                        Barber barber= new Barber(userId,name,email,password,"",workAddress,phone);
                         dbRef.setValue(barber);
                    }
 

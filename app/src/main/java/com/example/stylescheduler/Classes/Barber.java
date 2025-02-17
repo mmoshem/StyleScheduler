@@ -6,11 +6,11 @@ public class Barber extends User {
     private String shopName;
     private String shopAddress;
     private WorkSchedule workSchedule;
-    private String phoneNumber;
 
 
-    public Barber(String userID, String name, String email, String password, String shopName, String shopAddress) {
-        super(userID, name, email, password, "barber");
+
+    public Barber(String userID, String name, String email, String password, String shopName, String shopAddress,String phoneNumber) {
+        super(userID, name, email, password, "barber",phoneNumber);
         this.shopName = shopName;
         this.shopAddress = shopAddress;
         this.workSchedule = new WorkSchedule();
@@ -22,6 +22,13 @@ public class Barber extends User {
     }
     public String getName(){
         return this.name;
+    }
+    public String getRole(){
+        return this.role;
+    }
+
+    public String getEmail(){
+        return this.email;
     }
     public String getShopName() {
         return this.shopName;
