@@ -3,6 +3,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.R;
@@ -40,6 +42,16 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
         holder.barberName.setText(barber.getName());
         holder.barberPhone.setText("📞 " + barber.getPhoneNumber());
         holder.barberAddress.setText("📍 " + barber.getShopAddress());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Fetch the name of the clicked item
+                String name = barberList.get(holder.getAdapterPosition()).getName();
+
+                // Show a toast with the item name
+                Toast.makeText(v.getContext(), "Clicked on: " + name, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
