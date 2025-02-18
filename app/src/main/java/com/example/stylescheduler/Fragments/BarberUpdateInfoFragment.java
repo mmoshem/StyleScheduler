@@ -1,81 +1,414 @@
 package com.example.stylescheduler.Fragments;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-
+import android.widget.*;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import com.example.stylescheduler.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link BarberUpdateInfoFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class BarberUpdateInfoFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private EditText editName, editPhone, editAddress;
+    private Spinner spinnerStartHour, spinnerEndHour;
+    private CheckBox checkMonday, checkTuesday, checkWednesday, checkThursday, checkFriday, checkSaturday, checkSunday;
+    private Button saveButton;
+    private DatabaseReference barberRef;
+    private FirebaseUser currentUser;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-    private Spinner spinnerTimeStart, spinnerTimeEnd;
+    public BarberUpdateInfoFragment() {}
 
-    public BarberUpdateInfoFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BarberUpdateInfoFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BarberUpdateInfoFragment newInstance(String param1, String param2) {
-        BarberUpdateInfoFragment fragment = new BarberUpdateInfoFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_barber_update_info, container, false);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        editName = view.findViewById(R.id.editName);
+        editPhone = view.findViewById(R.id.editPhone);
+        editAddress = view.findViewById(R.id.editAddress);
+        spinnerStartHour = view.findViewById(R.id.spinner_time_start);
+        spinnerEndHour = view.findViewById(R.id.spinner_time_end);
+        saveButton = view.findViewById(R.id.saveButton);
+
+        checkMonday = view.findViewById(R.id.checkMonday);
+        checkTuesday = view.findViewById(R.id.checkTuesday);
+        checkWednesday = view.findViewById(R.id.checkWednesday);
+        checkThursday = view.findViewById(R.id.checkThursday);
+        checkFriday = view.findViewById(R.id.checkFriday);
+        checkSaturday = view.findViewById(R.id.checkSaturday);
+        checkSunday = view.findViewById(R.id.checkSunday);
+
+        List<String> hours = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, hours);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerStartHour.setAdapter(adapter);
+        spinnerEndHour.setAdapter(adapter);
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String safeEmail = currentUser.getEmail().replace(".", "_");
+            barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+
+            barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        editName.setText(snapshot.child("name").getValue(String.class));
+                        editPhone.setText(snapshot.child("phoneNumber").getValue(String.class));
+                        editAddress.setText(snapshot.child("shopAddress").getValue(String.class));
+
+                        String startHour = snapshot.child("startHour").getValue(String.class);
+                        String endHour = snapshot.child("endHour").getValue(String.class);
+                        if (startHour != null) spinnerStartHour.setSelection(hours.indexOf(startHour));
+                        if (endHour != null) spinnerEndHour.setSelection(hours.indexOf(endHour));
+
+                        // טעינת ימי עבודה בצורה בטוחה
+                        List<String> workingDays = new ArrayList<>();
+                        Object workingDaysObj = snapshot.child("workingDays").getValue();
+
+                        if (workingDaysObj instanceof List) {
+                            // אם זה באמת רשימה, נמיר ישירות
+                            workingDays = (List<String>) workingDaysObj;
+                        } else if (workingDaysObj instanceof String) {
+                            // אם זה מחרוזת, נמיר לרשימה
+                            workingDays = new ArrayList<>(List.of(((String) workingDaysObj).split(", ")));
+                        }
+
+                        // סימון הימים שנבחרו
+                        checkMonday.setChecked(workingDays.contains("Monday"));
+                        checkTuesday.setChecked(workingDays.contains("Tuesday"));
+                        checkWednesday.setChecked(workingDays.contains("Wednesday"));
+                        checkThursday.setChecked(workingDays.contains("Thursday"));
+                        checkFriday.setChecked(workingDays.contains("Friday"));
+                        checkSaturday.setChecked(workingDays.contains("Saturday"));
+                        checkSunday.setChecked(workingDays.contains("Sunday"));
+                    }
+                }
+
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Toast.makeText(getContext(), "Error loading data", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
+        saveButton.setOnClickListener(v -> updateBarberInfo());
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_barber_update_info, container, false);
+    private void updateBarberInfo() {
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        spinnerTimeStart = view.findViewById(R.id.spinner_time_start);
+        String safeEmail = currentUser.getEmail().replace(".", "_");
+        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
 
+        // קבלת הנתונים מהשדות
+        String newName = editName.getText().toString().trim();
+        String newPhone = editPhone.getText().toString().trim();
+        String newAddress = editAddress.getText().toString().trim();
+        String selectedStartHour = spinnerStartHour.getSelectedItem().toString();
+        String selectedEndHour = spinnerEndHour.getSelectedItem().toString();
 
+        if (newName.isEmpty() || newPhone.isEmpty() || newAddress.isEmpty()) {
+            Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        return view;
+        // יצירת HashMap עם הנתונים לעדכון
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("name", newName);
+        updates.put("phoneNumber", newPhone);
+        updates.put("shopAddress", newAddress);
+        updates.put("startHour", selectedStartHour);
+        updates.put("endHour", selectedEndHour);
+
+        List<String> selectedDays = getSelectedDays();
+        updates.put("workingDays", selectedDays);
+
+        // עדכון הנתונים בפיירבייס
+        barberRef.updateChildren(updates).addOnSuccessListener(aVoid -> {
+            Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
+            Navigation.findNavController(requireView()).navigate(R.id.action_barberUpdateInfoFragment_to_barberHomePage);
+        }).addOnFailureListener(e -> {
+            Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+        });
     }
 
 
+    private List<String> getSelectedDays() {
+        List<String> days = new ArrayList<>();
+        if (checkMonday.isChecked()) days.add("Monday");
+        if (checkTuesday.isChecked()) days.add("Tuesday");
+        if (checkWednesday.isChecked()) days.add("Wednesday");
+        if (checkThursday.isChecked()) days.add("Thursday");
+        if (checkFriday.isChecked()) days.add("Friday");
+        if (checkSaturday.isChecked()) days.add("Saturday");
+        if (checkSunday.isChecked()) days.add("Sunday");
+        return days;
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//package com.example.stylescheduler.Fragments;
+//
+//import android.os.Bundle;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup;
+//import android.widget.*;
+//import androidx.annotation.NonNull;
+//import androidx.annotation.Nullable;
+//import androidx.fragment.app.Fragment;
+//import androidx.navigation.Navigation;
+//import com.example.stylescheduler.R;
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseUser;
+//import com.google.firebase.database.*;
+//
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//public class BarberUpdateInfoFragment extends Fragment {
+//
+//    private EditText editName, editPhone, editAddress;
+//    private Spinner spinnerStartHour, spinnerEndHour;
+//    private Button saveButton;
+//    private DatabaseReference barberRef;
+//    private FirebaseUser currentUser;
+//
+//    public BarberUpdateInfoFragment() {}
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        return inflater.inflate(R.layout.fragment_barber_update_info, container, false);
+//    }
+//
+//    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//
+//        editName = view.findViewById(R.id.editName);
+//        editPhone = view.findViewById(R.id.editPhone);
+//        editAddress = view.findViewById(R.id.editAddress);
+//        spinnerStartHour = view.findViewById(R.id.spinner_time_start);
+//        spinnerEndHour = view.findViewById(R.id.spinner_time_end);
+//        saveButton = view.findViewById(R.id.saveButton);
+//
+//        // יצירת רשימת שעות לבחירה
+//        List<String> hours = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, hours);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerStartHour.setAdapter(adapter);
+//        spinnerEndHour.setAdapter(adapter);
+//
+//        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//        if (currentUser != null) {
+//            String safeEmail = currentUser.getEmail().replace(".", "_");
+//            barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+//
+//            // טעינת הנתונים מה-Firebase בעת פתיחת המסך
+//            barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    if (snapshot.exists()) {
+//                        if (snapshot.child("name").exists()) {
+//                            editName.setText(snapshot.child("name").getValue(String.class));
+//                        }
+//                        if (snapshot.child("phoneNumber").exists()) {
+//                            editPhone.setText(snapshot.child("phoneNumber").getValue(String.class));
+//                        }
+//                        if (snapshot.child("shopAddress").exists()) {
+//                            editAddress.setText(snapshot.child("shopAddress").getValue(String.class));
+//                        }
+//
+//                        // טעינת שעות עבודה
+//                        String startHour = snapshot.child("startHour").getValue(String.class);
+//                        String endHour = snapshot.child("endHour").getValue(String.class);
+//
+//                        if (startHour != null && hours.contains(startHour)) {
+//                            spinnerStartHour.setSelection(hours.indexOf(startHour));
+//                        }
+//                        if (endHour != null && hours.contains(endHour)) {
+//                            spinnerEndHour.setSelection(hours.indexOf(endHour));
+//                        }
+//                    } else {
+//                        Toast.makeText(getContext(), "No data found", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//                    Toast.makeText(getContext(), "Error loading data", Toast.LENGTH_SHORT).show();
+//                }
+//            });
+//        }
+//
+//        saveButton.setOnClickListener(v -> updateBarberInfo());
+//    }
+//
+//    private void updateBarberInfo() {
+//        if (currentUser == null) {
+//            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        String safeEmail = currentUser.getEmail().replace(".", "_");
+//        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+//
+//        // קבלת הנתונים מהשדות
+//        String newName = editName.getText().toString().trim();
+//        String newPhone = editPhone.getText().toString().trim();
+//        String newAddress = editAddress.getText().toString().trim();
+//        String selectedStartHour = spinnerStartHour.getSelectedItem().toString();
+//        String selectedEndHour = spinnerEndHour.getSelectedItem().toString();
+//
+//        if (newName.isEmpty() || newPhone.isEmpty() || newAddress.isEmpty()) {
+//            Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        // יצירת HashMap עם הנתונים לעדכון
+//        Map<String, Object> updates = new HashMap<>();
+//        updates.put("name", newName);
+//        updates.put("phoneNumber", newPhone);
+//        updates.put("shopAddress", newAddress);
+//        updates.put("startHour", selectedStartHour);
+//        updates.put("endHour", selectedEndHour);
+//
+//        // עדכון הנתונים בפיירבייס
+//        barberRef.updateChildren(updates).addOnSuccessListener(aVoid -> {
+//            Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
+//            Navigation.findNavController(requireView()).navigate(R.id.action_barberUpdateInfoFragment_to_barberHomePage);
+//        }).addOnFailureListener(e -> {
+//            Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+//        });
+//    }
+//}
+
+//package com.example.stylescheduler.Fragments;
+//
+//import android.os.Bundle;
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup;
+//import android.widget.*;
+//import androidx.annotation.NonNull;
+//import androidx.annotation.Nullable;
+//import androidx.fragment.app.Fragment;
+//import androidx.navigation.Navigation;
+//import com.example.stylescheduler.R;
+//import com.google.firebase.auth.FirebaseAuth;
+//import com.google.firebase.auth.FirebaseUser;
+//import com.google.firebase.database.*;
+//
+//import java.util.ArrayList;
+//import java.util.HashMap;
+//import java.util.List;
+//import java.util.Map;
+//
+//public class BarberUpdateInfoFragment extends Fragment {
+//
+//    private EditText editName, editPhone, editAddress;
+//    private Spinner spinnerStartHour, spinnerEndHour;
+//    private CheckBox checkMonday, checkTuesday, checkWednesday, checkThursday, checkFriday, checkSaturday, checkSunday;
+//    private Button saveButton;
+//    private DatabaseReference barberRef;
+//    private FirebaseUser currentUser;
+//
+//    public BarberUpdateInfoFragment() {}
+//
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        return inflater.inflate(R.layout.fragment_barber_update_info, container, false);
+//    }
+//
+//    @Override
+//    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//
+//        editName = view.findViewById(R.id.editName);
+//        editPhone = view.findViewById(R.id.editPhone);
+//        editAddress = view.findViewById(R.id.editAddress);
+//        spinnerStartHour = view.findViewById(R.id.spinner_time_start);
+//        spinnerEndHour = view.findViewById(R.id.spinner_time_end);
+//
+//        checkMonday = view.findViewById(R.id.checkMonday);
+//        checkTuesday = view.findViewById(R.id.checkTuesday);
+//        checkWednesday = view.findViewById(R.id.checkWednesday);
+//        checkThursday = view.findViewById(R.id.checkThursday);
+//        checkFriday = view.findViewById(R.id.checkFriday);
+//        checkSaturday = view.findViewById(R.id.checkSaturday);
+//        checkSunday = view.findViewById(R.id.checkSunday);
+//
+//        saveButton = view.findViewById(R.id.saveButton);
+//
+//        // רשימת שעות קבועות
+//        List<String> hours = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, hours);
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        spinnerStartHour.setAdapter(adapter);
+//        spinnerEndHour.setAdapter(adapter);
+//
+//        // טעינת הנתונים מה-Firebase
+//        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+//        if (currentUser != null) {
+//            String safeEmail = currentUser.getEmail().replace(".", "_");
+//            barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+//
+//            barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    editName.setText(snapshot.child("name").getValue(String.class));
+//                    editPhone.setText(snapshot.child("phoneNumber").getValue(String.class));
+//                    editAddress.setText(snapshot.child("shopAddress").getValue(String.class));
+//                    spinnerStartHour.setSelection(hours.indexOf(snapshot.child("startHour").getValue(String.class)));
+//                    spinnerEndHour.setSelection(hours.indexOf(snapshot.child("endHour").getValue(String.class)));
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {}
+//            });
+//        }
+//
+//        saveButton.setOnClickListener(v -> updateBarberInfo());
+//    }
+//
+//    private void updateBarberInfo() {
+//        barberRef.child("startHour").setValue(spinnerStartHour.getSelectedItem().toString());
+//        barberRef.child("endHour").setValue(spinnerEndHour.getSelectedItem().toString());
+//        Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
+//    }
+//}
