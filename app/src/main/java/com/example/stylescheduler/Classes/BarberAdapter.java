@@ -1,4 +1,7 @@
 package com.example.stylescheduler.Classes;
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -6,6 +9,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.R;
 import java.util.ArrayList;
@@ -49,7 +54,30 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
                 String name = barberList.get(holder.getAdapterPosition()).getName();
 
                 // Show a toast with the item name
-                Toast.makeText(v.getContext(), "Clicked on: " + name, Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "moving to: " + name+"'s booking page", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+//                NavController navController = Navigation.findNavController(holder.itemView);
+//                navController.navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+
+//                NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.nav_host_fragment);
+//                int currentFragmentId = navController.getCurrentDestination().getId();
+//                Log.d("NavigationDebug", "Current Fragment ID: " + currentFragmentId);
+//                navController.navigate(R.id.barberBookingFragment);
+
+
+
+//                NavController navController = Navigation.findNavController(holder.itemView);
+//                navController.navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+
+
+//                Navigation.findNavController(holder.itemView).navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+////                NavController navController = Navigation.findNavController((Activity) v.getContext(), R.id.clientnavgraph);
+////                navController.navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+//                Bundle bundle = new Bundle();
+//                bundle.putString("barberName", barber.getName());
+//                Navigation.findNavController(holder.itemView).navigate(R.id.action_barberListFragment_to_barberBookingFragment, bundle);
+
+
             }
         });
     }

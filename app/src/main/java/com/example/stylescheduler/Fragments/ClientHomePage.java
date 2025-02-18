@@ -5,6 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.material.tabs.TabLayout;
 import com.example.stylescheduler.R;
@@ -25,16 +27,17 @@ public class ClientHomePage extends Fragment {
         tabLayout = view.findViewById(R.id.tabLayout);
 
         // ברירת מחדל: הצגת רשימת הספרים
-        replaceFragment(new BarberListFragment());
+//        replaceFragment(new BarberListFragment());
 
         // האזנה ללחיצות על טאבים
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
                 if (tab.getPosition() == 0) {
-                    replaceFragment(new BarberListFragment()); // הצגת רשימת ספרים
+                    navController.navigate(R.id.barberListFragment); // Navigate properly
                 } else {
-                    replaceFragment(new BarberHomePage()); // הצגת רשימת תורים
+                    navController.navigate(R.id.clientAppointments); // Navigate properly
                 }
             }
 
@@ -45,15 +48,40 @@ public class ClientHomePage extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
+
+
+
+//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+//            @Override
+//            public void onTabSelected(TabLayout.Tab tab) {
+//                if (tab.getPosition() == 0) {
+//                    replaceFragment(new BarberListFragment()); // הצגת רשימת ספרים
+//                } else {
+//                    replaceFragment(new BarberHomePage()); // הצגת רשימת תורים
+//                }
+//            }
+//
+//            @Override
+//            public void onTabUnselected(TabLayout.Tab tab) {}
+//
+//            @Override
+//            public void onTabReselected(TabLayout.Tab tab) {}
+//        });
+
         return view;
     }
-
-    private void replaceFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getChildFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragmentContainerView, fragment);
-        transaction.commit();
+    private void navigateToFragment(int destinationId) {
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+        navController.navigate(destinationId);
     }
+
+
+//    private void replaceFragment(Fragment fragment) {
+//        FragmentManager fragmentManager = getChildFragmentManager();
+//        FragmentTransaction transaction = fragmentManager.beginTransaction();
+//        transaction.replace(R.id.nav_host_fragment, fragment);
+//        transaction.commit();
+//    }
 }
 
 
