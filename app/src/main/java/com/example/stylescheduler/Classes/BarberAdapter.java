@@ -52,7 +52,6 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
                 // Show a toast with the item name
                 Toast.makeText(v.getContext(), "Clicked on: " + name +"'s booking page", Toast.LENGTH_SHORT).show();
                 Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment);
-
             }
         });
     }
