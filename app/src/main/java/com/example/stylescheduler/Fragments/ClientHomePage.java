@@ -70,10 +70,10 @@ public class ClientHomePage extends Fragment {
 
         return view;
     }
-    private void navigateToFragment(int destinationId) {
-        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-        navController.navigate(destinationId);
-    }
+//    private void navigateToFragment(int destinationId) {
+//        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+//        navController.navigate(destinationId);
+//    }
 
 
 //    private void replaceFragment(Fragment fragment) {
