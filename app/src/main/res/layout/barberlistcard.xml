@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+
+
+        <!-- Barber Name + Phone Number in One Line -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:textSize="20sp"
+            android:gravity="center_vertical"
+            android:paddingTop="4dp">
+
+            <!-- Barber Name -->
+            <TextView
+                android:id="@+id/barber_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Barber Name"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black"/>
+
+            <!-- Phone Number -->
+            <TextView
+                android:id="@+id/barber_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📞 052-1234567"
+                android:textSize="16sp"
+                android:textColor="@android:color/holo_blue_dark"/>
+        </LinearLayout>
+
+        <!-- Address -->
+        <TextView
+            android:id="@+id/barber_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📍 Example St. 10, Tel Aviv"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="4dp"/>
+
+        <!-- Working Days + Hours -->
+        <TextView
+            android:id="@+id/barber_working_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🕒 Working Days: Mon - Fri | Hours: 09:00 - 18:00"
+            android:textSize="16sp"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="2dp"/>
+
+        <!-- Next Available Appointment -->
+        <TextView
+            android:id="@+id/barber_next_appointment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="📅 Next Available: 12/03/2024 15:00"
+            android:textSize="16sp"
+            android:textColor="@android:color/holo_blue_dark"
+            android:paddingTop="8dp"/>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
