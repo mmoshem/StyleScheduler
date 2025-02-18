@@ -6,6 +6,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.R;
 import java.util.ArrayList;
@@ -49,7 +50,9 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
                 String name = barberList.get(holder.getAdapterPosition()).getName();
 
                 // Show a toast with the item name
-                Toast.makeText(v.getContext(), "Clicked on: " + name, Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Clicked on: " + name +"'s booking page", Toast.LENGTH_SHORT).show();
+                Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+
             }
         });
     }
