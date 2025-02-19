@@ -53,14 +53,14 @@ public class BarberUpdateInfoFragment extends Fragment {
         checkFriday = view.findViewById(R.id.checkFriday);
         checkSaturday = view.findViewById(R.id.checkSaturday);
         checkSunday = view.findViewById(R.id.checkSunday);
-
+        //add from 6 to 22 hours
         List<String> hours = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, hours);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         spinnerStartHour.setAdapter(adapter);
         spinnerEndHour.setAdapter(adapter);
-
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
         if (currentUser != null) {
             String safeEmail = currentUser.getEmail().replace(".", "_");
             barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
@@ -82,15 +82,14 @@ public class BarberUpdateInfoFragment extends Fragment {
                         List<String> workingDays = new ArrayList<>();
                         Object workingDaysObj = snapshot.child("workingDays").getValue();
 
-                        if (workingDaysObj instanceof List) {
-                            // אם זה באמת רשימה, נמיר ישירות
+//                        if (workingDaysObj instanceof List) {
+//                            // אם זה באמת רשימה, נמיר ישירות
                             workingDays = (List<String>) workingDaysObj;
-                        } else if (workingDaysObj instanceof String) {
-                            // אם זה מחרוזת, נמיר לרשימה
-                            workingDays = new ArrayList<>(List.of(((String) workingDaysObj).split(", ")));
-                        }
+//                        } else if (workingDaysObj instanceof String) {
+//                            // אם זה מחרוזת, נמיר לרשימה
+//                            workingDays = new ArrayList<>(List.of(((String) workingDaysObj).split(", ")));
+//                        }
 
-                        // סימון הימים שנבחרו
                         checkMonday.setChecked(workingDays.contains("Monday"));
                         checkTuesday.setChecked(workingDays.contains("Tuesday"));
                         checkWednesday.setChecked(workingDays.contains("Wednesday"));
@@ -113,15 +112,9 @@ public class BarberUpdateInfoFragment extends Fragment {
     }
 
     private void updateBarberInfo() {
-        if (currentUser == null) {
-            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        String safeEmail = currentUser.getEmail().replace(".", "_");
-        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
 
         // קבלת הנתונים מהשדות
+
         String newName = editName.getText().toString().trim();
         String newPhone = editPhone.getText().toString().trim();
         String newAddress = editAddress.getText().toString().trim();
@@ -132,6 +125,14 @@ public class BarberUpdateInfoFragment extends Fragment {
             Toast.makeText(getContext(), "All fields must be filled", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (currentUser == null) {
+            Toast.makeText(getContext(), "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String safeEmail = currentUser.getEmail().replace(".", "_");
+        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
 
         // יצירת HashMap עם הנתונים לעדכון
         Map<String, Object> updates = new HashMap<>();
