@@ -16,34 +16,25 @@ public class Barber extends User {
         super();
     }
     // 📌 **הוספת חופשה - שימוש ב-Date במקום LocalDate**
-    public void addVacation(Date date) {
-        workSchedule.addVacationDay(date);
+    public String getName() { return this.name; }
+    public String getPhoneNumber() { return this.phoneNumber; }
+    public String getShopAddress() { return this.shopAddress; }
+
+    public String getWorkingDays() { return workSchedule.getWorkingDays(); }
+    public String getWorkingHours() { return workSchedule.getWorkingHours(); }
+
+
+    public void updateWorkSchedule(Set<Integer> days, String startHour, String endHour) {
+        workSchedule.setWorkingDays(days);
+        workSchedule.setWorkingHours(startHour, endHour);
     }
-    public String getName(){
-        return this.name;
-    }
+
     public String getRole(){
         return this.role;
     }
 
     public String getEmail(){
         return this.email;
-    }
-
-    public String getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public String getShopAddress() {
-        return this.shopAddress;
-    }
-
-    public String getWorkingDays() {
-        return workSchedule.getWorkingDays(); // נקבל את הימים שהספר עובד
-    }
-
-    public String getWorkingHours() {
-        return workSchedule.getWorkingHours(); // נקבל את שעות העבודה
     }
 
     // 📌 **הוספת תור חדש**

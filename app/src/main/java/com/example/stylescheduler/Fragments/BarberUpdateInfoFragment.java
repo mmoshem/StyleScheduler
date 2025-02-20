@@ -15,9 +15,12 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BarberUpdateInfoFragment extends Fragment {
 
@@ -142,7 +145,7 @@ public class BarberUpdateInfoFragment extends Fragment {
         updates.put("startHour", selectedStartHour);
         updates.put("endHour", selectedEndHour);
 
-        List<String> selectedDays = getSelectedDays();
+        Set<Integer> selectedDays = getSelectedDays();
         updates.put("workingDays", selectedDays);
 
         // עדכון הנתונים בפיירבייס
@@ -155,16 +158,16 @@ public class BarberUpdateInfoFragment extends Fragment {
     }
 
 
-    private List<String> getSelectedDays() {
-        List<String> days = new ArrayList<>();
-        if (checkMonday.isChecked()) days.add("Monday");
-        if (checkTuesday.isChecked()) days.add("Tuesday");
-        if (checkWednesday.isChecked()) days.add("Wednesday");
-        if (checkThursday.isChecked()) days.add("Thursday");
-        if (checkFriday.isChecked()) days.add("Friday");
-        if (checkSaturday.isChecked()) days.add("Saturday");
-        if (checkSunday.isChecked()) days.add("Sunday");
-        return days;
+    private Set<Integer> getSelectedDays() {
+        Set<Integer> selectedDays = new HashSet<>();
+        if (checkMonday.isChecked()) selectedDays.add(Calendar.MONDAY);
+        if (checkTuesday.isChecked()) selectedDays.add(Calendar.TUESDAY);
+        if (checkWednesday.isChecked()) selectedDays.add(Calendar.WEDNESDAY);
+        if (checkThursday.isChecked()) selectedDays.add(Calendar.THURSDAY);
+        if (checkFriday.isChecked()) selectedDays.add(Calendar.FRIDAY);
+        if (checkSaturday.isChecked()) selectedDays.add(Calendar.SATURDAY);
+        if (checkSunday.isChecked()) selectedDays.add(Calendar.SUNDAY);
+        return selectedDays;
     }
 }
 

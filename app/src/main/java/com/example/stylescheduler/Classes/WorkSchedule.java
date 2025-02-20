@@ -3,72 +3,55 @@ package com.example.stylescheduler.Classes;
 import java.util.*;
 
 public class WorkSchedule {
-    private Map<Integer, ArrayList<Integer>> workingHours; // שעות עבודה לכל יום (Sunday = 1, Monday = 2, ...)
-    private Set<Date> vacationDays; // ימים חופשיים
-    private ArrayList<Appointment> bookedAppointments; // רשימת תורים קיימים
+    private Set<Integer> workingDays; // Store working days as a set of integers (Sunday = 1, Monday = 2, etc.)
+    private String startHour;
+    private String endHour;
+    private Set<Date> vacationDays; // Days off
+    private ArrayList<Appointment> bookedAppointments; // Existing appointments
 
     public WorkSchedule() {
-        this.workingHours = new HashMap<>();
+        this.workingDays = new HashSet<>();
+        this.startHour = "Not Set";
+        this.endHour = "Not Set";
         this.vacationDays = new HashSet<>();
         this.bookedAppointments = new ArrayList<>();
     }
 
-    // 📌 **הגדרת שעות עבודה (משתמש ב-Calendar במקום LocalDate)**
-    public void setWorkingHours(int day, ArrayList<Integer> hours) {
-        workingHours.put(day, hours);
+    // 📌 **Set working days**
+    public void setWorkingDays(Set<Integer> days) {
+        this.workingDays = days;
     }
 
-    // 📌 **איפוס שעות עבודה (לא מוחק תורים)**
-    public void clearWorkingHours() {
-        workingHours.clear();
+    // 📌 **Set working hours for all selected days**
+    public void setWorkingHours(String startHour, String endHour) {
+        this.startHour = startHour;
+        this.endHour = endHour;
     }
 
-    // 📌 **הוספת יום חופש**
-    public void addVacationDay(Date date) {
-        vacationDays.add(date);
+    // 📌 **Clear work schedule**
+    public void clearSchedule() {
+        workingDays.clear();
+        startHour = "Not Set";
+        endHour = "Not Set";
     }
 
-    // 📌 **הוספת תור חדש למערכת**
-    public void addAppointment(Appointment appointment) {
-        bookedAppointments.add(appointment);
-    }
-
-    // 📌 **מחיקת תור (למשל אם ספר חולה)**
-    public void cancelAppointment(Appointment appointment) {
-        bookedAppointments.remove(appointment);
-    }
-
-    // 📌 **קבלת רשימת תורים קיימים**
-    public ArrayList<Appointment> getBookedAppointments() {
-        return new ArrayList<>(bookedAppointments);
-    }
-
-    // 📌 **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
-    private int getDayOfWeekFromDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK); // 1 = Sunday, 2 = Monday, ..., 7 = Saturday
-    }
+    // 📌 **Retrieve working days as a formatted string**
     public String getWorkingDays() {
-        if (workingHours.isEmpty()) return "Not Set";
+        if (workingDays.isEmpty()) return "Not Set";
         StringBuilder days = new StringBuilder();
-        for (Integer day : workingHours.keySet()) {
+        for (Integer day : workingDays) {
             days.append(getDayName(day)).append(", ");
         }
-        return days.substring(0, days.length() - 2); // להסיר פסיק אחרון
+        return days.substring(0, days.length() - 2);
     }
 
-    // 📌 **הוספת פונקציה לקבלת שעות עבודה**
+    // 📌 **Retrieve working hours as a formatted string**
     public String getWorkingHours() {
-        if (workingHours.isEmpty()) return "Not Set";
-        StringBuilder hours = new StringBuilder();
-        for (Integer day : workingHours.keySet()) {
-            hours.append(getDayName(day)).append(": ").append(workingHours.get(day)).append("\n");
-        }
-        return hours.toString();
+        if (startHour.equals("Not Set") || endHour.equals("Not Set")) return "Not Set";
+        return startHour + " - " + endHour;
     }
 
-    // 📌 **המרת מספרי ימים לשמות ימים**
+    // 📌 **Convert numeric day to text**
     private String getDayName(int day) {
         switch (day) {
             case Calendar.SUNDAY: return "Sunday";
@@ -80,26 +63,5 @@ public class WorkSchedule {
             case Calendar.SATURDAY: return "Saturday";
             default: return "Unknown";
         }
-    }
-    // 📌 **קבלת רשימת זמנים פנויים לשבועיים הקרובים**
-    public ArrayList<Date> getAvailableTimeSlots(Date startDate, int daysRange) {
-        ArrayList<Date> availableSlots = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-
-        for (int i = 0; i < daysRange; i++) {
-            if (!vacationDays.contains(calendar.getTime())) { // בדיקה שהיום לא יום חופש
-                int dayOfWeek = getDayOfWeekFromDate(calendar.getTime()); // שימוש ב-Calendar
-                if (workingHours.containsKey(dayOfWeek)) {
-                    for (int hour : workingHours.get(dayOfWeek)) {
-                        Calendar slotCalendar = (Calendar) calendar.clone();
-                        slotCalendar.set(Calendar.HOUR_OF_DAY, hour);
-                        availableSlots.add(slotCalendar.getTime());
-                    }
-                }
-            }
-            calendar.add(Calendar.DAY_OF_MONTH, 1); // במקום plusDays()
-        }
-        return availableSlots;
     }
 }

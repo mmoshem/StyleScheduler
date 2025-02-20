@@ -20,13 +20,15 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        TextView barberName, barberPhone, barberAddress;
+        TextView barberName, barberPhone, barberAddress,barberWorkingDays,barberWorkingHours;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             barberName = itemView.findViewById(R.id.barber_name);
             barberPhone = itemView.findViewById(R.id.barber_phone);
             barberAddress = itemView.findViewById(R.id.barber_address);
+            barberWorkingDays = itemView.findViewById(R.id.barber_working_days);
+            barberWorkingHours = itemView.findViewById(R.id.barber_working_hours);
         }
     }
 
@@ -43,6 +45,8 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
         holder.barberName.setText(barber.getName());
         holder.barberPhone.setText("📞 " + barber.getPhoneNumber());
         holder.barberAddress.setText("📍 " + barber.getShopAddress());
+        holder.barberWorkingDays.setText("📅 " + barber.getWorkingDays());
+        holder.barberWorkingHours.setText("🕒 " + barber.getWorkingHours());
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
