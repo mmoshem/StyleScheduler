@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
@@ -23,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -70,6 +73,10 @@ public class BarberBookingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_barber_booking, container, false);
+        CalendarView calendarView = view.findViewById(R.id.calendarView);
+        calendarView.setMinDate(System.currentTimeMillis()); // Disable past dates
+        calendarView.setMaxDate(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 14));//count of milliseconds in 14 days
+
         TextView tvName = view.findViewById(R.id.textViewBarberName);
         TextView tvAddress = view.findViewById(R.id.textViewBarberAddress);
 
@@ -98,6 +105,28 @@ public class BarberBookingFragment extends Fragment {
                             Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
                             tvName.setText(barber.getName());
                             tvAddress.setText(barber.getShopAddress());
+
+                            calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                                @Override
+                                public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                                    Calendar calendar = Calendar.getInstance();
+                                    long today = calendar.getTimeInMillis();
+                                    Calendar selectedDate = Calendar.getInstance();
+                                    selectedDate.set(year, month, dayOfMonth);
+                                    int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK); // Get the day number (1=Sunday, 2=Monday, etc.)
+//                                    if (!barber.getWorkingDays().contains(selectedDayOfWeek)) {
+//                                        // ❌ Prevent selection by resetting to the previous valid date
+//
+//                                        calendarView.setDate(today, true, true);
+//                                        Toast.makeText(getContext(), "❌ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
+//                                    }
+                                    // Month is 0-based (January = 0, February = 1, ...)
+//                                    String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
+
+                                    // Show the selected date in a Toast message
+//                                    Toast.makeText(getApplicationContext(), "Selected Date: " + selectedDate, Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                         }
                     }
