@@ -6,7 +6,7 @@ import java.util.Date;
 class AppointmentSystem {
     private ArrayList<Appointment> appointments;
     private int appointmentIDCounter;
-
+    private WorkSchedule workSchedule;
 
     public AppointmentSystem() {
         this.appointments = new ArrayList<>();
