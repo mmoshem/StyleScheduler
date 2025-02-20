@@ -15,6 +15,7 @@ public class Barber extends User {
         this.workSchedule = new WorkSchedule();
     }
 
+
     public Barber() {
         super();
         this.workSchedule = new WorkSchedule();
@@ -43,7 +44,12 @@ public class Barber extends User {
     public String getRole(){
         return this.role;
     }
-
+    public int getDayOfWeekFromDate(Date date){
+        return workSchedule.getDayOfWeekFromDate(date);
+    }
+   public String getDayName(int day){
+        return workSchedule.getDayName(day);
+    }
 
     // 📌 **הוספת תור חדש**
     public void bookAppointment(Appointment appointment) {
@@ -57,6 +63,8 @@ public class Barber extends User {
         }
         return null; // אם אין תורים פנויים
     }
+
+
 
     // 📌 **ביטול תור (למשל, אם הספר חולה)**
     public void cancelAppointment(Appointment appointment) {
@@ -93,14 +101,6 @@ public class Barber extends User {
         workSchedule.setWorkingHours(startHour, endHour);
     }
 
-
-
-    // 📌 **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
-    public int getDayOfWeekFromDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK); // 1 = Sunday, 2 = Monday, ..., 7 = Saturday
-    }
 
     // 📌 **צפייה בכל התורים שנקבעו לספר**
     public void viewScheduledAppointments() {
