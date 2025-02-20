@@ -20,7 +20,7 @@
             android:id="@+id/textViewBarberName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Barber Name"
+            android:text=""
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/black"/>

@@ -40,9 +40,6 @@ public class Barber extends User {
         return this.role;
     }
 
-    public String getEmail(){
-        return this.email;
-    }
 
     // 📌 **הוספת תור חדש**
     public void bookAppointment(Appointment appointment) {

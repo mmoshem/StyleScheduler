@@ -1,4 +1,5 @@
 package com.example.stylescheduler.Classes;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -61,17 +62,35 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
         // ✅ Set formatted working days text
         holder.barberWorkingDays.setText(TextUtils.join(", ", workingDaysNames));
 
+//        holder.itemView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                // Fetch the name of the clicked item
+////                String name = barberList.get(holder.getAdapterPosition()).getName();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("barberEmail", barber.getEmail()); // ✅ שולחים את ה-Email
+//                // Show a toast with the item name
+////                Toast.makeText(v.getContext(), "Clicked on: " + name +"'s booking page", Toast.LENGTH_SHORT).show();
+//                Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment, bundle);
+//            }
+//        });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Fetch the name of the clicked item
-                String name = barberList.get(holder.getAdapterPosition()).getName();
+                String email = barber.getEmail();
+                Log.d("BarberAdapter", "Clicked barber email: " + email); // ✅ Debug before checking null
 
-                // Show a toast with the item name
-                Toast.makeText(v.getContext(), "Clicked on: " + name +"'s booking page", Toast.LENGTH_SHORT).show();
-                Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment);
+                if (email == null) {
+                    Log.e("BarberAdapter", "Error: Barber email is NULL! Continuing navigation anyway...");
+                    email = "default_email@example.com"; // 👀 Avoid null issues
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putString("barberEmail", email); // ✅ Send email
+                Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment, bundle);
             }
         });
+
     }
 
     @Override

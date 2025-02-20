@@ -2,13 +2,28 @@ package com.example.stylescheduler.Fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,8 +38,8 @@ public class BarberBookingFragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private DatabaseReference barberRef;
+    private FirebaseUser currentUser;
 
     public BarberBookingFragment() {
         // Required empty public constructor
@@ -51,16 +66,51 @@ public class BarberBookingFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_barber_booking, container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_barber_booking, container, false);
+        TextView textView = view.findViewById(R.id.textViewBarberName);
+
+        if (getArguments() != null) {
+            String barberEmail = getArguments().getString("barberEmail");
+            Log.d("BarberBookingFragment", "Received barberEmail: " + barberEmail);
+
+            if (barberEmail != null) {
+                String safeEmail = barberEmail.replace(".", "_");
+                Log.d("BarberBookingFragment", "Safe email for Firebase: " + safeEmail);
+
+                DatabaseReference barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+                barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        Log.d("BarberBookingFragment", "Snapshot received: " + snapshot.getValue());
+
+                        if (!snapshot.exists()) {
+                            Log.e("BarberBookingFragment", "No barber found for email: " + safeEmail);
+                            return;
+                        }
+
+                        Barber barber = snapshot.getValue(Barber.class);
+                        if (barber != null) {
+                            Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
+                            textView.setText(barber.getName());
+                        } else {
+                            Log.e("BarberBookingFragment", "Barber object is null");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("BarberBookingFragment", "Error reading barber data", error.toException());
+                    }
+                });
+            } else {
+                Log.e("BarberBookingFragment", "barberEmail is null in Bundle");
+            }
+        } else {
+            Log.e("BarberBookingFragment", "getArguments() returned null");
+        }
+        return view;
     }
 }

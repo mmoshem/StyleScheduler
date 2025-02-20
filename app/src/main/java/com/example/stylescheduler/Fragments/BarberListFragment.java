@@ -54,6 +54,7 @@ public class BarberListFragment extends Fragment {
                         barber.setName((String) barberData.get("name"));
                         barber.setPhoneNumber((String) barberData.get("phoneNumber"));
                         barber.setShopAddress((String) barberData.get("shopAddress"));
+                        barber.setEmail((String) barberData.get("email"));
                         if (barber.getWorkSchedule() == null) {
                             barber.setWorkSchedule(new WorkSchedule()); // Initialize if null
                         }
@@ -80,6 +81,8 @@ public class BarberListFragment extends Fragment {
 
                         barber.getWorkSchedule().setWorkingDays(new ArrayList<>(convertedDays)); // ✅ Convert List to ArrayList
                         Log.d("BarberListFragment", "Barber schedule set: " + barber.getWorkSchedule().getWorkingDays());
+                        Log.d("Barberemail", "email:" + barber.getEmail());
+
                         barberList.add(barber);
                     }
                 }

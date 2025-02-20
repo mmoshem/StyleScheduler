@@ -5,6 +5,15 @@ import java.util.SplittableRandom;
 abstract class User {
     protected String userID;
     protected String name;
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
     protected String email;
     protected String password;
 
