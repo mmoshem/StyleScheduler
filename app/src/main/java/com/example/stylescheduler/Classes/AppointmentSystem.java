@@ -39,9 +39,11 @@ class AppointmentSystem {
         int dayOfWeek = barber.getWorkSchedule().getDayOfWeekFromDate(time);
         String dayName = barber.getWorkSchedule().getDayName(dayOfWeek); // Convert to String
 
+        String startHour = barber.getWorkingHours().get(0);
+        String endHour = barber.getWorkingHours().get(1);
 
-        String startHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[0];
-        String endHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[1];
+//        String startHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[0];
+//        String endHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[1];
 
         try {
             Date startTime = barber.getWorkSchedule().parseTime(time, startHour);
