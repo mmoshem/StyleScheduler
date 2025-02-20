@@ -40,7 +40,9 @@ public class Barber extends User {
         workSchedule.setWorkingDays(new ArrayList<>(days));
         workSchedule.setWorkingHours(startHour, endHour);
     }
-
+    public int getDayNumber(String day) {
+        return workSchedule.getDayNumber(day);
+    }
     public String getRole(){
         return this.role;
     }

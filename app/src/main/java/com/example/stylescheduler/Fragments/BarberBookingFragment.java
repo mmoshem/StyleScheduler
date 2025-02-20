@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.stylescheduler.Classes.Barber;
+import com.example.stylescheduler.Classes.WorkSchedule;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,14 +99,36 @@ public class BarberBookingFragment extends Fragment {
                             Log.e("BarberBookingFragment", "No barber found for email: " + safeEmail);
                             return;
                         }
+                        Map<String, Object> barberData = (Map<String, Object>) snapshot.getValue();
+                        Barber barber = new Barber();
+                        List<Integer> convertedDays = new ArrayList<>();
+                        if (barberData != null) {
+                            barber.setName((String) barberData.get("name"));
+                            barber.setShopAddress((String) barberData.get("shopAddress"));
+                            Object workingDaysObj = barberData.get("workingDays");
 
-                        Barber barber = snapshot.getValue(Barber.class);
-                        if (barber == null) {
-                            Log.e("BarberBookingFragment", "Barber object is null");
-                        } else {
-                            Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
+
+                            if (workingDaysObj instanceof List) {
+                                // Convert List<String> to List<Integer>
+                                for (Object day : (List<?>) workingDaysObj) {
+                                    if (day instanceof String) {
+                                        convertedDays.add(barber.getDayNumber(day.toString()));
+                                    }
+                                }
+                                Log.d("BarberListFragment", "Converted working days: " + convertedDays);
+//                            List<String> s =barber.getWorkSchedule().getWorkingDays(convertedDays);
+
+//                            Log.d(s.toString(), "onDataChange: ");
+                            }
+                            if (barber.getWorkSchedule() == null) {
+                                barber.setWorkSchedule(new WorkSchedule()); // Initialize if null
+                            }
                             tvName.setText(barber.getName());
                             tvAddress.setText(barber.getShopAddress());
+
+                        }
+                            Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
+
 
                             calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
                                 @Override
@@ -114,12 +138,21 @@ public class BarberBookingFragment extends Fragment {
                                     Calendar selectedDate = Calendar.getInstance();
                                     selectedDate.set(year, month, dayOfMonth);
                                     int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK); // Get the day number (1=Sunday, 2=Monday, etc.)
-//                                    if (!barber.getWorkingDays().contains(selectedDayOfWeek)) {
-//                                        // ❌ Prevent selection by resetting to the previous valid date
-//
-//                                        calendarView.setDate(today, true, true);
-//                                        Toast.makeText(getContext(), "❌ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
-//                                    }
+                                    Log.d("BarberBookingFragment", "Selected day of week: " + barber.getDayName(selectedDayOfWeek));
+                                    Log.d("BarberBookingFragment", "barber days: " + barber.getWorkingDays());
+
+                                    if (convertedDays.contains(selectedDayOfWeek)) {
+                                        // ✅ Allow selection
+                                        Toast.makeText(getContext(), "✅ Barber works on this day!", Toast.LENGTH_SHORT).show();
+
+
+                                    }
+                                    else {
+                                        // ❌ Prevent selection by resetting to the previous valid date
+                                        calendarView.setDate(today, true, true);
+                                        Toast.makeText(getContext(), "❌ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
+                                    }
+
                                     // Month is 0-based (January = 0, February = 1, ...)
 //                                    String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
 
@@ -129,7 +162,7 @@ public class BarberBookingFragment extends Fragment {
                             });
 
                         }
-                    }
+
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
