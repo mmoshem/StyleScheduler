@@ -7,6 +7,11 @@ abstract class User {
     protected String name;
     protected String email;
     protected String password;
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     protected String role;  // "barber" or "customer"
     protected String phoneNumber;
 

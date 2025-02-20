@@ -6,7 +6,6 @@ import java.util.Date;
 class AppointmentSystem {
     private ArrayList<Appointment> appointments;
     private int appointmentIDCounter;
-    private WorkSchedule workSchedule;
 
     public AppointmentSystem() {
         this.appointments = new ArrayList<>();
@@ -35,17 +34,38 @@ class AppointmentSystem {
         return true;
     }
 
-    // 📌 **הוספת תור אם התור פנוי - שימוש ב-Date**
     public void bookAppointment(Customer customer, Barber barber, String serviceType, Date time) {
+        // 📌 Ensure the appointment time is within the barber's working schedule
+        int dayOfWeek = barber.getWorkSchedule().getDayOfWeekFromDate(time);
+        String dayName = barber.getWorkSchedule().getDayName(dayOfWeek); // Convert to String
+
+
+        String startHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[0];
+        String endHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[1];
+
+        try {
+            Date startTime = barber.getWorkSchedule().parseTime(time, startHour);
+            Date endTime = barber.getWorkSchedule().parseTime(time, endHour);
+
+            if (time.before(startTime) || time.after(endTime)) {
+                System.out.println("❌ Cannot book: Outside of working hours.");
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (!isSlotAvailable(barber, time)) {
-            System.out.println("This slot is already booked!");
+            System.out.println("❌ This slot is already booked!");
             return;
         }
+
         Appointment newAppointment = new Appointment(generateAppointmentID(), customer, barber, serviceType, time);
         appointments.add(newAppointment);
         barber.bookAppointment(newAppointment);
         customer.addAppointment(newAppointment);
     }
+
 
     // 📌 **תצוגת תורים של הספר - שימוש ב-Date**
     public void displayAppointmentsForBarber(Barber barber) {

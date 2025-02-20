@@ -6,6 +6,9 @@ public class Barber extends User {
     private String shopAddress;
     private WorkSchedule workSchedule;
 
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
+    }
     public Barber(String userID, String name, String email, String password,String shopAddress,String phoneNumber) {
         super(userID, name, email, password, "barber",phoneNumber);
         this.shopAddress = shopAddress;
@@ -14,18 +17,22 @@ public class Barber extends User {
 
     public Barber() {
         super();
+        this.workSchedule = new WorkSchedule();
     }
     // 📌 **הוספת חופשה - שימוש ב-Date במקום LocalDate**
     public String getName() { return this.name; }
     public String getPhoneNumber() { return this.phoneNumber; }
     public String getShopAddress() { return this.shopAddress; }
 
-    public String getWorkingDays() { return workSchedule.getWorkingDays(); }
+    public String getWorkingDays() { return workSchedule.getWorkingDaysString(); }
     public String getWorkingHours() { return workSchedule.getWorkingHours(); }
 
+    public void setWorkSchedule(WorkSchedule workSchedule) {
+        this.workSchedule = workSchedule;
+    }
 
-    public void updateWorkSchedule(Set<Integer> days, String startHour, String endHour) {
-        workSchedule.setWorkingDays(days);
+    public void updateWorkSchedule(List<Integer> days, String startHour, String endHour) {
+        workSchedule.setWorkingDays(new ArrayList<>(days));
         workSchedule.setWorkingHours(startHour, endHour);
     }
 
@@ -55,31 +62,37 @@ public class Barber extends User {
         workSchedule.cancelAppointment(appointment);
     }
 
-    // 📌 **עדכון ימי ושעות עבודה מבלי לפגוע בתורים קיימים (תיקון ל-API 24)**
-    public void updateWorkingDaysAndHours(ArrayList<Integer> newWorkingDays, ArrayList<Integer> workHours) {
-        // קבלת כל התורים הקיימים כדי לוודא שהם לא נמחקים
-        Set<Integer> daysWithAppointments = new HashSet<>();
+    public void setShopAddress(String shopAddress) {
+        this.shopAddress = shopAddress;
+    }
+
+    public void updateWorkingDaysAndHours(List<Integer> newWorkingDays, String startHour, String endHour) {
+        List<Integer> daysWithAppointments = new ArrayList<>();
 
         for (Appointment appointment : workSchedule.getBookedAppointments()) {
-            Date appointmentTime = appointment.getAppointmentDate();
-            if (appointmentTime != null) {
-                int dayOfWeek = getDayOfWeekFromDate(appointmentTime); // שימוש בפונקציה חדשה עם Calendar
-                daysWithAppointments.add(dayOfWeek);
+            int dayOfWeek = getDayOfWeekFromDate(appointment.getAppointmentDate());
+            daysWithAppointments.add(dayOfWeek);
+        }
+
+        // Clear the previous work schedule
+        workSchedule.clearSchedule();
+
+        // Keep old schedule for days with existing appointments
+        List<Integer> updatedDays = new ArrayList<>();
+        for (int day : newWorkingDays) {
+            if (daysWithAppointments.contains(day)) {
+                updatedDays.add(day);
+                System.out.println("⚠️ Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
             } else {
-                System.out.println("⚠️ Warning: Found an appointment with null time!");
+                updatedDays.add(day);
             }
         }
 
-        // מחיקת שעות ישנות והוספת שעות עבודה חדשות
-        workSchedule.clearWorkingHours();
-        for (int day : newWorkingDays) {
-            if (daysWithAppointments.contains(day)) {
-                System.out.println("⚠️ Warning: You have existing appointments on day " + day + ". Keeping old schedule for this day.");
-                continue; // לא מעדכן ימים שיש בהם תורים
-            }
-            workSchedule.setWorkingHours(day, workHours);
-        }
+        workSchedule.setWorkingDays(new ArrayList<>(updatedDays)); // Now using List<Integer>
+        workSchedule.setWorkingHours(startHour, endHour);
     }
+
+
 
     // 📌 **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
     public int getDayOfWeekFromDate(Date date) {

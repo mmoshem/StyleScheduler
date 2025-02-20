@@ -6,16 +6,20 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.Classes.BarberAdapter;
+import com.example.stylescheduler.Classes.WorkSchedule;
 import com.example.stylescheduler.R;
 import com.google.firebase.database.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class BarberListFragment extends Fragment {
 
@@ -44,8 +48,38 @@ public class BarberListFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 barberList.clear();
                 for (DataSnapshot barberSnapshot : snapshot.getChildren()) {
-                    Barber barber = barberSnapshot.getValue(Barber.class);
-                    if (barber != null) {
+                    Map<String, Object> barberData = (Map<String, Object>) barberSnapshot.getValue();
+                    if (barberData != null) {
+                        Barber barber = new Barber();
+                        barber.setName((String) barberData.get("name"));
+                        barber.setPhoneNumber((String) barberData.get("phoneNumber"));
+                        barber.setShopAddress((String) barberData.get("shopAddress"));
+                        if (barber.getWorkSchedule() == null) {
+                            barber.setWorkSchedule(new WorkSchedule()); // Initialize if null
+                        }
+
+
+                        barber.getWorkSchedule().setStartHour((String) barberData.get("startHour"));
+                        barber.getWorkSchedule().setEndHour((String) barberData.get("endHour"));
+
+                        Object workingDaysObj = barberData.get("workingDays");
+                        List<Integer> convertedDays = new ArrayList<>();
+
+                        if (workingDaysObj instanceof List) {
+                            // Convert List<String> to List<Integer>
+                            for (Object day : (List<?>) workingDaysObj) {
+                                if (day instanceof String) {
+                                    convertedDays.add(barber.getWorkSchedule().getDayNumber(day.toString()));
+                                }
+                            }
+                            Log.d("BarberListFragment", "Converted working days: " + convertedDays);
+//                            List<String> s =barber.getWorkSchedule().getWorkingDays(convertedDays);
+
+//                            Log.d(s.toString(), "onDataChange: ");
+                        }
+
+                        barber.getWorkSchedule().setWorkingDays(new ArrayList<>(convertedDays)); // ✅ Convert List to ArrayList
+                        Log.d("BarberListFragment", "Barber schedule set: " + barber.getWorkSchedule().getWorkingDays());
                         barberList.add(barber);
                     }
                 }

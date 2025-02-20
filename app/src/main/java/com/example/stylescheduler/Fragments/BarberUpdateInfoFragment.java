@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.example.stylescheduler.Classes.WorkSchedule;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -85,13 +87,13 @@ public class BarberUpdateInfoFragment extends Fragment {
                         List<String> workingDays = new ArrayList<>();
                         Object workingDaysObj = snapshot.child("workingDays").getValue();
 
-//                        if (workingDaysObj instanceof List) {
+                        if (workingDaysObj instanceof List) {
 //                            // אם זה באמת רשימה, נמיר ישירות
                             workingDays = (List<String>) workingDaysObj;
-//                        } else if (workingDaysObj instanceof String) {
-//                            // אם זה מחרוזת, נמיר לרשימה
-//                            workingDays = new ArrayList<>(List.of(((String) workingDaysObj).split(", ")));
-//                        }
+                        } else if (workingDaysObj instanceof String) {
+                            // אם זה מחרוזת, נמיר לרשימה
+                            workingDays = new ArrayList<>(List.of(((String) workingDaysObj).split(", ")));
+                        }
 
                         checkMonday.setChecked(workingDays.contains("Monday"));
                         checkTuesday.setChecked(workingDays.contains("Tuesday"));
@@ -146,7 +148,12 @@ public class BarberUpdateInfoFragment extends Fragment {
         updates.put("endHour", selectedEndHour);
 
         Set<Integer> selectedDays = getSelectedDays();
-        updates.put("workingDays", selectedDays);
+        List<String> workingDaysStringList = new ArrayList<>();
+        WorkSchedule workSchedule = new WorkSchedule();
+        for (Integer day : selectedDays) {
+            workingDaysStringList.add(workSchedule.getDayName(day)); // ✅ Convert Integer to String
+        }
+        updates.put("workingDays", workingDaysStringList);
 
         // עדכון הנתונים בפיירבייס
         barberRef.updateChildren(updates).addOnSuccessListener(aVoid -> {

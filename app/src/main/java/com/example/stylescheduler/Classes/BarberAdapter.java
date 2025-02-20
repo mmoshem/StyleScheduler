@@ -1,4 +1,6 @@
 package com.example.stylescheduler.Classes;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.R;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHolder> {
 
@@ -45,8 +48,19 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
         holder.barberName.setText(barber.getName());
         holder.barberPhone.setText("📞 " + barber.getPhoneNumber());
         holder.barberAddress.setText("📍 " + barber.getShopAddress());
-        holder.barberWorkingDays.setText("📅 " + barber.getWorkingDays());
         holder.barberWorkingHours.setText("🕒 " + barber.getWorkingHours());
+        List<Integer> workingDaysNumbers = barber.getWorkSchedule().getWorkingDays();
+        Log.d("BarberAdapter", "Retrieved working days: " + workingDaysNumbers);
+        WorkSchedule workSchedule = new WorkSchedule();
+        List<String> workingDaysNames = new ArrayList<>();
+
+        for (Integer day : workingDaysNumbers) {
+            workingDaysNames.add(workSchedule.getDayName(day)); // Convert Integer to String
+        }
+        Log.d("BarberAdapter", "Working days: " + workingDaysNames);
+        // ✅ Set formatted working days text
+        holder.barberWorkingDays.setText(TextUtils.join(", ", workingDaysNames));
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
