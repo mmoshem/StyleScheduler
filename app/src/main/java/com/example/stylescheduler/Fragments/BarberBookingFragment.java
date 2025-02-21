@@ -70,8 +70,8 @@ public class BarberBookingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_barber_booking, container, false);
-        TextView textView = view.findViewById(R.id.textViewBarberName);
-
+        TextView tvName = view.findViewById(R.id.textViewBarberName);
+        TextView tvAddress = view.findViewById(R.id.textViewBarberAddress);
         if (getArguments() != null) {
             String barberEmail = getArguments().getString("barberEmail");
             Log.d("BarberBookingFragment", "Received barberEmail: " + barberEmail);
@@ -80,7 +80,7 @@ public class BarberBookingFragment extends Fragment {
                 String safeEmail = barberEmail.replace(".", "_");
                 Log.d("BarberBookingFragment", "Safe email for Firebase: " + safeEmail);
 
-                DatabaseReference barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+                barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
                 barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -92,11 +92,12 @@ public class BarberBookingFragment extends Fragment {
                         }
 
                         Barber barber = snapshot.getValue(Barber.class);
-                        if (barber != null) {
-                            Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
-                            textView.setText(barber.getName());
-                        } else {
+                        if (barber == null) {
                             Log.e("BarberBookingFragment", "Barber object is null");
+                        } else {
+                            Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
+                            tvName.setText(barber.getName());
+                            tvAddress.setText(barber.getShopAddress());
                         }
                     }
 

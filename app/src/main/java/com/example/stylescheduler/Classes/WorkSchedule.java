@@ -150,6 +150,14 @@ public class WorkSchedule {
         }
         return startHour + " - " + endHour;
     }
+
+    public List<String> getWorkingHoursAsList() {
+        if (startHour == null || endHour == null || startHour.equals("Not Set") || endHour.equals("Not Set")) {
+            return new ArrayList<>();
+        }
+        return Arrays.asList(startHour, endHour);
+    }
+
     public ArrayList<Date> getAvailableTimeSlots(Date startDate, int daysRange) {
         ArrayList<Date> availableSlots = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();

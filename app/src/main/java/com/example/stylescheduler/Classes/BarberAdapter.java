@@ -49,7 +49,7 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
         holder.barberName.setText(barber.getName());
         holder.barberPhone.setText("📞 " + barber.getPhoneNumber());
         holder.barberAddress.setText("📍 " + barber.getShopAddress());
-        holder.barberWorkingHours.setText("🕒 " + barber.getWorkingHours());
+        holder.barberWorkingHours.setText("🕒 " + barber.getAStringOfWorkingHours());
         List<Integer> workingDaysNumbers = barber.getWorkSchedule().getWorkingDays();
         Log.d("BarberAdapter", "Retrieved working days: " + workingDaysNumbers);
         WorkSchedule workSchedule = new WorkSchedule();
