@@ -75,12 +75,15 @@ public class BarberBookingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_barber_booking, container, false);
+
+
         CalendarView calendarView = view.findViewById(R.id.calendarView);
         calendarView.setMinDate(System.currentTimeMillis()); // Disable past dates
         calendarView.setMaxDate(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 14));//count of milliseconds in 14 days
 
         TextView tvName = view.findViewById(R.id.textViewBarberName);
         TextView tvAddress = view.findViewById(R.id.textViewBarberAddress);
+
 
         if (getArguments() != null) {
             String barberEmail = getArguments().getString("barberEmail");
@@ -126,6 +129,7 @@ public class BarberBookingFragment extends Fragment {
                             tvName.setText(barber.getName());
                             tvAddress.setText(barber.getShopAddress());
 
+
                         }
                             Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
 
@@ -160,6 +164,7 @@ public class BarberBookingFragment extends Fragment {
 //                                    Toast.makeText(getApplicationContext(), "Selected Date: " + selectedDate, Toast.LENGTH_SHORT).show();
                                 }
                             });
+
 
                         }
 
