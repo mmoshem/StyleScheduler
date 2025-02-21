@@ -70,8 +70,13 @@ public class BarberBookingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_barber_booking, container, false);
+
         TextView tvName = view.findViewById(R.id.textViewBarberName);
         TextView tvAddress = view.findViewById(R.id.textViewBarberAddress);
+
+        CalendarView calendarView = view.findViewById(R.id.calendarView);
+        calendarView.setMinDate(System.currentTimeMillis()); // Disable past dates
+        calendarView.setMaxDate(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 14));//count of milliseconds in 14 days
         if (getArguments() != null) {
             String barberEmail = getArguments().getString("barberEmail");
             Log.d("BarberBookingFragment", "Received barberEmail: " + barberEmail);
@@ -98,8 +103,43 @@ public class BarberBookingFragment extends Fragment {
                             Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
                             tvName.setText(barber.getName());
                             tvAddress.setText(barber.getShopAddress());
+
                         }
-                    }
+                            Log.d("BarberBookingFragment", "Barber Name Retrieved: " + barber.getName());
+
+
+                            calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
+                                @Override
+                                public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+                                    Calendar calendar = Calendar.getInstance();
+                                    long today = calendar.getTimeInMillis();
+                                    Calendar selectedDate = Calendar.getInstance();
+                                    selectedDate.set(year, month, dayOfMonth);
+                                    int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK); // Get the day number (1=Sunday, 2=Monday, etc.)
+                                    Log.d("BarberBookingFragment", "Selected day of week: " + barber.getDayName(selectedDayOfWeek));
+                                    Log.d("BarberBookingFragment", "barber days: " + barber.getWorkingDays());
+
+                                    if (convertedDays.contains(selectedDayOfWeek)) {
+                                        // ✅ Allow selection
+                                        Toast.makeText(getContext(), "✅ Barber works on this day!", Toast.LENGTH_SHORT).show();
+
+
+                                    }
+                                    else {
+                                        // ❌ Prevent selection by resetting to the previous valid date
+                                        calendarView.setDate(today, true, true);
+                                        Toast.makeText(getContext(), "❌ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
+                                    }
+
+                                    // Month is 0-based (January = 0, February = 1, ...)
+//                                    String selectedDate = dayOfMonth + "/" + (month + 1) + "/" + year;
+
+                                    // Show the selected date in a Toast message
+//                                    Toast.makeText(getApplicationContext(), "Selected Date: " + selectedDate, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {

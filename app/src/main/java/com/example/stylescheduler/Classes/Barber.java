@@ -26,6 +26,7 @@ public class Barber extends User {
 
     public String getWorkingDays() { return workSchedule.getWorkingDaysString(); }
 //    public String getWorkingHours() { return workSchedule.getWorkingHours(); }
+
     public List<String> getWorkingHours() { return workSchedule.getWorkingHoursAsList(); }
     public String getAStringOfWorkingHours() {
         List<String> s = getWorkingHours();
