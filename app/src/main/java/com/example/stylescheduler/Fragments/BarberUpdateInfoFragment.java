@@ -117,9 +117,6 @@ public class BarberUpdateInfoFragment extends Fragment {
     }
 
     private void updateBarberInfo() {
-
-        // קבלת הנתונים מהשדות
-
         String newName = editName.getText().toString().trim();
         String newPhone = editPhone.getText().toString().trim();
         String newAddress = editAddress.getText().toString().trim();
@@ -139,23 +136,32 @@ public class BarberUpdateInfoFragment extends Fragment {
         String safeEmail = currentUser.getEmail().replace(".", "_");
         barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
 
-        // יצירת HashMap עם הנתונים לעדכון
+        // ✅ מחיקת כל הנתונים הישנים כדי למנוע כפילויות
+        barberRef.child("workingDays").removeValue();
+        barberRef.child("workingHours").removeValue();
+        barberRef.child("workSchedule").removeValue();
+
+        // ✅ יצירת רשימה של ימי עבודה
+        Set<Integer> selectedDays = getSelectedDays();
+        List<String> workingDaysStringList = new ArrayList<>();
+        WorkSchedule workSchedule = new WorkSchedule();
+
+        for (Integer day : selectedDays) {
+            workingDaysStringList.add(workSchedule.getDayName(day));
+        }
+
+        // ✅ יצירת מבנה מסודר לשעות עבודה
+        Map<String, Object> workScheduleMap = new HashMap<>();
+        workScheduleMap.put("workingDays", workingDaysStringList);
+        workScheduleMap.put("workingHours", selectedStartHour + " - " + selectedEndHour);
+
+        // ✅ שמירת כל הנתונים בפיירבייס בצורה מסודרת
         Map<String, Object> updates = new HashMap<>();
         updates.put("name", newName);
         updates.put("phoneNumber", newPhone);
         updates.put("shopAddress", newAddress);
-        updates.put("startHour", selectedStartHour);
-        updates.put("endHour", selectedEndHour);
+        updates.put("workSchedule", workScheduleMap); // ✅ שמירה תחת `workSchedule` בלבד
 
-        Set<Integer> selectedDays = getSelectedDays();
-        List<String> workingDaysStringList = new ArrayList<>();
-        WorkSchedule workSchedule = new WorkSchedule();
-        for (Integer day : selectedDays) {
-            workingDaysStringList.add(workSchedule.getDayName(day)); // ✅ Convert Integer to String
-        }
-        updates.put("workingDays", workingDaysStringList);
-
-        // עדכון הנתונים בפיירבייס
         barberRef.updateChildren(updates).addOnSuccessListener(aVoid -> {
             Toast.makeText(getContext(), "Updated successfully!", Toast.LENGTH_SHORT).show();
             Navigation.findNavController(requireView()).navigate(R.id.action_barberUpdateInfoFragment_to_barberHomePage);
