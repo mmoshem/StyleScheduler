@@ -45,7 +45,9 @@ public class Barber extends User {
     public String getRole(){
         return this.role;
     }
-
+    public int getDayNumber(String day) {
+        return workSchedule.getDayNumber(day);
+    }
     public String getDayName(int day) {
         return workSchedule.getDayName( day);
     }
