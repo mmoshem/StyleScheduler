@@ -144,11 +144,11 @@ public class WorkSchedule {
 
         return calendar.getTime();
     }
-    public String getWorkingHours() {
+    public List<String> getWorkingHoursAsList() {
         if (startHour == null || endHour == null || startHour.equals("Not Set") || endHour.equals("Not Set")) {
-            return "Not Set";
+            return new ArrayList<>();
         }
-        return startHour + " - " + endHour;
+        return Arrays.asList(startHour, endHour);
     }
 
     public List<String> getWorkingHoursAsList() {
