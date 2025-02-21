@@ -46,7 +46,9 @@ public class Barber extends User {
         return this.role;
     }
 
-
+    public String getDayName(int day) {
+        return workSchedule.getDayName( day);
+    }
     // 📌 **הוספת תור חדש**
     public void bookAppointment(Appointment appointment) {
         workSchedule.addAppointment(appointment);
@@ -99,9 +101,7 @@ public class Barber extends User {
 
     // 📌 **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
     public int getDayOfWeekFromDate(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        return calendar.get(Calendar.DAY_OF_WEEK); // 1 = Sunday, 2 = Monday, ..., 7 = Saturday
+       return workSchedule.getDayOfWeekFromDate(date);
     }
 
     // 📌 **צפייה בכל התורים שנקבעו לספר**

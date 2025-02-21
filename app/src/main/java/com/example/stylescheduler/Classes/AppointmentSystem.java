@@ -36,8 +36,8 @@ class AppointmentSystem {
 
     public void bookAppointment(Customer customer, Barber barber, String serviceType, Date time) {
         // 📌 Ensure the appointment time is within the barber's working schedule
-        int dayOfWeek = barber.getWorkSchedule().getDayOfWeekFromDate(time);
-        String dayName = barber.getWorkSchedule().getDayName(dayOfWeek); // Convert to String
+        int dayOfWeek = barber.getDayOfWeekFromDate(time);
+        String dayName = barber.getDayName(dayOfWeek); // Convert to String
 
         String startHour = barber.getWorkingHours().get(0);
         String endHour = barber.getWorkingHours().get(1);
