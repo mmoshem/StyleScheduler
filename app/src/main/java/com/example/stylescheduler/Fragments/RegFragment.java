@@ -19,10 +19,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class RegFragment extends Fragment {
 
@@ -97,17 +93,7 @@ public class RegFragment extends Fragment {
                     FirebaseDatabase database=FirebaseDatabase.getInstance();
                     if (role.equals("barber")) {
                         Barber barber = new Barber(userId, name, email,password, workAddress, phone);
-                        Map<String, Object> barberMap = new HashMap<>();
-                        barberMap.put("shopAddress",barber.getShopAddress());
-                        barberMap.put("startHour",barber.getWorkingHours().get(0));
-                        barberMap.put("endHour",barber.getWorkingHours().get(1));
-                        barberMap.put("phoneNumber",barber.getPhoneNumber());
-                        barberMap.put("workingDays",barber.getWorkingDays());
-                        barberMap.put("name",barber.getName());
-                        barberMap.put("email",barber.getEmail());
-                        barberMap.put("role",barber.getRole());
-
-                        database.getReference("barbers").child(safeEmail).setValue(barberMap);
+                        database.getReference("barbers").child(safeEmail).setValue(barber);
                     }
                     else {
                         Customer customer = new Customer(userId, name, email,password ,phone);

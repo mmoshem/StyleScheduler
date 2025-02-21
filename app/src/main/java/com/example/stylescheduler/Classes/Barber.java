@@ -26,14 +26,10 @@ public class Barber extends User {
     public String getShopAddress() { return this.shopAddress; }
 
     public String getWorkingDays() { return workSchedule.getWorkingDaysString(); }
-    public String getWorkingHours() { return workSchedule.getWorkingHours(); }
-
     public List<String> getWorkingHours() { return workSchedule.getWorkingHoursAsList(); }
     public String getAStringOfWorkingHours() {
         List<String> s = getWorkingHours();
         return s.get(0) + " - " + s.get(1);
-    }
-
 
     }
     public void setWorkSchedule(WorkSchedule workSchedule) {
