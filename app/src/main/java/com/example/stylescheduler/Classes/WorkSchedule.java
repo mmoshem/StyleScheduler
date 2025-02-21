@@ -153,7 +153,7 @@ public class WorkSchedule {
 
     public List<String> getWorkingHoursAsList() {
         if (startHour == null || endHour == null || startHour.equals("Not Set") || endHour.equals("Not Set")) {
-            return new ArrayList<>();
+            return new ArrayList<>(List.of("NotSet","NotSet"));
         }
         return Arrays.asList(startHour, endHour);
     }
