@@ -32,6 +32,7 @@ public class BarberUpdateInfoFragment extends Fragment {
     private Button saveButton;
     private DatabaseReference barberRef;
     private FirebaseUser currentUser;
+    List<String> hours = List.of("07:00","08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00","19:00","20:00","21:00");
 
     public BarberUpdateInfoFragment() {}
 
@@ -59,7 +60,7 @@ public class BarberUpdateInfoFragment extends Fragment {
         checkSaturday = view.findViewById(R.id.checkSaturday);
         checkSunday = view.findViewById(R.id.checkSunday);
         //add from 6 to 22 hours
-        List<String> hours = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00");
+
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, hours);
         adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
         spinnerStartHour.setAdapter(adapter);
@@ -112,9 +113,53 @@ public class BarberUpdateInfoFragment extends Fragment {
                 }
             });
         }
+        spinnerStartHour.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                validateStartHour();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+        spinnerEndHour.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                validateEndHour();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
+        });
+
+
 
         saveButton.setOnClickListener(v -> updateBarberInfo());
     }
+    private void validateEndHour() {
+        String selectedStartHour = spinnerStartHour.getSelectedItem().toString();
+        String selectedEndHour = spinnerEndHour.getSelectedItem().toString();
+
+        int startIndex = hours.indexOf(selectedStartHour);
+        int endIndex = hours.indexOf(selectedEndHour);
+
+        if (endIndex < startIndex) {
+            Toast.makeText(getContext(), "End hour must be later than start hour!", Toast.LENGTH_SHORT).show();
+            spinnerEndHour.setSelection(startIndex); // מחזיר את הבחירה לשעת ההתחלה
+        }
+    }
+    private void validateStartHour() {
+        String selectedStartHour = spinnerStartHour.getSelectedItem().toString();
+        String selectedEndHour = spinnerEndHour.getSelectedItem().toString();
+
+        int startIndex = hours.indexOf(selectedStartHour);
+        int endIndex = hours.indexOf(selectedEndHour);
+
+        if (startIndex > endIndex) {
+            Toast.makeText(getContext(), "Start hour must be earlier than end hour!", Toast.LENGTH_SHORT).show();
+            spinnerStartHour.setSelection(endIndex);
+        }
+    }
+
 
     private void updateBarberInfo() {
 
