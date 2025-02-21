@@ -70,7 +70,7 @@ public class BarberListFragment extends Fragment {
                             // Convert List<String> to List<Integer>
                             for (Object day : (List<?>) workingDaysObj) {
                                 if (day instanceof String) {
-                                    convertedDays.add(barber.getDayNumber(day.toString()));
+                                    convertedDays.add(barber.getWorkSchedule().getDayNumber(day.toString()));
                                 }
                             }
                             Log.d("BarberListFragment", "Converted working days: " + convertedDays);

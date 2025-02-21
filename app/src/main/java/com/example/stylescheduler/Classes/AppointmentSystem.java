@@ -1,7 +1,4 @@
 package com.example.stylescheduler.Classes;
-import android.content.Context;
-import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -37,14 +34,13 @@ class AppointmentSystem {
         return true;
     }
 
-    public void bookAppointment(Context context,Customer customer, Barber barber, String serviceType, Date time) {
+    public void bookAppointment(Customer customer, Barber barber, String serviceType, Date time) {
         // 📌 Ensure the appointment time is within the barber's working schedule
-        int dayOfWeek = barber.getDayOfWeekFromDate(time);
-        String dayName = barber.getDayName(dayOfWeek); // Convert to String
+        int dayOfWeek = barber.getWorkSchedule().getDayOfWeekFromDate(time);
+        String dayName = barber.getWorkSchedule().getDayName(dayOfWeek); // Convert to String
 
         String startHour = barber.getWorkingHours().get(0);
         String endHour = barber.getWorkingHours().get(1);
-
 //        String startHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[0];
 //        String endHour = barber.getWorkSchedule().getWorkingHours().split(" - ")[1];
 
@@ -53,8 +49,7 @@ class AppointmentSystem {
             Date endTime = barber.getWorkSchedule().parseTime(time, endHour);
 
             if (time.before(startTime) || time.after(endTime)) {
-                Toast.makeText(context, "❌ Cannot book: Outside of working hours.", Toast.LENGTH_SHORT).show();
-//                System.out.println("❌ Cannot book: Outside of working hours.");
+                System.out.println("❌ Cannot book: Outside of working hours.");
                 return;
             }
         } catch (Exception e) {
@@ -62,8 +57,7 @@ class AppointmentSystem {
         }
 
         if (!isSlotAvailable(barber, time)) {
-            Toast.makeText(context, "❌ This slot is already booked!", Toast.LENGTH_SHORT).show();
-//            System.out.println("❌ This slot is already booked!");
+            System.out.println("❌ This slot is already booked!");
             return;
         }
 
@@ -78,8 +72,7 @@ class AppointmentSystem {
     public void displayAppointmentsForBarber(Barber barber) {
         for (Appointment appointment : appointments) {
             if (appointment.getBarber().equals(barber)) {
-//                Toast.makeText(context,"Appointment for " + appointment.getCustomer().name + " at " + appointment.getAppointmentDate(), Toast.LENGTH_SHORT).show();
-//                System.out.println("Appointment for " + appointment.getCustomer().name + " at " + appointment.getAppointmentDate());
+                System.out.println("Appointment for " + appointment.getCustomer().name + " at " + appointment.getAppointmentDate());
             }
         }
     }
