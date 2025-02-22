@@ -6,33 +6,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.BarberHomePage">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/black">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white">
 
-        <TextView
-            android:id="@+id/textViewname"
-            android:layout_width="0dp"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/black">
+
+            <TextView
+                android:id="@+id/textViewname"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Welcome, User!"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btn_update_info"
+                android:paddingStart="16dp" />
+
+            <Button
+                android:id="@+id/btn_update_info"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/updateinfobutton"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- לוח שנה לבחירת יום -->
+        <CalendarView
+            android:id="@+id/calendarView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Welcome, User!"
-            android:textSize="28sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_update_info"
-            android:paddingStart="16dp" />
+            android:dateTextAppearance="?android:attr/textAppearanceLarge"
+            android:layout_marginBottom="16dp" />
 
-        <Button
-            android:id="@+id/btn_update_info"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/updateinfobutton"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- רשימת התורים -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewAppointments"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
 </FrameLayout>
