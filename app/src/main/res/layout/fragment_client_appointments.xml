@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.ClientAppointments">
+
     <TextView
         android:id="@+id/tvNoAppointments"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="אין לך תורים מוזמנים כרגע"
         android:textSize="18sp"
-        android:gravity="center"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewAppointmentsOfClient"

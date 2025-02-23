@@ -3,50 +3,68 @@ package com.example.stylescheduler.Classes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.R;
-
 import java.util.List;
 import java.util.Map;
 
-public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder> {
+public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
 
-    private List<Map<String, String>> appointmentList;
+    private List<Map<String, String>> appointments;
+    private OnCancelClickListener cancelClickListener;
 
-    public AppointmentAdapter(List<Map<String, String>> appointmentList) {
-        this.appointmentList = appointmentList;
+    public interface OnCancelClickListener {
+        void onCancelClick(Map<String, String> appointment, int position);
+    }
+
+    public AppointmentAdapter(List<Map<String, String>> appointments, OnCancelClickListener listener) {
+        this.appointments = appointments;
+        this.cancelClickListener = listener;
     }
 
     @NonNull
     @Override
-    public AppointmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_appointment, parent, false);
-        return new AppointmentViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AppointmentViewHolder holder, int position) {
-        Map<String, String> appointment = appointmentList.get(position);
-        holder.tvDate.setText("📅 תאריך: " + appointment.get("date"));
-        holder.tvTime.setText("🕒 שעה: " + appointment.get("appointmentTime"));
-      //  holder.tvStatus.setText("📌 סטטוס: " + appointment.get("status"));
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        Map<String, String> appointment = appointments.get(position);
+
+        holder.tvBarberName.setText(appointment.get("barberName"));  // Fetch the barber name separately if needed
+        holder.tvBarberAddress.setText(appointment.get("barberAddress"));
+        holder.tvAppointmentDate.setText(appointment.get("date"));
+        holder.tvAppointmentTime.setText(appointment.get("appointmentTime"));
+
+        // Call the listener when cancel button is clicked
+        holder.btnCancel.setOnClickListener(v -> {
+            if (cancelClickListener != null) {
+                cancelClickListener.onCancelClick(appointment, position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return appointmentList.size();
+        return appointments.size();
     }
 
-    public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvTime, tvStatus;
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvBarberName, tvBarberAddress, tvAppointmentDate, tvAppointmentTime;
+        Button btnCancel;
 
-        public AppointmentViewHolder(View itemView) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDate = itemView.findViewById(R.id.tvAppointmentDate);
-            tvTime = itemView.findViewById(R.id.tvAppointmentTime);
-            //tvStatus = itemView.findViewById(R.id.tvAppointmentStatus);
+            tvBarberName = itemView.findViewById(R.id.tvBarberName);
+            tvBarberAddress = itemView.findViewById(R.id.tvBarberAddress);
+            tvAppointmentDate = itemView.findViewById(R.id.tvAppointmentDate);
+            tvAppointmentTime = itemView.findViewById(R.id.tvAppointmentTime);
+            btnCancel = itemView.findViewById(R.id.btnCancel);
         }
     }
 }
