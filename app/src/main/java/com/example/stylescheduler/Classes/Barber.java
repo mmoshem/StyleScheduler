@@ -17,6 +17,7 @@ public class Barber extends User {
 
     public Barber() {
         super();
+        this.shopAddress = "";
         this.workSchedule = new WorkSchedule();
     }
     // 📌 **הוספת חופשה - שימוש ב-Date במקום LocalDate**

@@ -3,31 +3,49 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="12dp"
     android:background="@drawable/card_background"
-    android:layout_marginBottom="8dp">
+    android:elevation="4dp"
+    android:layout_margin="8dp">
 
+    <!-- שם הספר -->
+    <TextView
+        android:id="@+id/tvBarberName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="✂️ BARBER"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp" />
+
+    <!-- כתובת החנות -->
+    <TextView
+        android:id="@+id/tvBarberAddress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="📍ADDRESS"
+        android:textSize="16sp"
+        android:textColor="@color/dark_gray"
+        android:layout_marginBottom="8dp" />
+
+    <!-- תאריך התור -->
     <TextView
         android:id="@+id/tvAppointmentDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="תאריך: "
+        android:text="📅DATE"
         android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:textColor="@color/black"
+        android:layout_marginBottom="4dp" />
 
+    <!-- שעת התור -->
     <TextView
         android:id="@+id/tvAppointmentTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="שעה: "
-        android:textSize="16sp"/>
-
-    <TextView
-        android:id="@+id/tvAppointmentStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="סטטוס: "
+        android:text="🕒TIME"
         android:textSize="16sp"
-        android:textStyle="italic"/>
+        android:textColor="@color/black" />
 
 </LinearLayout>

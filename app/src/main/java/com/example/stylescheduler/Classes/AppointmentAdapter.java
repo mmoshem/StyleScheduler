@@ -31,7 +31,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         Map<String, String> appointment = appointmentList.get(position);
         holder.tvDate.setText("📅 תאריך: " + appointment.get("date"));
         holder.tvTime.setText("🕒 שעה: " + appointment.get("appointmentTime"));
-        holder.tvStatus.setText("📌 סטטוס: " + appointment.get("status"));
+      //  holder.tvStatus.setText("📌 סטטוס: " + appointment.get("status"));
     }
 
     @Override
@@ -46,7 +46,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             super(itemView);
             tvDate = itemView.findViewById(R.id.tvAppointmentDate);
             tvTime = itemView.findViewById(R.id.tvAppointmentTime);
-            tvStatus = itemView.findViewById(R.id.tvAppointmentStatus);
+            //tvStatus = itemView.findViewById(R.id.tvAppointmentStatus);
         }
     }
 }

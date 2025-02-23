@@ -226,6 +226,40 @@ public class BarberBookingFragment extends Fragment {
                 .setNegativeButton("No", null)
                 .show();
     }
+    private void cancelAppointment(String selectedTimeSlot) {
+        if (currentUser == null || barberEmail == null || selectedDate == null) {
+            Log.e("BarberBookingFragment", "❌ Missing user or barber info.");
+            return;
+        }
+
+        String customerEmail = currentUser.getEmail().replace(".", "_");
+        String barberSafeEmail = barberEmail.replace(".", "_");
+
+        DatabaseReference appointmentRef = FirebaseDatabase.getInstance().getReference("appointments")
+                .child(barberSafeEmail).child(selectedDate).child(selectedTimeSlot);
+        DatabaseReference clientAppointmentRef = FirebaseDatabase.getInstance().getReference("appointmentsByClient")
+                .child(customerEmail).child(selectedDate).child(selectedTimeSlot);
+
+        clientAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
+            Log.d("CancelAppointment", "✅ התור נמחק אצל הלקוח");
+            appointmentRef.removeValue().addOnSuccessListener(aVoid1 -> {
+                Log.d("CancelAppointment", "✅ התור נמחק אצל הספר");
+                returnTimeSlotToAvailability(barberSafeEmail, selectedDate, selectedTimeSlot);
+            }).addOnFailureListener(e -> Log.e("CancelAppointment", "❌ שגיאה במחיקת התור אצל הספר", e));
+        }).addOnFailureListener(e -> Log.e("CancelAppointment", "❌ שגיאה במחיקת התור אצל הלקוח", e));
+    }
+
+    private void returnTimeSlotToAvailability(String barberEmail, String selectedDate, String timeSlot) {
+        DatabaseReference availableSlotsRef = FirebaseDatabase.getInstance()
+                .getReference("appointments").child(barberEmail).child(selectedDate);
+        availableSlotsRef.child(timeSlot).setValue("available")
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("CancelAppointment", "✅ השעה נוספה מחדש לרשימת הזמינות של הספר");
+                    availableAppointments.add(timeSlot);
+                    adapter.notifyDataSetChanged();
+                })
+                .addOnFailureListener(e -> Log.e("CancelAppointment", "❌ שגיאה בהוספת השעה לרשימה הזמינות", e));
+    }
 
     private void bookAppointment(String selectedTimeSlot) {
         if (currentUser == null || barberEmail == null || selectedDate == null) {
