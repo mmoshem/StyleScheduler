@@ -64,7 +64,7 @@ public class BarberBookingFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.exists()) {
-                            Log.e("BarberBookingFragment", "No barber found for email: " + safeEmail);
+//                            Log.e("BarberBookingFragment", "No barber found for email: " + safeEmail);
                             return;
                         }
                         Barber barber = snapshot.getValue(Barber.class);
@@ -108,12 +108,11 @@ public class BarberBookingFragment extends Fragment {
                     selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                     Log.d("BarberBookingFragment", "Selected date: " + selectedDate);
                 if (!workingDays.contains(selectedDayOfWeek)) {
-                    Log.w("BarberBookingFragment", "⛔ הספר לא עובד ביום הזה!");
-                    Toast.makeText(getContext(), "📅 הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
+                    Log.w("BarberBookingFragment", " Barber does not work on this day!");
+                    Toast.makeText(getContext(), "⛔ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
                     recyclerViewAvailableAppointments.setVisibility(View.GONE);
                 } else {
                     Log.i("BarberBookingFragment", "✅ הספר עובד ביום הזה!");
-                    Toast.makeText(getContext(), "✅ הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                     recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                     loadAvailableTimeSlots(barberEmail, selectedDate);
                 }
@@ -172,6 +171,12 @@ public class BarberBookingFragment extends Fragment {
                             if (time != null) {
                                 bookedAppointments.add(time);
                             }
+                        }
+                        if (bookedAppointments.size() >= availableTimeSlots.size()) {
+                            Toast.makeText(getContext(), "there is no empty appointments left", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(getContext(), "horray there steel an empty appointment ", Toast.LENGTH_SHORT).show();
                         }
                         availableTimeSlots.removeAll(bookedAppointments);
                         updateRecyclerView(availableTimeSlots);
