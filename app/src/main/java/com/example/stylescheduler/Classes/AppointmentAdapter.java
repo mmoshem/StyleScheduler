@@ -25,6 +25,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         this.appointments = appointments;
         this.cancelClickListener = listener;
     }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvBarberName, tvBarberAddress, tvAppointmentDate, tvAppointmentTime;
         Button btnCancel;
@@ -38,23 +39,25 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             btnCancel = itemView.findViewById(R.id.btnCancel);
         }
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_appointment, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_appointment, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Map<String, String> appointment = appointments.get(position);
-        Log.d("AppointmentAdapter", "Binding appointment: " + appointment);
-        holder.tvBarberName.setText(appointment.get("name"));  // Fetch the barber name separately if needed
+
+        holder.tvBarberName.setText(appointment.get("name"));
         holder.tvBarberAddress.setText(appointment.get("barberAddress"));
         holder.tvAppointmentDate.setText(appointment.get("date"));
         holder.tvAppointmentTime.setText(appointment.get("appointmentTime"));
 
-        // Call the listener when cancel button is clicked
+        // Cancel button
         holder.btnCancel.setOnClickListener(v -> {
             if (cancelClickListener != null) {
                 cancelClickListener.onCancelClick(appointment, position);
@@ -66,6 +69,4 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public int getItemCount() {
         return appointments.size();
     }
-
-
 }

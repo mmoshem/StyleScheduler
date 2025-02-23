@@ -31,7 +31,9 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
     private FirebaseUser currentUser;
     private TextView tvNoAppointments;
 
-    public ClientAppointmentsFragment() {}
+    public ClientAppointmentsFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,7 +44,7 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
 
         tvNoAppointments = view.findViewById(R.id.tvNoAppointments);
         appointmentList = new ArrayList<>();
-        adapter = new AppointmentAdapter(appointmentList, this); // Pass 'this' as the listener
+        adapter = new AppointmentAdapter(appointmentList, this);
         recyclerView.setAdapter(adapter);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -58,53 +60,62 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
     private void loadAppointments() {
         String clientEmail = currentUser.getEmail().replace(".", "_");
         DatabaseReference clientAppointmentsRef = FirebaseDatabase.getInstance()
-                .getReference("appointmentsByClient").child(clientEmail);
+                .getReference("appointmentsByClient")
+                .child(clientEmail);
 
         clientAppointmentsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 appointmentList.clear();
-                Map<String, String> appointment = new HashMap<>();
+
                 for (DataSnapshot dateSnapshot : snapshot.getChildren()) {
-                    appointment.clear();
-                    appointment.put("date", dateSnapshot.getKey());
+                    String dateKey = dateSnapshot.getKey();
+
                     for (DataSnapshot appointmentSnapshot : dateSnapshot.getChildren()) {
+                        // Create a new map for EACH appointment
+                        Map<String, String> appointment = new HashMap<>();
+
+                        // Basic info
+                        appointment.put("date", dateKey);
                         appointment.put("appointmentTime", appointmentSnapshot.getKey());
-                        appointment.put("barberEmail", appointmentSnapshot.child("barberEmail").getValue(String.class).replace(".", "_"));
-                        DatabaseReference barberRef = FirebaseDatabase.getInstance().getReference("barbers")
-                                .child(appointment.get("barberEmail").replace(".", "_"));
 
-                        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        String barberEmail = appointmentSnapshot.child("barberEmail").getValue(String.class);
+                        if (barberEmail == null) barberEmail = "Unknown Email";
+                        appointment.put("barberEmail", barberEmail);
 
-                            public void loadData(DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    String barberName = snapshot.child("name").getValue(String.class);
-                                    String shopAddress = snapshot.child("shopAddress").getValue(String.class);
-                                    appointment.put("barberAddress", shopAddress != null ? shopAddress : "Unknown Address");
-                                    appointment.put("name", barberName != null ? barberName : "Unknown Name");
-                                }
-                            }
-                            @Override
-                            public void onDataChange(DataSnapshot snapshot) {
-                                if (snapshot.exists()) {
-                                    String barberName = snapshot.child("name").getValue(String.class);
-                                    String shopAddress = snapshot.child("shopAddress").getValue(String.class);
-                                    appointment.put("barberAddress", shopAddress != null ? shopAddress : "Unknown Address");
-                                    appointment.put("name", barberName != null ? barberName : "Unknown Name");
-                                }
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError error) {
-                                Log.e("Firebase", "Error fetching barber name", error.toException());
-                            }
-                        });
-                        Log.d("ClientAppointments", "Adding appointment: " + appointment);
+                        // Add the appointment to the list right away
                         appointmentList.add(appointment);
 
-                    }
+                        // Now fetch the barber's name/address asynchronously
+                        DatabaseReference barberRef = FirebaseDatabase.getInstance()
+                                .getReference("barbers")
+                                .child(barberEmail.replace(".", "_"));
 
+                        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot barberSnapshot) {
+                                if (barberSnapshot.exists()) {
+                                    String barberName = barberSnapshot.child("name").getValue(String.class);
+                                    String shopAddress = barberSnapshot.child("shopAddress").getValue(String.class);
+
+                                    // Update the map that is already in appointmentList
+                                    appointment.put("name", barberName != null ? barberName : "Unknown Name");
+                                    appointment.put("barberAddress", shopAddress != null ? shopAddress : "Unknown Address");
+
+                                    // Notify that data changed
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e("Firebase", "Error fetching barber info", error.toException());
+                            }
+                        });
+                    }
                 }
 
+                // Show/hide "No Appointments" message
                 if (appointmentList.isEmpty()) {
                     tvNoAppointments.setVisibility(View.VISIBLE);
                     recyclerView.setVisibility(View.GONE);
@@ -112,8 +123,10 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                     tvNoAppointments.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
-                adapter.notifyDataSetChanged();
 
+                // Initial notify so the list shows placeholders (date/time/email)
+                // Detailed barber info will come in asynchronously.
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -125,7 +138,10 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
 
     @Override
     public void onCancelClick(Map<String, String> appointment, int position) {
-        if (appointment == null || !appointment.containsKey("barberEmail") || !appointment.containsKey("date") || !appointment.containsKey("appointmentTime")) {
+        if (appointment == null
+                || !appointment.containsKey("barberEmail")
+                || !appointment.containsKey("date")
+                || !appointment.containsKey("appointmentTime")) {
             Toast.makeText(getContext(), "Error: Missing appointment details", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -140,10 +156,16 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                 .setMessage("Are you sure you want to cancel this appointment?")
                 .setPositiveButton("Yes", (dialog, which) -> {
                     DatabaseReference barberAppointmentsRef = FirebaseDatabase.getInstance()
-                            .getReference("appointments").child(barberEmail).child(appointmentDate).child(appointmentTime);
+                            .getReference("appointments")
+                            .child(barberEmail)
+                            .child(appointmentDate)
+                            .child(appointmentTime);
 
                     DatabaseReference clientAppointmentsRef = FirebaseDatabase.getInstance()
-                            .getReference("appointmentsByClient").child(clientEmail).child(appointmentDate).child(appointmentTime);
+                            .getReference("appointmentsByClient")
+                            .child(clientEmail)
+                            .child(appointmentDate)
+                            .child(appointmentTime);
 
                     barberAppointmentsRef.removeValue().addOnSuccessListener(aVoid -> {
                         clientAppointmentsRef.removeValue().addOnSuccessListener(aVoid1 -> {
