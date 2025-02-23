@@ -7,6 +7,15 @@ public class Appointment {
     private Customer customer;
     private Barber barber;
     private String serviceType;  // e.g., "haircut", "coloring"
+
+    public Date getAppointmentTime() {
+        return appointmentTime;
+    }
+
+    public void setAppointmentTime(Date appointmentTime) {
+        this.appointmentTime = appointmentTime;
+    }
+
     private Date appointmentTime;
     private String time;
     private String status;  // "booked", "cancelled", "completed"
@@ -38,7 +47,7 @@ public class Appointment {
         this.appointmentTime = appointmentTime;
         this.status = "booked";
     }
-
+    public Appointment() {}
     // 📌 **ביטול תור**
     public void cancel() {
         this.status = "cancelled";

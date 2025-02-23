@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.stylescheduler.Fragments.ClientAppointments;
 import com.example.stylescheduler.R;
 
 import java.text.SimpleDateFormat;
@@ -17,10 +19,12 @@ import java.util.Locale;
 public class ClientAppointmentAdapter extends RecyclerView.Adapter<ClientAppointmentAdapter.ViewHolder> {
     private Context context;
     private List<Appointment> appointmentsList;
+    private ClientAppointments fragment;
 
-    public ClientAppointmentAdapter(Context context, List<Appointment> appointmentsList) {
+    public ClientAppointmentAdapter(Context context, List<Appointment> appointmentsList, ClientAppointments fragment) {
         this.context = context;
         this.appointmentsList = appointmentsList;
+        this.fragment = fragment; // שומרים את ה- Fragment כדי לקרוא לפונקציה שלו
     }
 
     @NonNull
@@ -46,6 +50,7 @@ public class ClientAppointmentAdapter extends RecyclerView.Adapter<ClientAppoint
         holder.tvAppointmentTime.setText("🕒 שעה: " + formattedTime);
         holder.tvBarberName.setText("✂️ ספר: " + appointment.getBarber().getName());
         holder.tvBarberAddress.setText("📍 כתובת: " + appointment.getBarber().getShopAddress());
+        holder.btnCancel.setOnClickListener(v -> fragment.cancelAppointment(appointment, position));
 
     }
 
@@ -57,7 +62,7 @@ public class ClientAppointmentAdapter extends RecyclerView.Adapter<ClientAppoint
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvAppointmentDate, tvAppointmentTime, tvBarberName, tvBarberAddress;
-
+        Button btnCancel;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -66,7 +71,7 @@ public class ClientAppointmentAdapter extends RecyclerView.Adapter<ClientAppoint
             tvAppointmentTime = itemView.findViewById(R.id.tvAppointmentTime);
             tvBarberName = itemView.findViewById(R.id.tvBarberName);
             tvBarberAddress = itemView.findViewById(R.id.tvBarberAddress);
-
+            btnCancel = itemView.findViewById(R.id.btnCancel); // כפתור ביטול תור
         }
     }
 }

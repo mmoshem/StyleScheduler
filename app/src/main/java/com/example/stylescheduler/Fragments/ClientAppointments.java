@@ -23,6 +23,7 @@ import com.google.firebase.database.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class ClientAppointments extends Fragment {
         recyclerViewAppointments.setLayoutManager(new LinearLayoutManager(getContext()));
 
         appointmentsList = new ArrayList<>();
-        clientAppointmentsAdapter = new ClientAppointmentAdapter(getContext(), appointmentsList);
+        clientAppointmentsAdapter = new ClientAppointmentAdapter(getContext(), appointmentsList,this);
         recyclerViewAppointments.setAdapter(clientAppointmentsAdapter);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -63,6 +64,46 @@ public class ClientAppointments extends Fragment {
         }
 
         return view;
+    }
+    public void cancelAppointment(Appointment appointment, int position) {
+        String customerEmail = appointment.getCustomer().getEmail().replace(".", "_");
+        String barberEmail = appointment.getBarber().getEmail().replace(".", "_");
+        String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(appointment.getAppointmentDate());
+        String time = new SimpleDateFormat("HH:mm", Locale.getDefault()).format(appointment.getAppointmentDate());
+
+        DatabaseReference clientRef = FirebaseDatabase.getInstance()
+                .getReference("appointmentsByClient")
+                .child(customerEmail).child(date).child(time);
+
+        DatabaseReference barberRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(barberEmail).child(date).child(time);
+
+        // מחיקה ממסד הנתונים
+        clientRef.removeValue();
+        barberRef.removeValue().addOnSuccessListener(aVoid -> {
+            appointmentsList.remove(position);
+            clientAppointmentsAdapter.notifyItemRemoved(position);
+            Toast.makeText(getContext(), "✅ התור בוטל בהצלחה!", Toast.LENGTH_SHORT).show();
+
+            // החזרת השעה שהתפנתה לרשימת הזמנים של הספר
+            returnTimeSlotToAvailability(barberEmail, date, time);
+        }).addOnFailureListener(e -> {
+            Log.e("ClientAppointments", "❌ כשל במחיקת התור", e);
+            Toast.makeText(getContext(), "❌ לא ניתן לבטל את התור", Toast.LENGTH_SHORT).show();
+        });
+    }
+    private void returnTimeSlotToAvailability(String barberEmail, String date, String time) {
+        DatabaseReference availableAppointmentsRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(barberEmail).child(date);
+
+        Map<String, Object> availableTimeSlot = new HashMap<>();
+        availableTimeSlot.put("appointmentTime", time);
+
+        availableAppointmentsRef.child(time).setValue(availableTimeSlot)
+                .addOnSuccessListener(aVoid -> Log.d("ClientAppointments", "✅ השעה " + time + " חזרה לזמינות"))
+                .addOnFailureListener(e -> Log.e("ClientAppointments", "❌ כשל בהחזרת השעה לזמינות", e));
     }
 
     private void loadClientAppointments() {
