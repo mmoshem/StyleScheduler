@@ -70,11 +70,20 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                     appointment.put("date", dateSnapshot.getKey());
                     for (DataSnapshot appointmentSnapshot : dateSnapshot.getChildren()) {
                         appointment.put("appointmentTime", appointmentSnapshot.getKey());
-                        appointment.put("barberEmail", appointmentSnapshot.child("barberEmail").getValue(String.class));
+                        appointment.put("barberEmail", appointmentSnapshot.child("barberEmail").getValue(String.class).replace(".", "_"));
                         DatabaseReference barberRef = FirebaseDatabase.getInstance().getReference("barbers")
                                 .child(appointment.get("barberEmail").replace(".", "_"));
 
                         barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                            public void loadData(DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    String barberName = snapshot.child("name").getValue(String.class);
+                                    String shopAddress = snapshot.child("shopAddress").getValue(String.class);
+                                    appointment.put("barberAddress", shopAddress != null ? shopAddress : "Unknown Address");
+                                    appointment.put("name", barberName != null ? barberName : "Unknown Name");
+                                }
+                            }
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
                                 if (snapshot.exists()) {
@@ -89,6 +98,7 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                                 Log.e("Firebase", "Error fetching barber name", error.toException());
                             }
                         });
+                        Log.d("ClientAppointments", "Adding appointment: " + appointment);
                         appointmentList.add(appointment);
 
                     }
@@ -102,8 +112,8 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                     tvNoAppointments.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                 }
-
                 adapter.notifyDataSetChanged();
+
             }
 
             @Override

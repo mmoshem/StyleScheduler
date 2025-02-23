@@ -1,5 +1,6 @@
 package com.example.stylescheduler.Classes;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,19 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         this.appointments = appointments;
         this.cancelClickListener = listener;
     }
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvBarberName, tvBarberAddress, tvAppointmentDate, tvAppointmentTime;
+        Button btnCancel;
 
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            tvBarberName = itemView.findViewById(R.id.tvBarberName);
+            tvBarberAddress = itemView.findViewById(R.id.tvBarberAddress);
+            tvAppointmentDate = itemView.findViewById(R.id.tvAppointmentDate);
+            tvAppointmentTime = itemView.findViewById(R.id.tvAppointmentTime);
+            btnCancel = itemView.findViewById(R.id.btnCancel);
+        }
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,8 +48,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Map<String, String> appointment = appointments.get(position);
-
-        holder.tvBarberName.setText(appointment.get("barberName"));  // Fetch the barber name separately if needed
+        Log.d("AppointmentAdapter", "Binding appointment: " + appointment);
+        holder.tvBarberName.setText(appointment.get("name"));  // Fetch the barber name separately if needed
         holder.tvBarberAddress.setText(appointment.get("barberAddress"));
         holder.tvAppointmentDate.setText(appointment.get("date"));
         holder.tvAppointmentTime.setText(appointment.get("appointmentTime"));
@@ -54,17 +67,5 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         return appointments.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvBarberName, tvBarberAddress, tvAppointmentDate, tvAppointmentTime;
-        Button btnCancel;
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvBarberName = itemView.findViewById(R.id.tvBarberName);
-            tvBarberAddress = itemView.findViewById(R.id.tvBarberAddress);
-            tvAppointmentDate = itemView.findViewById(R.id.tvAppointmentDate);
-            tvAppointmentTime = itemView.findViewById(R.id.tvAppointmentTime);
-            btnCancel = itemView.findViewById(R.id.btnCancel);
-        }
-    }
 }
