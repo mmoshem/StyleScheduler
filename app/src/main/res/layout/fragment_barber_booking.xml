@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/light_gray">
@@ -44,11 +45,22 @@
         android:layout_marginBottom="16dp"/>
 
     <!-- Spinner for Time Slots -->
-    <Spinner
-        android:id="@+id/spinnerTimeSlots"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewClientAppointments"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        tools:visibility="visible"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/btnBookAppointment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/spinner_background"
+        android:text="הזמן תור"
+        android:background="@color/primary"
+        android:textColor="@color/white"
         android:padding="8dp"/>
+
 
 </LinearLayout>

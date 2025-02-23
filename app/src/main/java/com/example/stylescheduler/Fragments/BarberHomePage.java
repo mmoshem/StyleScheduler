@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.example.stylescheduler.Classes.AvailableAppointmentsAdapter;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,9 +27,13 @@ public class BarberHomePage extends Fragment {
 
     private TextView textViewName;
     private CalendarView calendarView;
-    private RecyclerView recyclerViewAppointments;
+    private RecyclerView recyclerViewAvailableAppointments;
     private DatabaseReference barberRef;
     private FirebaseUser currentUser;
+    private AvailableAppointmentsAdapter adapter;
+    private List<String> availableAppointments = new ArrayList<>();
+    private List<Integer> workingDays = new ArrayList<>();
+    private String selectedDate;  // תאריך שנבחר מהלוח שנה
 
     public BarberHomePage() {}
 
@@ -37,18 +43,48 @@ public class BarberHomePage extends Fragment {
 
         textViewName = view.findViewById(R.id.textViewname);
         calendarView = view.findViewById(R.id.calendarView);
-        recyclerViewAppointments = view.findViewById(R.id.recyclerViewAppointments);
+        recyclerViewAvailableAppointments = view.findViewById(R.id.recyclerViewAppointments);
 
         Button button = view.findViewById(R.id.btn_update_info);
         button.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_barberHomePage_to_barberUpdateInfoFragment));
 
+        // הגדרת ה-RecyclerView
+        recyclerViewAvailableAppointments.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new AvailableAppointmentsAdapter(availableAppointments, timeSlot -> {
+            Log.d("RecyclerView", "🕒 Clicked time slot: " + timeSlot);
+        });
+        recyclerViewAvailableAppointments.setAdapter(adapter);
+
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             loadBarberInfo();
-            loadBarberWorkingHours();
+            loadWorkingDays();
         }
 
+        calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+            Calendar selectedDate = Calendar.getInstance();
+            selectedDate.set(year, month, dayOfMonth);
+
+            int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK) - 1; // Android מחזיר 1 = Sunday, 2 = Monday וכו'
+
+            Log.d("Calendar", "📅 Selected date: " + dayOfMonth + "/" + (month + 1) + "/" + year + " (Day: " + selectedDayOfWeek + ")");
+            Log.d("Calendar", "📆 Barber's working days: " + workingDays);
+
+            if (!workingDays.contains(selectedDayOfWeek)) {
+                Log.w("Calendar", "⛔ הספר לא עובד ביום הזה!"); // 🛑 הודעה ב-WARNING כדי להדגיש
+                Toast.makeText(getContext(), "📅 הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
+                recyclerViewAvailableAppointments.setVisibility(View.GONE);
+
+            } else {
+                Log.i("Calendar", "✅ הספר עובד ביום הזה!"); // ✅ הודעה כדי לראות שהיום נמצא ברשימה
+                Toast.makeText(getContext(), "✅ הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
+                recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
+                loadBarberWorkingHours();
+            }
+        });
+
         return view;
+
     }
 
     private void loadBarberInfo() {
@@ -70,8 +106,6 @@ public class BarberHomePage extends Fragment {
             }
         });
     }
-    private List<Integer> workingDays = new ArrayList<>();
-
     private void loadWorkingDays() {
         if (currentUser == null) return;
 
@@ -86,21 +120,33 @@ public class BarberHomePage extends Fragment {
                     return;
                 }
 
-                // שליפת ימי העבודה מרשימת מספרים (נניח שהם נשמרו כמחרוזת "1,3,5")
-                String workingDaysStr = snapshot.child("workingDays").getValue(String.class);
+                workingDays.clear(); // ננקה את הרשימה
 
-                if (workingDaysStr != null) {
-                    workingDays.clear(); // ניקוי רשימה קודמת
-                    for (String day : workingDaysStr.split(",")) {
-                        try {
-                            workingDays.add(Integer.parseInt(day.trim())); // המרה לרשימה של מספרים
-                        } catch (NumberFormatException e) {
-                            Log.e("Firebase", "⚠️ Invalid day format: " + day);
+                Object data = snapshot.child("workingDays").getValue();
+                Log.d("Firebase", "📂 Data from Firebase: " + data); // 🟢 לוג לבדיקה
+
+                if (data instanceof List) {
+                    List<?> daysList = (List<?>) data;
+                    for (Object item : daysList) {
+                        Log.d("Firebase", "📆 Raw item: " + item); // 🟢 לוג לבדיקה
+
+                        if (item instanceof Long) {
+                            int dayNumber = ((Long) item).intValue();
+                            workingDays.add(dayNumber);
+                            Log.d("Firebase", "✅ Added numeric day: " + dayNumber);
+                        } else if (item instanceof String) {
+                            int dayNum = convertDayNameToNumber(item.toString().trim());
+                            if (dayNum != -1) {
+                                workingDays.add(dayNum);
+                                Log.d("Firebase", "✅ Converted and added day: " + dayNum);
+                            } else {
+                                Log.e("Firebase", "⚠️ Invalid day format: " + item);
+                            }
                         }
                     }
-                    Log.d("Firebase", "📅 Barber's working days: " + workingDays);
+                    Log.d("Firebase", "📅 Barber's working days (Processed): " + workingDays);
                 } else {
-                    Log.d("Firebase", "⚠️ No working days found.");
+                    Log.d("Firebase", "⚠️ No valid working days format found.");
                 }
             }
 
@@ -111,6 +157,21 @@ public class BarberHomePage extends Fragment {
         });
     }
 
+
+
+
+    private int convertDayNameToNumber(String dayName) {
+        switch (dayName.toLowerCase()) {
+            case "sunday": return 0;
+            case "monday": return 1;
+            case "tuesday": return 2;
+            case "wednesday": return 3;
+            case "thursday": return 4;
+            case "friday": return 5;
+            case "saturday": return 6;
+            default: return -1; // ערך לא תקין
+        }
+    }
 
 
     private void loadBarberWorkingHours() {
@@ -127,17 +188,17 @@ public class BarberHomePage extends Fragment {
                     return;
                 }
 
-                // שליפת שעות העבודה ישירות מהספר
+                // שליפת שעות העבודה
                 String startHour = snapshot.child("startHour").getValue(String.class);
                 String endHour = snapshot.child("endHour").getValue(String.class);
 
                 if (startHour != null && endHour != null) {
                     List<String> timeSlots = generateTimeSlots(startHour, endHour);
+                    availableAppointments.clear();
+                    availableAppointments.addAll(timeSlots);
+                    adapter.notifyDataSetChanged();
 
-                    // בדיקה והדפסה של השעות
-                    for (String slot : timeSlots) {
-                        Log.d("Firebase", "🕒 Time Slot: " + slot);
-                    }
+                    Log.d("Firebase", "✅ Loaded available appointments: " + availableAppointments);
                 } else {
                     Log.d("Firebase", "⚠️ startHour or endHour is missing.");
                 }
@@ -168,5 +229,14 @@ public class BarberHomePage extends Fragment {
             e.printStackTrace();
         }
         return timeSlots;
+    }
+
+    private int getDayOfWeek(int year, int month, int dayOfMonth) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, dayOfMonth);
+        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+
+        // התאמת ימי השבוע (באנדרואיד: ראשון = 1, שבת = 7)
+        return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
     }
 }
