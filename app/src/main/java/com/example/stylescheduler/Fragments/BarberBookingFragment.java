@@ -203,7 +203,7 @@ public class BarberBookingFragment extends Fragment {
 
             while (calendar.getTime().before(endTime)) {
                 timeSlots.add(sdf.format(calendar.getTime()));
-                calendar.add(Calendar.MINUTE, 30);
+                calendar.add(Calendar.HOUR, 1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -240,12 +240,18 @@ public class BarberBookingFragment extends Fragment {
         DatabaseReference appointmentRef = FirebaseDatabase.getInstance().getReference("appointments")
                 .child(barberSafeEmail).child(selectedDate).child(selectedTimeSlot);
 
+        DatabaseReference clientAppointmentRef = FirebaseDatabase.getInstance().getReference("appointmentsByClient")
+                .child(customerEmail).child(selectedDate).child(selectedTimeSlot);
+
         Map<String, Object> appointmentData = new HashMap<>();
-        appointmentData.put("customerEmail", customerEmail);
         appointmentData.put("appointmentTime", selectedTimeSlot);
+        appointmentData.put("barberEmail", barberEmail);
+        appointmentData.put("customerEmail", customerEmail);
         appointmentData.put("status", "booked");
 
-        appointmentRef.setValue(appointmentData)
+        // שמירה גם תחת `appointments` וגם תחת `appointmentsByClient`
+        appointmentRef.setValue(appointmentData);
+        clientAppointmentRef.setValue(appointmentData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getContext(), "✅ Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
                     Log.d("BarberBookingFragment", "✅ Appointment booked successfully.");
@@ -253,12 +259,10 @@ public class BarberBookingFragment extends Fragment {
                     // עדכון הרשימה כך שהתור שנבחר ייעלם
                     availableAppointments.remove(selectedTimeSlot);
                     adapter.notifyDataSetChanged();
-
                 })
                 .addOnFailureListener(e -> {
                     Log.e("BarberBookingFragment", "❌ Failed to book appointment.", e);
                     Toast.makeText(getContext(), "❌ Failed to book appointment. Try again.", Toast.LENGTH_SHORT).show();
                 });
     }
-
 }
