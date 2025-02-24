@@ -42,15 +42,14 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- לוח שנה לבחירת יום -->
         <CalendarView
             android:id="@+id/calendarView"
+            android:theme="@style/Platform.MaterialComponents.Light"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:dateTextAppearance="?android:attr/textAppearanceLarge"
+            android:dateTextAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginBottom="16dp" />
 
-        <!-- רשימת התורים -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAppointments"
             android:layout_width="match_parent"

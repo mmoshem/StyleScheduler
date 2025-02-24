@@ -79,7 +79,7 @@ public class BarberListFragment extends Fragment {
 //                            Log.d(s.toString(), "onDataChange: ");
                         }
 
-                        barber.getWorkSchedule().setWorkingDays(new ArrayList<>(convertedDays)); // ✅ Convert List to ArrayList
+                        barber.getWorkSchedule().setWorkingDays(new ArrayList<>(convertedDays)); // Convert List to ArrayList
                         Log.d("BarberListFragment", "Barber schedule set: " + barber.getWorkSchedule().getWorkingDays());
                         Log.d("Barberemail", "email:" + barber.getEmail());
 

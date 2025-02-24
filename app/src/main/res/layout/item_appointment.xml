@@ -13,7 +13,7 @@
         android:id="@+id/tvBarberName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="✂️ BARBER"
+        android:text="BARBER"
         android:textSize="18sp"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -24,7 +24,7 @@
         android:id="@+id/tvBarberAddress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="📍ADDRESS"
+        android:text="ADDRESS"
         android:textSize="16sp"
         android:textColor="@color/dark_gray"
         android:layout_marginBottom="8dp" />
@@ -34,7 +34,7 @@
         android:id="@+id/tvAppointmentDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="📅DATE"
+        android:text="DATE"
         android:textSize="16sp"
         android:textColor="@color/black"
         android:layout_marginBottom="4dp" />
@@ -44,17 +44,18 @@
         android:id="@+id/tvAppointmentTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🕒TIME"
+        android:text="TIME"
         android:textSize="16sp"
         android:textColor="@color/black" />
+
     <Button
         android:id="@+id/btnCancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="בטל תור"
-        android:textColor="@android:color/white"
+        android:layout_width="38dp"
+        android:layout_height="39dp"
+        android:layout_gravity="end"
         android:layout_marginTop="8dp"
+        android:background="@drawable/deletebutton"
         android:padding="8dp"
-        android:layout_gravity="end"/>
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

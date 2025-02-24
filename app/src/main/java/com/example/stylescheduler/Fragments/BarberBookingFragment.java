@@ -88,9 +88,9 @@ public class BarberBookingFragment extends Fragment {
                                         }
                                     }
                                 }
-                                Log.d("BarberBookingFragment", "📅 Barber's working days: " + workingDays); // נוסיף הדפסה
+                                Log.d("BarberBookingFragment", "Barber's working days: " + workingDays); // נוסיף הדפסה
                             } else {
-                                Log.e("BarberBookingFragment", "⚠️ workingDays is not a valid list");
+                                Log.e("BarberBookingFragment", "workingDays is not a valid list");
                             }
                         }
                     }
@@ -109,10 +109,10 @@ public class BarberBookingFragment extends Fragment {
                     Log.d("BarberBookingFragment", "Selected date: " + selectedDate);
                 if (!workingDays.contains(selectedDayOfWeek)) {
                     Log.w("BarberBookingFragment", " Barber does not work on this day!");
-                    Toast.makeText(getContext(), "⛔ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Barber does not work on this day!", Toast.LENGTH_SHORT).show();
                     recyclerViewAvailableAppointments.setVisibility(View.GONE);
                 } else {
-                    Log.i("BarberBookingFragment", "✅ הספר עובד ביום הזה!");
+                    Log.i("BarberBookingFragment", " הספר עובד ביום הזה!");
                     recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                     loadAvailableTimeSlots(barberEmail, selectedDate);
                 }
@@ -148,7 +148,7 @@ public class BarberBookingFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Log.e("BarberBookingFragment", "❌ Barber not found.");
+                    Log.e("BarberBookingFragment", "Barber not found.");
                     return;
                 }
 
@@ -156,7 +156,7 @@ public class BarberBookingFragment extends Fragment {
                 String endHour = snapshot.child("endHour").getValue(String.class);
 
                 if (startHour == null || endHour == null) {
-                    Log.e("BarberBookingFragment", "❌ Working hours missing.");
+                    Log.e("BarberBookingFragment", "Working hours missing.");
                     return;
                 }
 
@@ -184,14 +184,14 @@ public class BarberBookingFragment extends Fragment {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.e("BarberBookingFragment", "❌ Failed to load appointments.");
+                        Log.e("BarberBookingFragment", "Failed to load appointments.");
                     }
                 });
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("BarberBookingFragment", "❌ Failed to load barber info.");
+                Log.e("BarberBookingFragment", "Failed to load barber info.");
             }
         });
     }
@@ -233,7 +233,7 @@ public class BarberBookingFragment extends Fragment {
     }
 //    private void cancelAppointment(String selectedTimeSlot) {
 //        if (currentUser == null || barberEmail == null || selectedDate == null) {
-//            Log.e("BarberBookingFragment", "❌ Missing user or barber info.");
+//            Log.e("BarberBookingFragment", "Missing user or barber info.");
 //            return;
 //        }
 //
@@ -268,8 +268,8 @@ public class BarberBookingFragment extends Fragment {
 
     private void bookAppointment(String selectedTimeSlot) {
         if (currentUser == null || barberEmail == null || selectedDate == null) {
-            Log.e("BarberBookingFragment", "❌ Missing user or barber info.");
-            Toast.makeText(getContext(), "❌ Unable to book appointment. Try again.", Toast.LENGTH_SHORT).show();
+            Log.e("BarberBookingFragment", "Missing user or barber info.");
+            Toast.makeText(getContext(), "Unable to book appointment. Try again.", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -292,16 +292,16 @@ public class BarberBookingFragment extends Fragment {
         appointmentRef.setValue(appointmentData);
         clientAppointmentRef.setValue(appointmentData)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "✅ Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
-                    Log.d("BarberBookingFragment", "✅ Appointment booked successfully.");
+                    Toast.makeText(getContext(), "Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
+                    Log.d("BarberBookingFragment", "Appointment booked successfully.");
 
                     // עדכון הרשימה כך שהתור שנבחר ייעלם
                     availableAppointments.remove(selectedTimeSlot);
                     adapter.notifyDataSetChanged();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("BarberBookingFragment", "❌ Failed to book appointment.", e);
-                    Toast.makeText(getContext(), "❌ Failed to book appointment. Try again.", Toast.LENGTH_SHORT).show();
+                    Log.e("BarberBookingFragment", "Failed to book appointment.", e);
+                    Toast.makeText(getContext(), "Failed to book appointment. Try again.", Toast.LENGTH_SHORT).show();
                 });
     }
 }
