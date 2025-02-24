@@ -196,7 +196,7 @@ public class BarberUpdateInfoFragment extends Fragment {
         List<String> workingDaysStringList = new ArrayList<>();
         WorkSchedule workSchedule = new WorkSchedule();
         for (Integer day : selectedDays) {
-            workingDaysStringList.add(workSchedule.getDayName(day)); // ✅ Convert Integer to String
+            workingDaysStringList.add(workSchedule.getDayName(day)); //  Convert Integer to String
         }
         updates.put("workingDays", workingDaysStringList);
 
