@@ -54,6 +54,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         calendarView = view.findViewById(R.id.calendarView);
         recyclerViewAvailableAppointments = view.findViewById(R.id.recyclerViewAppointments);
 
+        Button btnDelete=view.findViewById(R.id.btn_Delete);
         Button button = view.findViewById(R.id.btn_update_info);
         button.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_barberHomePage_to_barberUpdateInfoFragment));
 
@@ -76,6 +77,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
 
+
             int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK) - 1; // Android מחזיר 1 = Sunday, 2 = Monday וכו'
 
             Log.d("Calendar", "Selected date: " + dayOfMonth + "/" + (month + 1) + "/" + year + " (Day: " + selectedDayOfWeek + ")");
@@ -85,11 +87,13 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 Log.w("Calendar", " הספר לא עובד ביום הזה!");
                 Toast.makeText(getContext(), " הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.GONE);
+                btnDelete.setVisibility(view.GONE);
 
             } else {
                 Log.i("Calendar", " הספר עובד ביום הזה!");
                 Toast.makeText(getContext(), " הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
+                btnDelete.setVisibility(view.VISIBLE);
                 loadBarberAppointments(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
         });
@@ -261,7 +265,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
         String safeEmail = currentUser.getEmail().replace(".", "_");
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments").child(safeEmail).child(date);
-
         appointmentsRef.get()
                         .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
