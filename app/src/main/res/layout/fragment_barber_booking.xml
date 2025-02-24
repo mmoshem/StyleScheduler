@@ -36,15 +36,16 @@
     </LinearLayout>
 
     <!-- Calendar View -->
+
+    <!-- Spinner for Time Slots -->
     <CalendarView
+        android:theme="@style/Platform.MaterialComponents.Light"
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/card_background"
-        android:elevation="4dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:elevation="4dp" />
 
-    <!-- Spinner for Time Slots -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewClientAppointments"
         android:layout_width="match_parent"

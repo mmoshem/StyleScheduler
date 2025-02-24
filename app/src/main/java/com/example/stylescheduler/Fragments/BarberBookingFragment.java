@@ -175,9 +175,9 @@ public class BarberBookingFragment extends Fragment {
                         if (bookedAppointments.size() >= availableTimeSlots.size()) {
                             Toast.makeText(getContext(), "there is no empty appointments left", Toast.LENGTH_SHORT).show();
                         }
-                        else{
-                            Toast.makeText(getContext(), "horray there steel an empty appointment ", Toast.LENGTH_SHORT).show();
-                        }
+//                        else{
+//                            Toast.makeText(getContext(), "horray there steel an empty appointment ", Toast.LENGTH_SHORT).show();
+//                        }
                         availableTimeSlots.removeAll(bookedAppointments);
                         updateRecyclerView(availableTimeSlots);
                     }
