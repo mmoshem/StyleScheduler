@@ -28,7 +28,7 @@ public class WorkSchedule {
 //        this.bookedAppointments = new ArrayList<>();
     }
 
-    // 📌 **Set working days**
+    // **Set working days**
 
     public void setWorkingDays(List<Integer> workingDays) {
         if (workingDays == null) {
@@ -42,13 +42,13 @@ public class WorkSchedule {
     }
 
 
-    // 📌 **Set working hours for all selected days**
+    // **Set working hours for all selected days**
     public void setWorkingHours(String startHour, String endHour) {
         this.startHour = startHour;
         this.endHour = endHour;
     }
 
-    // 📌 **Clear work schedule**
+    // **Clear work schedule**
     public void clearSchedule() {
         workingDays.clear();
         startHour = "Not Set";
@@ -78,7 +78,7 @@ public class WorkSchedule {
 //        }
 //        return daysList;
 //    }
-    // 📌 **Convert numeric day to text**
+    //  **Convert numeric day to text**
     public String getDayName(int day) {
         switch (day) {
             case Calendar.SUNDAY: return "Sunday";
@@ -110,12 +110,12 @@ public class WorkSchedule {
 //        bookedAppointments.add(appointment);
 //    }
 //
-//    // 📌 **מחיקת תור (למשל אם ספר חולה)**
+//    // **מחיקת תור (למשל אם ספר חולה)**
 //    public void cancelAppointment(Appointment appointment) {
 //        bookedAppointments.remove(appointment);
 //    }
 //
-//    // 📌 **קבלת רשימת תורים קיימים**
+//    // **קבלת רשימת תורים קיימים**
 //    public ArrayList<Appointment> getBookedAppointments() {
 //        return new ArrayList<>(bookedAppointments);
 //    }
@@ -126,7 +126,7 @@ public class WorkSchedule {
         return calendar.get(Calendar.DAY_OF_WEEK); // 1 = Sunday, ..., 7 = Saturday
     }
 
-    // 📌 **Check if a day has scheduled appointments**
+    //  **Check if a day has scheduled appointments**
     public boolean hasAppointmentsOnDay(int day) {
         return workingDays.contains(day);
     }
@@ -186,7 +186,7 @@ public class WorkSchedule {
         return availableSlots;
     }
 
-    // 📌 **Helper function: Convert string time (HH:mm) to Date**
+    // **Helper function: Convert string time (HH:mm) to Date**
     private Date parseTime(Calendar calendar, String time) throws Exception {
         if (time.equals("Not Set")) return null;
         String[] parts = time.split(":");

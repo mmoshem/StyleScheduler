@@ -59,7 +59,7 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
             workingDaysNames.add(workSchedule.getDayName(day)); // Convert Integer to String
         }
         Log.d("BarberAdapter", "Working days: " + workingDaysNames);
-        // ✅ Set formatted working days text
+        // Set formatted working days text
         holder.barberWorkingDays.setText(TextUtils.join(", ", workingDaysNames));
 
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -68,7 +68,7 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
 //                // Fetch the name of the clicked item
 ////                String name = barberList.get(holder.getAdapterPosition()).getName();
 //                Bundle bundle = new Bundle();
-//                bundle.putString("barberEmail", barber.getEmail()); // ✅ שולחים את ה-Email
+//                bundle.putString("barberEmail", barber.getEmail()); // שולחים את ה-Email
 //                // Show a toast with the item name
 ////                Toast.makeText(v.getContext(), "Clicked on: " + name +"'s booking page", Toast.LENGTH_SHORT).show();
 //                Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment, bundle);
@@ -78,15 +78,15 @@ public class BarberAdapter extends RecyclerView.Adapter<BarberAdapter.MyViewHold
             @Override
             public void onClick(View v) {
                 String email = barber.getEmail();
-                Log.d("BarberAdapter", "Clicked barber email: " + email); // ✅ Debug before checking null
+                Log.d("BarberAdapter", "Clicked barber email: " + email); // Debug before checking null
 
                 if (email == null) {
                     Log.e("BarberAdapter", "Error: Barber email is NULL! Continuing navigation anyway...");
-                    email = "default_email@example.com"; // 👀 Avoid null issues
+                    email = "default_email@example.com"; //  Avoid null issues
                 }
 
                 Bundle bundle = new Bundle();
-                bundle.putString("barberEmail", email); // ✅ Send email
+                bundle.putString("barberEmail", email); //  Send email
                 Navigation.findNavController(v).navigate(R.id.action_barberListFragment_to_barberBookingFragment, bundle);
             }
         });
