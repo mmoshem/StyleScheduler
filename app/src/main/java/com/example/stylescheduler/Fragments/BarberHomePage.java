@@ -94,6 +94,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 Toast.makeText(getContext(), " הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                 btnDelete.setVisibility(view.VISIBLE);
+                this.selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                 loadBarberAppointments(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
         });
@@ -346,6 +347,36 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
     @Override
     public void onCancelClick(CustomerAppointment appointment, int position) {
-        // @TODO: Let barber cancel the appointment
+        String barberEmail = currentUser.getEmail().replace(".", "_");
+        String customerEmail = appointment.getCustomerEmail().replace(".", "_");
+        String appointmentDate = this.selectedDate;
+        String appointmentTime = appointment.getTime();
+        Log.d("Cancel", "Canceling appointment: " + appointmentDate + " at " + appointmentTime+"barberEmail"+barberEmail+"customerEmail"+customerEmail);
+
+        DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(barberEmail)
+                .child(appointmentDate)
+                .child(appointmentTime);
+
+        DatabaseReference customerAppointmentRef = FirebaseDatabase.getInstance()
+                .getReference("appointmentsByClient")
+                .child(customerEmail)
+                .child(appointmentDate)
+                .child(appointmentTime);
+
+        barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
+                    customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
+                                Toast.makeText(getContext(), "Appointment canceled successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "Failed to remove from customer records: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to cancel appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
     }
+
 }
+
