@@ -18,14 +18,14 @@ public class WorkSchedule {
         this.startHour = startHour;
     }
 
-    private ArrayList<Appointment> bookedAppointments; // Existing appointments
+//    private ArrayList<Appointment> bookedAppointments; // Existing appointments
 
     public WorkSchedule() {
         this.workingDays = new ArrayList<>();
         this.startHour = "Not Set";
         this.endHour = "Not Set";
         this.vacationDays = new ArrayList<>();
-        this.bookedAppointments = new ArrayList<>();
+//        this.bookedAppointments = new ArrayList<>();
     }
 
     // 📌 **Set working days**
@@ -106,19 +106,19 @@ public class WorkSchedule {
     }
 
 
-    public void addAppointment(Appointment appointment) {
-        bookedAppointments.add(appointment);
-    }
-
-    // 📌 **מחיקת תור (למשל אם ספר חולה)**
-    public void cancelAppointment(Appointment appointment) {
-        bookedAppointments.remove(appointment);
-    }
-
-    // 📌 **קבלת רשימת תורים קיימים**
-    public ArrayList<Appointment> getBookedAppointments() {
-        return new ArrayList<>(bookedAppointments);
-    }
+//    public void addAppointment(Appointment appointment) {
+//        bookedAppointments.add(appointment);
+//    }
+//
+//    // 📌 **מחיקת תור (למשל אם ספר חולה)**
+//    public void cancelAppointment(Appointment appointment) {
+//        bookedAppointments.remove(appointment);
+//    }
+//
+//    // 📌 **קבלת רשימת תורים קיימים**
+//    public ArrayList<Appointment> getBookedAppointments() {
+//        return new ArrayList<>(bookedAppointments);
+//    }
 
     public int getDayOfWeekFromDate(Date date) {
         Calendar calendar = Calendar.getInstance();

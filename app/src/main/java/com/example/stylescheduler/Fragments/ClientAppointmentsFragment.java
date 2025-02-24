@@ -13,7 +13,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.stylescheduler.Classes.Appointment;
+//import com.example.stylescheduler.Classes.Appointment;
 import com.example.stylescheduler.Classes.AppointmentAdapter;
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;

@@ -53,9 +53,9 @@ public class Barber extends User {
         return workSchedule.getDayName( day);
     }
     // 📌 **הוספת תור חדש**
-    public void bookAppointment(Appointment appointment) {
-        workSchedule.addAppointment(appointment);
-    }
+//    public void bookAppointment(Appointment appointment) {
+//        workSchedule.addAppointment(appointment);
+//    }
     // 📌 **קבלת זמני עבודה פנויים**
     public Date getNextAvailableAppointment() {
         ArrayList<Date> availableAppointments = workSchedule.getAvailableTimeSlots(new Date(), 14);
@@ -65,40 +65,40 @@ public class Barber extends User {
         return null; // אם אין תורים פנויים
     }
 
-    // 📌 **ביטול תור (למשל, אם הספר חולה)**
-    public void cancelAppointment(Appointment appointment) {
-        workSchedule.cancelAppointment(appointment);
-    }
+//    // 📌 **ביטול תור (למשל, אם הספר חולה)**
+//    public void cancelAppointment(Appointment appointment) {
+//        workSchedule.cancelAppointment(appointment);
+//    }
 
     public void setShopAddress(String shopAddress) {
         this.shopAddress = shopAddress;
     }
 
-    public void updateWorkingDaysAndHours(List<Integer> newWorkingDays, String startHour, String endHour) {
-        List<Integer> daysWithAppointments = new ArrayList<>();
-
-        for (Appointment appointment : workSchedule.getBookedAppointments()) {
-            int dayOfWeek = getDayOfWeekFromDate(appointment.getAppointmentDate());
-            daysWithAppointments.add(dayOfWeek);
-        }
-
-        // Clear the previous work schedule
-        workSchedule.clearSchedule();
-
-        // Keep old schedule for days with existing appointments
-        List<Integer> updatedDays = new ArrayList<>();
-        for (int day : newWorkingDays) {
-            if (daysWithAppointments.contains(day)) {
-                updatedDays.add(day);
-                System.out.println("⚠️ Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
-            } else {
-                updatedDays.add(day);
-            }
-        }
-
-        workSchedule.setWorkingDays(new ArrayList<>(updatedDays)); // Now using List<Integer>
-        workSchedule.setWorkingHours(startHour, endHour);
-    }
+//    public void updateWorkingDaysAndHours(List<Integer> newWorkingDays, String startHour, String endHour) {
+//        List<Integer> daysWithAppointments = new ArrayList<>();
+//
+//        for (Appointment appointment : workSchedule.getBookedAppointments()) {
+//            int dayOfWeek = getDayOfWeekFromDate(appointment.getAppointmentDate());
+//            daysWithAppointments.add(dayOfWeek);
+//        }
+//
+//        // Clear the previous work schedule
+//        workSchedule.clearSchedule();
+//
+//        // Keep old schedule for days with existing appointments
+//        List<Integer> updatedDays = new ArrayList<>();
+//        for (int day : newWorkingDays) {
+//            if (daysWithAppointments.contains(day)) {
+//                updatedDays.add(day);
+//                System.out.println("⚠️ Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
+//            } else {
+//                updatedDays.add(day);
+//            }
+//        }
+//
+//        workSchedule.setWorkingDays(new ArrayList<>(updatedDays)); // Now using List<Integer>
+//        workSchedule.setWorkingHours(startHour, endHour);
+//    }
 
 
 
@@ -108,11 +108,11 @@ public class Barber extends User {
     }
 
     // 📌 **צפייה בכל התורים שנקבעו לספר**
-    public void viewScheduledAppointments() {
-        ArrayList<Appointment> bookedAppointments = workSchedule.getBookedAppointments();
-        System.out.println("Appointments for " + this.name + ":");
-        for (Appointment appointment : bookedAppointments) {
-            System.out.println("📅 " + appointment.getAppointmentDate() + " - " + appointment.getCustomer().name);
-        }
-    }
+//    public void viewScheduledAppointments() {
+//        ArrayList<Appointment> bookedAppointments = workSchedule.getBookedAppointments();
+//        System.out.println("Appointments for " + this.name + ":");
+//        for (Appointment appointment : bookedAppointments) {
+//            System.out.println("📅 " + appointment.getAppointmentDate() + " - " + appointment.getCustomer().name);
+//        }
+//    }
 }

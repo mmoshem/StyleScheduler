@@ -1,5 +1,7 @@
 package com.example.stylescheduler.Fragments;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CalendarView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -14,8 +17,14 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+//import com.example.stylescheduler.Classes.Appointment;
 import com.example.stylescheduler.Classes.AvailableAppointmentsAdapter;
+import com.example.stylescheduler.Classes.Customer;
+import com.example.stylescheduler.Classes.CustomerAppointment;
+import com.example.stylescheduler.Classes.CustomerAppointmentAdapter;
 import com.example.stylescheduler.R;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -23,7 +32,7 @@ import com.google.firebase.database.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class BarberHomePage extends Fragment {
+public class BarberHomePage extends Fragment  implements CustomerAppointmentAdapter.OnCancelClickListener{
 
     private TextView textViewName;
     private CalendarView calendarView;
@@ -50,16 +59,18 @@ public class BarberHomePage extends Fragment {
 
         // הגדרת ה-RecyclerView
         recyclerViewAvailableAppointments.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new AvailableAppointmentsAdapter(availableAppointments, timeSlot -> {
+        /*adapter = new AvailableAppointmentsAdapter(availableAppointments, timeSlot -> {
             Log.d("RecyclerView", "🕒 Clicked time slot: " + timeSlot);
-        });
-        recyclerViewAvailableAppointments.setAdapter(adapter);
+        });*/
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             loadBarberInfo();
             loadWorkingDays();
         }
+        loadCustomers();
+        customerAppointmentsAdapter = new CustomerAppointmentAdapter(this);
+        recyclerViewAvailableAppointments.setAdapter(customerAppointmentsAdapter);
 
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
             Calendar selectedDate = Calendar.getInstance();
@@ -79,7 +90,7 @@ public class BarberHomePage extends Fragment {
                 Log.i("Calendar", "✅ הספר עובד ביום הזה!"); // ✅ הודעה כדי לראות שהיום נמצא ברשימה
                 Toast.makeText(getContext(), "✅ הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
-                loadBarberWorkingHours();
+                loadBarberAppointments(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
         });
 
@@ -211,6 +222,96 @@ public class BarberHomePage extends Fragment {
         });
     }
 
+
+    private CustomerAppointmentAdapter customerAppointmentsAdapter;
+    private HashMap<String, Customer> customerHashMap = new HashMap<>();
+
+    private void loadCustomers() {
+        AlertDialog pd = new ProgressDialog.Builder(requireContext()).create();
+        pd.setMessage("Loading appointments");
+        pd.show();
+        FirebaseDatabase.getInstance().getReference("customers")
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        if (!dataSnapshot.exists()) {
+                            Log.d("Firebase", "⚠️ No customers found in database.");
+                            return;
+                        }
+
+                        for (DataSnapshot customer : dataSnapshot.getChildren()) {
+                            String customerEmail = customer.child("email").getValue(String.class);
+                            String customerName = customer.child("name").getValue(String.class);
+                            String customerPhone = customer.child("phoneNumber").getValue(String.class);
+                            Customer c = new Customer();
+                            c.setEmail(customerEmail);
+                            c.setName(customerName);
+                            c.setPhoneNumber(customerPhone);
+                            customerHashMap.put(customerEmail.replace(".", "_"), c);
+                        }
+                        pd.dismiss();
+                    }
+                }).addOnFailureListener(e -> pd.dismiss());
+    }
+
+    private void loadBarberAppointments(String date) {
+        customerAppointmentsAdapter.clear();
+        if (currentUser == null || customerHashMap.isEmpty()) return;
+
+        String safeEmail = currentUser.getEmail().replace(".", "_");
+        DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments").child(safeEmail).child(date);
+
+        appointmentsRef.get()
+                        .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                if(!dataSnapshot.exists()) {
+                                    return;
+                                }
+                                List<CustomerAppointment> showingAppointments = new ArrayList<>();
+
+                               for(DataSnapshot appointment : dataSnapshot.getChildren()) {
+                                        String time = appointment.getKey();
+                                        String customerEmail = appointment.child("customerEmail").getValue(String.class);
+                                        CustomerAppointment ap = new CustomerAppointment(customerEmail, time);
+                                        showingAppointments.add(ap);
+                                }
+                               customerAppointmentsAdapter.setData(date, showingAppointments, customerHashMap);
+                            }
+                        });
+        /*barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    Log.d("Firebase", "⚠️ No barber found in database.");
+                    return;
+                }
+
+                // שליפת שעות העבודה
+                String startHour = snapshot.child("startHour").getValue(String.class);
+                String endHour = snapshot.child("endHour").getValue(String.class);
+
+                if (startHour != null && endHour != null) {
+                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
+                    availableAppointments.clear();
+                    availableAppointments.addAll(timeSlots);
+                    adapter.notifyDataSetChanged();
+
+                    Log.d("Firebase", "✅ Loaded available appointments: " + availableAppointments);
+                } else {
+                    Log.d("Firebase", "⚠️ startHour or endHour is missing.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "❌ Failed to load barber details: " + error.getMessage());
+            }
+        });*/
+    }
+
+
     private List<String> generateTimeSlots(String startHour, String endHour) {
         List<String> timeSlots = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
@@ -238,5 +339,10 @@ public class BarberHomePage extends Fragment {
 
         // התאמת ימי השבוע (באנדרואיד: ראשון = 1, שבת = 7)
         return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
+    }
+
+    @Override
+    public void onCancelClick(CustomerAppointment appointment, int position) {
+        // @TODO: Let barber cancel the appointment
     }
 }
