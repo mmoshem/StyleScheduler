@@ -73,6 +73,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         recyclerViewAvailableAppointments.setAdapter(customerAppointmentsAdapter);
 
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
+
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
 
@@ -90,6 +91,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 Log.i("Calendar", "✅ הספר עובד ביום הזה!"); // ✅ הודעה כדי לראות שהיום נמצא ברשימה
                 Toast.makeText(getContext(), "✅ הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
+                this.selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                 loadBarberAppointments(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
         });
@@ -341,8 +343,54 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
     }
 
+//    @Override
+//    public void onCancelClick(CustomerAppointment appointment, int position) {
+//        // @TODO: Let barber cancel the appointment
+//    }
+
     @Override
     public void onCancelClick(CustomerAppointment appointment, int position) {
-        // @TODO: Let barber cancel the appointment
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Cancel Appointment")
+                .setMessage("Are you sure you want to cancel this appointment?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    cancelAppointment(appointment, position);
+                })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                .show();
     }
+
+    private void cancelAppointment(CustomerAppointment appointment, int position) {
+        String barberEmail = currentUser.getEmail().replace(".", "_");
+        String customerEmail = appointment.getCustomerEmail().replace(".", "_");
+        String appointmentDate = this.selectedDate;
+        String appointmentTime = appointment.getTime();
+        Log.d("Cancel", "🚫 Canceling appointment: " + appointmentDate + " at " + appointmentTime+"barberEmail"+barberEmail+"customerEmail"+customerEmail);
+
+        DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(barberEmail)
+                .child(appointmentDate)
+                .child(appointmentTime);
+
+        DatabaseReference customerAppointmentRef = FirebaseDatabase.getInstance()
+                .getReference("appointmentsByClient")
+                .child(customerEmail)
+                .child(appointmentDate)
+                .child(appointmentTime);
+
+        barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
+            customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
+                        Toast.makeText(getContext(), "Appointment canceled successfully", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "Failed to remove from customer records: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+        })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), "Failed to cancel appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                });
+    }
+
+
 }
