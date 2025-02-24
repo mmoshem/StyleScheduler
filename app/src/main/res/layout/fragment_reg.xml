@@ -30,6 +30,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:textColor="@color/black"
         android:textColorHint="@color/red"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
@@ -38,6 +39,7 @@
 
     <EditText
         android:id="@+id/et_phone"
+        android:textColor="@color/black"
         android:layout_width="0dp"
         android:layout_height="59dp"
         android:layout_marginTop="22dp"
@@ -59,6 +61,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:hint="Email"
+        android:textColor="@color/black"
         android:textColorHint="@color/red"
         android:textSize="20sp"
         android:inputType="textEmailAddress"
@@ -72,6 +75,7 @@
         android:layout_height="59dp"
         android:gravity="center"
         android:textAlignment="center"
+        android:textColor="@color/black"
         android:layout_marginTop="22dp"
         android:hint="Password"
         android:textColorHint="@color/red"
@@ -97,6 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Client"
+            android:textColor="@color/black"
             android:checked="true" />
 
         <RadioButton
@@ -104,6 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Barber"
+            android:textColor="@color/black"
             android:layout_marginStart="20dp" />
     </RadioGroup>
 
@@ -123,6 +129,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:textColorHint="@color/red"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:inputType="textPostalAddress"
         android:visibility="gone"

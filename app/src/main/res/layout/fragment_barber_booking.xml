@@ -35,10 +35,11 @@
     </LinearLayout>
 
     <CalendarView
-        android:theme="@style/Platform.MaterialComponents.Light"
         android:id="@+id/calendarView"
+        android:theme="@style/Platform.MaterialComponents.Light"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:dateTextAppearance="?android:attr/textAppearanceMedium"
         android:layout_marginBottom="16dp"
         android:elevation="4dp" />
 
