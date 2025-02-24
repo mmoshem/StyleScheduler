@@ -42,21 +42,32 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- לוח שנה לבחירת יום -->
         <CalendarView
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:dateTextAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="10dp" />
 
-        <!-- רשימת התורים -->
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewAppointments"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="0dp"
+            android:layout_weight="1"
             tools:visibility="visible"
-            android:visibility="gone"/>
+            android:visibility="gone">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="224dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_height="wrap_content"
+            android:text="Delete All" />
+
     </LinearLayout>
 </FrameLayout>
