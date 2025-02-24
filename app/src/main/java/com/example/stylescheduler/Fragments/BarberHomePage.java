@@ -365,7 +365,8 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         String customerEmail = appointment.getCustomerEmail().replace(".", "_");
         String appointmentDate = this.selectedDate;
         String appointmentTime = appointment.getTime();
-        Log.d("Cancel", "🚫 Canceling appointment: " + appointmentDate + " at " + appointmentTime+"barberEmail"+barberEmail+"customerEmail"+customerEmail);
+
+        Log.d("Cancel", "🚫 Canceling appointment: " + appointmentDate + " at " + appointmentTime);
 
         DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
                 .getReference("appointments")
@@ -380,18 +381,22 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 .child(appointmentTime);
 
         barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
-            customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
-                        Toast.makeText(getContext(), "Appointment canceled successfully", Toast.LENGTH_SHORT).show();
+                    customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
+                                // ✅ Remove from the RecyclerView list
+                                customerAppointmentsAdapter.remove(appointment);
+                                customerAppointmentsAdapter.notifyDataSetChanged();  // 🔄 Refresh the UI
 
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "Failed to remove from customer records: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    });
-        })
+                                Toast.makeText(getContext(), "Appointment canceled successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "Failed to remove from customer records: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            });
+                })
                 .addOnFailureListener(e -> {
                     Toast.makeText(getContext(), "Failed to cancel appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
+
 
 
 }

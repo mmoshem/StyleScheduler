@@ -65,7 +65,7 @@ public class Barber extends User {
         return null; // אם אין תורים פנויים
     }
 
-//    // 📌 **ביטול תור (למשל, אם הספר חולה)**
+//    //  **ביטול תור (למשל, אם הספר חולה)**
 //    public void cancelAppointment(Appointment appointment) {
 //        workSchedule.cancelAppointment(appointment);
 //    }
@@ -90,7 +90,7 @@ public class Barber extends User {
 //        for (int day : newWorkingDays) {
 //            if (daysWithAppointments.contains(day)) {
 //                updatedDays.add(day);
-//                System.out.println("⚠️ Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
+//                System.out.println(" Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
 //            } else {
 //                updatedDays.add(day);
 //            }
@@ -102,7 +102,6 @@ public class Barber extends User {
 
 
 
-    // 📌 **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
     public int getDayOfWeekFromDate(Date date) {
        return workSchedule.getDayOfWeekFromDate(date);
     }
