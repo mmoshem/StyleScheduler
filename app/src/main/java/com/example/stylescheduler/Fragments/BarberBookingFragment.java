@@ -88,9 +88,9 @@ public class BarberBookingFragment extends Fragment {
                                         }
                                     }
                                 }
-                                Log.d("BarberBookingFragment", "📅 Barber's working days: " + workingDays); // נוסיף הדפסה
+                                Log.d("BarberBookingFragment", "Barber's working days: " + workingDays); // נוסיף הדפסה
                             } else {
-                                Log.e("BarberBookingFragment", "⚠️ workingDays is not a valid list");
+                                Log.e("BarberBookingFragment", "workingDays is not a valid list");
                             }
                         }
                     }
@@ -109,7 +109,7 @@ public class BarberBookingFragment extends Fragment {
                     Log.d("BarberBookingFragment", "Selected date: " + selectedDate);
                 if (!workingDays.contains(selectedDayOfWeek)) {
                     Log.w("BarberBookingFragment", " Barber does not work on this day!");
-                    Toast.makeText(getContext(), "⛔ Barber does not work on this day!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), " Barber does not work on this day!", Toast.LENGTH_SHORT).show();
                     recyclerViewAvailableAppointments.setVisibility(View.GONE);
                 } else {
                     Log.i("BarberBookingFragment", "✅ הספר עובד ביום הזה!");
@@ -148,7 +148,7 @@ public class BarberBookingFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Log.e("BarberBookingFragment", "❌ Barber not found.");
+                    Log.e("BarberBookingFragment", " Barber not found.");
                     return;
                 }
 
@@ -156,7 +156,7 @@ public class BarberBookingFragment extends Fragment {
                 String endHour = snapshot.child("endHour").getValue(String.class);
 
                 if (startHour == null || endHour == null) {
-                    Log.e("BarberBookingFragment", "❌ Working hours missing.");
+                    Log.e("BarberBookingFragment", " Working hours missing.");
                     return;
                 }
 

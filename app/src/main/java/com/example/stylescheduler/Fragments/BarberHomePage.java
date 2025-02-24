@@ -382,6 +382,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
             customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
                         Toast.makeText(getContext(), "Appointment canceled successfully", Toast.LENGTH_SHORT).show();
+
                     })
                     .addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Failed to remove from customer records: " + e.getMessage(), Toast.LENGTH_LONG).show();
