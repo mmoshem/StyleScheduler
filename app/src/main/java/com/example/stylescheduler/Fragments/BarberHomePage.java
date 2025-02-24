@@ -2,6 +2,7 @@ package com.example.stylescheduler.Fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,7 +44,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     private List<String> availableAppointments = new ArrayList<>();
     private List<Integer> workingDays = new ArrayList<>();
     private String selectedDate;  // תאריך שנבחר מהלוח שנה
-
+    Button btnDeleteAll;
     public BarberHomePage() {}
 
     @Override
@@ -53,8 +54,8 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         textViewName = view.findViewById(R.id.textViewname);
         calendarView = view.findViewById(R.id.calendarView);
         recyclerViewAvailableAppointments = view.findViewById(R.id.recyclerViewAppointments);
-
-        Button btnDelete=view.findViewById(R.id.btn_Delete);
+        btnDeleteAll = view.findViewById(R.id.btn_Delete);
+        btnDeleteAll.setVisibility(view.GONE);
         Button button = view.findViewById(R.id.btn_update_info);
         button.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_barberHomePage_to_barberUpdateInfoFragment));
 
@@ -87,18 +88,13 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 Log.w("Calendar", " הספר לא עובד ביום הזה!");
                 Toast.makeText(getContext(), " הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.GONE);
-                btnDelete.setVisibility(view.GONE);
-
+                btnDeleteAll.setVisibility(view.GONE);
             } else {
-                Log.i("Calendar", " הספר עובד ביום הזה!");
-                Toast.makeText(getContext(), " הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
-                btnDelete.setVisibility(view.VISIBLE);
                 this.selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                 loadBarberAppointments(dayOfMonth + "-" + (month + 1) + "-" + year);
             }
         });
-
         return view;
 
     }
