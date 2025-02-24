@@ -79,17 +79,17 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
             int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK) - 1; // Android מחזיר 1 = Sunday, 2 = Monday וכו'
 
-            Log.d("Calendar", "📅 Selected date: " + dayOfMonth + "/" + (month + 1) + "/" + year + " (Day: " + selectedDayOfWeek + ")");
-            Log.d("Calendar", "📆 Barber's working days: " + workingDays);
+            Log.d("Calendar", "Selected date: " + dayOfMonth + "/" + (month + 1) + "/" + year + " (Day: " + selectedDayOfWeek + ")");
+            Log.d("Calendar", "Barber's working days: " + workingDays);
 
             if (!workingDays.contains(selectedDayOfWeek)) {
-                Log.w("Calendar", "⛔ הספר לא עובד ביום הזה!"); // 🛑 הודעה ב-WARNING כדי להדגיש
-                Toast.makeText(getContext(), "📅 הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
+                Log.w("Calendar", " הספר לא עובד ביום הזה!");
+                Toast.makeText(getContext(), " הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.GONE);
 
             } else {
-                Log.i("Calendar", "✅ הספר עובד ביום הזה!"); // ✅ הודעה כדי לראות שהיום נמצא ברשימה
-                Toast.makeText(getContext(), "✅ הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
+                Log.i("Calendar", " הספר עובד ביום הזה!");
+                Toast.makeText(getContext(), " הספר עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                 this.selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
                 loadBarberAppointments(dayOfMonth + "-" + (month + 1) + "-" + year);
@@ -115,7 +115,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "❌ Failed to load barber info: " + error.getMessage());
+                Log.e("Firebase", "Failed to load barber info: " + error.getMessage());
             }
         });
     }
@@ -129,43 +129,43 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Log.d("Firebase", "⚠️ No barber found.");
+                    Log.d("Firebase", "No barber found.");
                     return;
                 }
 
                 workingDays.clear(); // ננקה את הרשימה
 
                 Object data = snapshot.child("workingDays").getValue();
-                Log.d("Firebase", "📂 Data from Firebase: " + data); // 🟢 לוג לבדיקה
+                Log.d("Firebase", " Data from Firebase: " + data); //  לוג לבדיקה
 
                 if (data instanceof List) {
                     List<?> daysList = (List<?>) data;
                     for (Object item : daysList) {
-                        Log.d("Firebase", "📆 Raw item: " + item); // 🟢 לוג לבדיקה
+                        Log.d("Firebase", " Raw item: " + item); //  לוג לבדיקה
 
                         if (item instanceof Long) {
                             int dayNumber = ((Long) item).intValue();
                             workingDays.add(dayNumber);
-                            Log.d("Firebase", "✅ Added numeric day: " + dayNumber);
+                            Log.d("Firebase", "Added numeric day: " + dayNumber);
                         } else if (item instanceof String) {
                             int dayNum = convertDayNameToNumber(item.toString().trim());
                             if (dayNum != -1) {
                                 workingDays.add(dayNum);
-                                Log.d("Firebase", "✅ Converted and added day: " + dayNum);
+                                Log.d("Firebase", "Converted and added day: " + dayNum);
                             } else {
-                                Log.e("Firebase", "⚠️ Invalid day format: " + item);
+                                Log.e("Firebase", "Invalid day format: " + item);
                             }
                         }
                     }
-                    Log.d("Firebase", "📅 Barber's working days (Processed): " + workingDays);
+                    Log.d("Firebase", "Barber's working days (Processed): " + workingDays);
                 } else {
-                    Log.d("Firebase", "⚠️ No valid working days format found.");
+                    Log.d("Firebase", "No valid working days format found.");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "❌ Failed to load working days: " + error.getMessage());
+                Log.e("Firebase", "Failed to load working days: " + error.getMessage());
             }
         });
     }
@@ -197,7 +197,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Log.d("Firebase", "⚠️ No barber found in database.");
+                    Log.d("Firebase", "No barber found in database.");
                     return;
                 }
 
@@ -211,15 +211,15 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                     availableAppointments.addAll(timeSlots);
                     adapter.notifyDataSetChanged();
 
-                    Log.d("Firebase", "✅ Loaded available appointments: " + availableAppointments);
+                    Log.d("Firebase", "Loaded available appointments: " + availableAppointments);
                 } else {
-                    Log.d("Firebase", "⚠️ startHour or endHour is missing.");
+                    Log.d("Firebase", "startHour or endHour is missing.");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "❌ Failed to load barber details: " + error.getMessage());
+                Log.e("Firebase", "Failed to load barber details: " + error.getMessage());
             }
         });
     }
@@ -238,7 +238,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
                         if (!dataSnapshot.exists()) {
-                            Log.d("Firebase", "⚠️ No customers found in database.");
+                            Log.d("Firebase", "No customers found in database.");
                             return;
                         }
 
@@ -286,7 +286,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Log.d("Firebase", "⚠️ No barber found in database.");
+                    Log.d("Firebase", " No barber found in database.");
                     return;
                 }
 
@@ -300,15 +300,15 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                     availableAppointments.addAll(timeSlots);
                     adapter.notifyDataSetChanged();
 
-                    Log.d("Firebase", "✅ Loaded available appointments: " + availableAppointments);
+                    Log.d("Firebase", " Loaded available appointments: " + availableAppointments);
                 } else {
-                    Log.d("Firebase", "⚠️ startHour or endHour is missing.");
+                    Log.d("Firebase", " startHour or endHour is missing.");
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "❌ Failed to load barber details: " + error.getMessage());
+                Log.e("Firebase", " Failed to load barber details: " + error.getMessage());
             }
         });*/
     }
@@ -365,7 +365,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         String customerEmail = appointment.getCustomerEmail().replace(".", "_");
         String appointmentDate = this.selectedDate;
         String appointmentTime = appointment.getTime();
-        Log.d("Cancel", "🚫 Canceling appointment: " + appointmentDate + " at " + appointmentTime+"barberEmail"+barberEmail+"customerEmail"+customerEmail);
+        Log.d("Cancel", "Canceling appointment: " + appointmentDate + " at " + appointmentTime+"barberEmail"+barberEmail+"customerEmail"+customerEmail);
 
         DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
                 .getReference("appointments")

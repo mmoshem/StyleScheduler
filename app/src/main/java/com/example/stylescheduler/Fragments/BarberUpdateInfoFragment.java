@@ -163,8 +163,6 @@ public class BarberUpdateInfoFragment extends Fragment {
 
     private void updateBarberInfo() {
 
-        // קבלת הנתונים מהשדות
-
         String newName = editName.getText().toString().trim();
         String newPhone = editPhone.getText().toString().trim();
         String newAddress = editAddress.getText().toString().trim();
@@ -196,7 +194,7 @@ public class BarberUpdateInfoFragment extends Fragment {
         List<String> workingDaysStringList = new ArrayList<>();
         WorkSchedule workSchedule = new WorkSchedule();
         for (Integer day : selectedDays) {
-            workingDaysStringList.add(workSchedule.getDayName(day)); // ✅ Convert Integer to String
+            workingDaysStringList.add(workSchedule.getDayName(day)); // Convert Integer to String
         }
         updates.put("workingDays", workingDaysStringList);
 

@@ -9,7 +9,6 @@
     android:layout_height="match_parent"
     android:padding="24dp">
 
-    <!-- Title -->
     <TextView
         android:id="@+id/tv_register_title"
         android:layout_width="0dp"
@@ -22,7 +21,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Name Field -->
     <EditText
         android:id="@+id/et_name"
         android:layout_width="0dp"
@@ -38,7 +36,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_register_title" />
 
-    <!-- Phone Field -->
     <EditText
         android:id="@+id/et_phone"
         android:layout_width="0dp"
@@ -54,7 +51,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_name" />
 
-    <!-- Email Field -->
     <EditText
         android:id="@+id/et_email"
         android:layout_width="0dp"
@@ -70,7 +66,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_phone" />
 
-    <!-- Password Field -->
     <EditText
         android:id="@+id/et_password"
         android:layout_width="0dp"
@@ -86,7 +81,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_email" />
 
-    <!-- Account Type Selection -->
     <RadioGroup
         android:id="@+id/rg_account_type"
         android:layout_width="0dp"
@@ -113,7 +107,6 @@
             android:layout_marginStart="20dp" />
     </RadioGroup>
 
-    <!-- Barrier to keep Register Button fixed -->
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier"
         android:layout_width="wrap_content"
@@ -121,8 +114,6 @@
         app:barrierDirection="top"
         app:constraint_referenced_ids="rg_account_type" />
 
-
-    <!-- Workplace Address Field (visible only for workers) -->
     <EditText
         android:id="@+id/et_work_address"
         android:layout_width="0dp"
@@ -140,7 +131,6 @@
         app:layout_constraintTop_toBottomOf="@id/rg_account_type"
         tools:visibility="visible" />
 
-    <!-- Register Button (Fixed Position) -->
     <Button
         android:id="@+id/btn_register"
         android:layout_width="0dp"

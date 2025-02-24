@@ -20,7 +20,7 @@ public class Barber extends User {
         this.shopAddress = "";
         this.workSchedule = new WorkSchedule();
     }
-    // 📌 **הוספת חופשה - שימוש ב-Date במקום LocalDate**
+
     public String getName() { return this.name; }
     public String getPhoneNumber() { return this.phoneNumber; }
     public String getShopAddress() { return this.shopAddress; }
@@ -52,11 +52,11 @@ public class Barber extends User {
     public String getDayName(int day) {
         return workSchedule.getDayName( day);
     }
-    // 📌 **הוספת תור חדש**
+    //  **הוספת תור חדש**
 //    public void bookAppointment(Appointment appointment) {
 //        workSchedule.addAppointment(appointment);
 //    }
-    // 📌 **קבלת זמני עבודה פנויים**
+    //  **קבלת זמני עבודה פנויים**
     public Date getNextAvailableAppointment() {
         ArrayList<Date> availableAppointments = workSchedule.getAvailableTimeSlots(new Date(), 14);
         if (!availableAppointments.isEmpty()) {
@@ -65,7 +65,7 @@ public class Barber extends User {
         return null; // אם אין תורים פנויים
     }
 
-//    // 📌 **ביטול תור (למשל, אם הספר חולה)**
+//    //  **ביטול תור (למשל, אם הספר חולה)**
 //    public void cancelAppointment(Appointment appointment) {
 //        workSchedule.cancelAppointment(appointment);
 //    }
@@ -90,7 +90,7 @@ public class Barber extends User {
 //        for (int day : newWorkingDays) {
 //            if (daysWithAppointments.contains(day)) {
 //                updatedDays.add(day);
-//                System.out.println("⚠️ Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
+//                System.out.println(" Warning: Existing appointments on day " + day + ". Keeping previous schedule.");
 //            } else {
 //                updatedDays.add(day);
 //            }
@@ -102,17 +102,17 @@ public class Barber extends User {
 
 
 
-    // 📌 **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
+    //  **פונקציה חדשה לקבלת היום בשבוע מ-Date באמצעות Calendar**
     public int getDayOfWeekFromDate(Date date) {
        return workSchedule.getDayOfWeekFromDate(date);
     }
 
-    // 📌 **צפייה בכל התורים שנקבעו לספר**
+    //  **צפייה בכל התורים שנקבעו לספר**
 //    public void viewScheduledAppointments() {
 //        ArrayList<Appointment> bookedAppointments = workSchedule.getBookedAppointments();
 //        System.out.println("Appointments for " + this.name + ":");
 //        for (Appointment appointment : bookedAppointments) {
-//            System.out.println("📅 " + appointment.getAppointmentDate() + " - " + appointment.getCustomer().name);
+//            System.out.println( appointment.getAppointmentDate() + " - " + appointment.getCustomer().name);
 //        }
 //    }
 }
