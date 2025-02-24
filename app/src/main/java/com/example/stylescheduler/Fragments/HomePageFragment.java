@@ -1,14 +1,16 @@
 package com.example.stylescheduler.Fragments;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -19,6 +21,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 public class HomePageFragment extends Fragment {
 
     private FirebaseAuth mAuth;
+    private ProgressBar progressBar;
 
     public HomePageFragment() {}
 
@@ -37,16 +40,30 @@ public class HomePageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        progressBar = view.findViewById(R.id.progressBar);
         EditText etEmail = view.findViewById(R.id.editTextTextEmailAddress);
         EditText etPassword = view.findViewById(R.id.editTextTextPassword);
         Button btLogin = view.findViewById(R.id.buttonLogIn);
         Button btRegister = view.findViewById(R.id.buttonRegistration);
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            checkUserRoleAndNavigate(view);
-            return;
-        }
+        progressBar.setVisibility(View.VISIBLE);
+        etEmail.setVisibility(View.GONE);
+        etPassword.setVisibility(View.GONE);
+        btLogin.setVisibility(View.GONE);
+        btRegister.setVisibility(View.GONE);
+
+        new Handler().postDelayed(() -> {
+            FirebaseUser currentUser = mAuth.getCurrentUser();
+            if (currentUser != null) {
+                checkUserRoleAndNavigate(view);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                etEmail.setVisibility(View.VISIBLE);
+                etPassword.setVisibility(View.VISIBLE);
+                btLogin.setVisibility(View.VISIBLE);
+                btRegister.setVisibility(View.VISIBLE);
+            }
+        }, 940);
 
         btLogin.setOnClickListener(v -> {
             String email = etEmail.getText().toString();
@@ -98,13 +115,14 @@ public class HomePageFragment extends Fragment {
 
     private void storeFCMToken() {
         FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                String token = task.getResult();
-                FirebaseUser user = mAuth.getCurrentUser();
-                if (user != null) {
-                    DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
-                    databaseRef.child("fcmToken").setValue(token);
-                }
+            if (!task.isSuccessful()) {
+                return;
+            }
+            String token = task.getResult();
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
+                databaseRef.child("fcmToken").setValue(token);
             }
         });
     }
