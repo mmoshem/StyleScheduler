@@ -61,8 +61,8 @@ public class BarberUpdateInfoFragment extends Fragment {
         checkSunday = view.findViewById(R.id.checkSunday);
         //add from 6 to 22 hours
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, hours);
-        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, hours);
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown);
         spinnerStartHour.setAdapter(adapter);
         spinnerEndHour.setAdapter(adapter);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
