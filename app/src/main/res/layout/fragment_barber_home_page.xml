@@ -17,10 +17,11 @@
             android:layout_height="100dp"
             android:background="@color/black">
 
+
             <TextView
                 android:id="@+id/textViewname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="360dp"
+                android:layout_height="78dp"
                 android:paddingStart="16dp"
                 android:text="Hello,"
                 android:textColor="@android:color/white"
@@ -28,18 +29,31 @@
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_update_info"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.258" />
 
             <Button
                 android:id="@+id/btn_update_info"
-                android:layout_width="34dp"
-                android:layout_height="34dp"
-                android:layout_marginEnd="16dp"
+                android:layout_width="38dp"
+                android:layout_height="35dp"
+                android:layout_marginEnd="4dp"
                 android:background="@drawable/updateinfobutton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_logout" />
+
+            <Button
+                android:id="@+id/btn_logout"
+                android:layout_width="38dp"
+                android:layout_height="37dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/img_4"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.075" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <CalendarView
