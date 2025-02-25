@@ -7,11 +7,12 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="374dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:background="@drawable/card_background"
+        android:background="@drawable/k"
         android:elevation="4dp"
         android:orientation="vertical"
         android:padding="16dp">
@@ -33,7 +34,6 @@
             android:textColor="@color/dark_gray"
             android:textSize="16sp" />
     </LinearLayout>
-
 
     <CalendarView
         android:id="@+id/calendarView"
