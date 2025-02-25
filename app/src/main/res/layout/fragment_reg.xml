@@ -31,6 +31,8 @@
         android:textAlignment="center"
         android:textSize="20sp"
         android:textColorHint="@color/red"
+        android:textColor="@color/black"
+
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -45,6 +47,8 @@
         android:textAlignment="center"
         android:hint="Phone"
         android:textColorHint="@color/red"
+        android:textColor="@color/black"
+
         android:textSize="20sp"
         android:inputType="phone"
         app:layout_constraintEnd_toEndOf="parent"
@@ -60,6 +64,8 @@
         android:textAlignment="center"
         android:hint="Email"
         android:textColorHint="@color/red"
+        android:textColor="@color/black"
+
         android:textSize="20sp"
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,6 +80,8 @@
         android:textAlignment="center"
         android:layout_marginTop="22dp"
         android:hint="Password"
+        android:textColor="@color/black"
+
         android:textColorHint="@color/red"
         android:textSize="20sp"
         android:inputType="textPassword"
@@ -95,6 +103,7 @@
 
         <RadioButton
             android:id="@+id/rb_client"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Client"
@@ -102,6 +111,7 @@
 
         <RadioButton
             android:id="@+id/rb_worker"
+            android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Barber"
@@ -125,6 +135,7 @@
         android:gravity="center"
         android:textAlignment="center"
         android:textColorHint="@color/red"
+        android:textColor="@color/black"
         android:textSize="20sp"
         android:inputType="textPostalAddress"
         android:visibility="gone"

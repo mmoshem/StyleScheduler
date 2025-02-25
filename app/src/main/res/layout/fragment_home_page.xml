@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/c"
+    android:background="@drawable/log3"
     tools:context=".Fragments.HomePageFragment">
 
 
@@ -14,7 +14,10 @@
         android:layout_height="54dp"
         android:layout_marginTop="168dp"
         android:ems="10"
-        android:hint="Enter email:"
+        android:hint=" Enter email:"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
+
         android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
@@ -27,7 +30,9 @@
         android:layout_height="54dp"
         android:layout_marginTop="44dp"
         android:ems="10"
-        android:hint="Enter Password:"
+        android:hint=" Enter Password:"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:inputType="textPassword"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
