@@ -14,9 +14,9 @@
         android:id="@+id/tvBarberName"
         android:layout_width="325dp"
         android:layout_height="22dp"
-        android:gravity="center"
+     
         android:text="BARBER"
-        android:textAlignment="center"
+
         android:textColor="@color/black"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
