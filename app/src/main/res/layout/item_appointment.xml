@@ -1,40 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="12dp"
-    android:background="@drawable/card_background"
+    android:background="@drawable/img"
     android:elevation="4dp"
     android:layout_margin="8dp">
 
     <TextView
         android:id="@+id/tvBarberName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="122dp"
+        android:layout_height="23dp"
+        android:gravity="center"
+        android:textAlignment="center"
         android:text="BARBER"
-        android:textSize="18sp"
         android:textColor="@color/black"
-        android:textStyle="bold"
-        android:layout_marginBottom="4dp" />
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tvBarberAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_width="117dp"
+        android:layout_height="22dp"
         android:text="ADDRESS"
         android:textColor="@color/dark_gray"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/tvAppointmentDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text="DATE"
-        android:textSize="16sp"
         android:textColor="@color/black"
-        android:layout_marginBottom="4dp" />
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvBarberName" />
 
     <TextView
         android:id="@+id/tvAppointmentTime"
@@ -42,16 +52,23 @@
         android:layout_height="wrap_content"
         android:text="TIME"
         android:textColor="@color/black"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvAppointmentDate"
+        app:layout_constraintVertical_bias="1.0" />
 
     <Button
         android:id="@+id/btnCancel"
-        android:layout_width="49dp"
-        android:layout_height="48dp"
+        android:layout_width="42dp"
+        android:layout_height="43dp"
         android:layout_gravity="end"
-        android:layout_marginTop="8dp"
         android:background="@drawable/deletebutton"
         android:padding="8dp"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.515" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
