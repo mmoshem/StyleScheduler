@@ -9,8 +9,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@drawable/m"
+        android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -21,15 +21,15 @@
                 android:id="@+id/textViewname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:paddingStart="16dp"
                 android:text="Hello,"
-                android:textSize="28sp"
                 android:textColor="@android:color/white"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/btn_update_info"
-                android:paddingStart="16dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <Button
                 android:id="@+id/btn_update_info"
@@ -46,8 +46,8 @@
             android:id="@+id/calendarView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:dateTextAppearance="?android:attr/textAppearanceLarge"
-            android:layout_marginBottom="10dp" />
+            android:layout_marginBottom="10dp"
+            android:dateTextAppearance="?android:attr/textAppearanceLarge" />
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -56,17 +56,17 @@
             android:layout_height="match_parent"
             android:layout_marginTop="0dp"
             android:layout_weight="1"
-            tools:visibility="visible"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
         </androidx.recyclerview.widget.RecyclerView>
 
         <Button
             android:id="@+id/btn_Delete"
             android:layout_width="224dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:layout_height="wrap_content"
             android:text="Delete All" />
 
     </LinearLayout>

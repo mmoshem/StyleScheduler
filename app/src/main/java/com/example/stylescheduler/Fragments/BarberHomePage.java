@@ -74,6 +74,11 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         customerAppointmentsAdapter = new CustomerAppointmentAdapter(this);
         recyclerViewAvailableAppointments.setAdapter(customerAppointmentsAdapter);
 
+        //הוספה שלי !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        btnDeleteAll.setOnClickListener(v -> {
+            deleteAllAppointmentsForDay(selectedDate);
+        });
+
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
@@ -278,6 +283,11 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                                         showingAppointments.add(ap);
                                 }
                                customerAppointmentsAdapter.setData(date, showingAppointments, customerHashMap);
+                                if (showingAppointments.isEmpty()) {
+                                    btnDeleteAll.setVisibility(View.GONE);
+                                } else {
+                                    btnDeleteAll.setVisibility(View.VISIBLE);
+                                }
                             }
                         });
         /*barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -340,6 +350,65 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         // התאמת ימי השבוע (באנדרואיד: ראשון = 1, שבת = 7)
         return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
     }
+    private void deleteAllAppointmentsForDay(String date) {
+        if (currentUser == null) return;
+
+        String barberEmail = currentUser.getEmail().replace(".", "_");
+        DatabaseReference barberAppointmentsRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(barberEmail)
+                .child(date);
+
+        DatabaseReference customerAppointmentsRef = FirebaseDatabase.getInstance()
+                .getReference("appointmentsByClient");
+
+        new AlertDialog.Builder(requireContext())
+                .setTitle("מחיקת כל התורים")
+                .setMessage("האם אתה בטוח שברצונך למחוק את כל התורים ליום זה?")
+                .setPositiveButton("כן", (dialog, which) -> {
+
+                    // שלב 1: מחיקת כל התורים מהברבר (appointments)
+                    barberAppointmentsRef.get().addOnSuccessListener(dataSnapshot -> {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot appointment : dataSnapshot.getChildren()) {
+                                String time = appointment.getKey();
+                                String customerEmail = appointment.child("customerEmail").getValue(String.class);
+
+                                if (customerEmail != null) {
+                                    String safeCustomerEmail = customerEmail.replace(".", "_");
+
+                                    // שלב 2: מחיקת כל התורים מהלקוחות (appointmentsByClient)
+                                    DatabaseReference customerAppointment = customerAppointmentsRef
+                                            .child(safeCustomerEmail)
+                                            .child(date)
+                                            .child(time);
+                                    customerAppointment.removeValue();
+                                }
+                            }
+
+                            // מחיקת כל הרשומה של התאריך מהברבר
+                            barberAppointmentsRef.removeValue().addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getContext(), "כל התורים נמחקו בהצלחה!", Toast.LENGTH_SHORT).show();
+
+                                // עדכון ה-RecyclerView
+                                customerAppointmentsAdapter.clear();
+                                recyclerViewAvailableAppointments.setVisibility(View.GONE);
+
+                                // הסתרת כפתור DELETE ALL אחרי המחיקה
+                            //    Button btnDeleteAll = getView().findViewById(R.id.btn_Delete);
+                                btnDeleteAll.setVisibility(View.GONE);
+
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(getContext(), "שגיאה במחיקת התורים!", Toast.LENGTH_SHORT).show();
+                            });
+                        } else {
+                            Toast.makeText(getContext(), "אין תורים ליום זה!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("לא", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
 
     @Override
     public void onCancelClick(CustomerAppointment appointment, int position) {
@@ -347,31 +416,41 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         String customerEmail = appointment.getCustomerEmail().replace(".", "_");
         String appointmentDate = this.selectedDate;
         String appointmentTime = appointment.getTime();
-        Log.d("Cancel", "Canceling appointment: " + appointmentDate + " at " + appointmentTime+"barberEmail"+barberEmail+"customerEmail"+customerEmail);
 
-        DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
-                .getReference("appointments")
-                .child(barberEmail)
-                .child(appointmentDate)
-                .child(appointmentTime);
+        Log.d("Cancel", "Canceling appointment: " + appointmentDate + " at " + appointmentTime +
+                " barberEmail: " + barberEmail + " customerEmail: " + customerEmail);
 
-        DatabaseReference customerAppointmentRef = FirebaseDatabase.getInstance()
-                .getReference("appointmentsByClient")
-                .child(customerEmail)
-                .child(appointmentDate)
-                .child(appointmentTime);
+        // יצירת הודעת אישור לפני מחיקה
+        new AlertDialog.Builder(requireContext())
+                .setTitle("ביטול תור")
+                .setMessage("האם אתה בטוח שברצונך לבטל את התור בשעה " + appointmentTime + "?")
+                .setPositiveButton("כן", (dialog, which) -> {
+                    DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
+                            .getReference("appointments")
+                            .child(barberEmail)
+                            .child(appointmentDate)
+                            .child(appointmentTime);
 
-        barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
-                    customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
-                                Toast.makeText(getContext(), "Appointment canceled successfully", Toast.LENGTH_SHORT).show();
-                            })
-                            .addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "Failed to remove from customer records: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                            });
+                    DatabaseReference customerAppointmentRef = FirebaseDatabase.getInstance()
+                            .getReference("appointmentsByClient")
+                            .child(customerEmail)
+                            .child(appointmentDate)
+                            .child(appointmentTime);
+
+                    // מחיקת התור מהספר ומהלקוח
+                    barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
+                        customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
+                            Toast.makeText(getContext(), "התור בוטל בהצלחה", Toast.LENGTH_SHORT).show();
+                        }).addOnFailureListener(e -> {
+                            Toast.makeText(getContext(), "שגיאה במחיקת התור מהלקוח: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        });
+                    }).addOnFailureListener(e -> {
+                        Toast.makeText(getContext(), "שגיאה בביטול התור: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
+
                 })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(getContext(), "Failed to cancel appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                });
+                .setNegativeButton("לא", (dialog, which) -> dialog.dismiss())
+                .show();
     }
 
 }

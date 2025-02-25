@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/m"
     android:padding="16dp">
 
     <LinearLayout
@@ -12,38 +13,38 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:paddingBottom="16dp"
             android:text="Update Your Information"
             android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_gravity="center_horizontal"
-            android:paddingBottom="16dp"/>
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your name"/>
+            android:hint="Enter your name" />
 
         <EditText
             android:id="@+id/editPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter your phone number"
-            android:inputType="phone"/>
+            android:inputType="phone" />
 
         <EditText
             android:id="@+id/editAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Enter your address"/>
+            android:hint="Enter your address" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="12dp"
             android:text="Select Working Days:"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="12dp"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -54,82 +55,88 @@
                 android:id="@+id/checkMonday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Monday"/>
+                android:text="Monday" />
+
             <CheckBox
                 android:id="@+id/checkTuesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tuesday"/>
+                android:text="Tuesday" />
+
             <CheckBox
                 android:id="@+id/checkWednesday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Wednesday"/>
+                android:text="Wednesday" />
+
             <CheckBox
                 android:id="@+id/checkThursday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Thursday"/>
+                android:text="Thursday" />
+
             <CheckBox
                 android:id="@+id/checkFriday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Friday"/>
+                android:text="Friday" />
+
             <CheckBox
                 android:id="@+id/checkSaturday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Saturday"/>
+                android:text="Saturday" />
+
             <CheckBox
                 android:id="@+id/checkSunday"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sunday"/>
+                android:text="Sunday" />
         </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="12dp"
             android:text="Set Working Hours:"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:paddingTop="12dp"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <Spinner
                 android:id="@+id/spinner_time_start"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:hint="From (HH:MM)"
-                android:inputType="time"/>
+                android:inputType="time" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="  -  "
                 android:textSize="18sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <Spinner
                 android:id="@+id/spinner_time_end"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:hint="To (HH:MM)"
-                android:inputType="time"/>
+                android:inputType="time" />
         </LinearLayout>
 
         <Button
             android:id="@+id/saveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Save"
-            android:layout_marginTop="20dp"/>
+            android:layout_marginTop="20dp"
+            android:text="Save" />
     </LinearLayout>
 </ScrollView>
