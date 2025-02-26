@@ -73,6 +73,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             safeEmail = currentUser.getEmail().replace(".", "_");
             loadBarberInfo();
             loadWorkingDays();
+            deleteExpiredAppointments();
         }
         loadCustomers();
         customerAppointmentsAdapter = new CustomerAppointmentAdapter(this);
@@ -202,6 +203,51 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         }
     }
 
+
+    private void deleteExpiredAppointments() {
+        if (currentUser == null) return;
+
+        String safeEmail = currentUser.getEmail().replace(".", "_");
+        DatabaseReference appointmentsRef = FirebaseDatabase.getInstance()
+                .getReference("appointments")
+                .child(safeEmail);
+
+        DatabaseReference clientsRef = FirebaseDatabase.getInstance()
+                .getReference("appointmentsByClient");
+
+        Date today = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+
+        appointmentsRef.get().addOnSuccessListener(dataSnapshot -> {
+            if (!dataSnapshot.exists()) return;
+
+            for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
+                String appointmentDateStr = dateSnapshot.getKey();
+
+                try {
+                    Date appointmentDate = sdf.parse(appointmentDateStr);
+                    if (appointmentDate != null && appointmentDate.before(today)) {
+                        Log.d("DeleteAppointments", "📌 מחיקת תורים ליום שעבר: " + appointmentDateStr);
+
+                        // מחיקה מפיירבייס עבור הספר
+                        appointmentsRef.child(appointmentDateStr).removeValue();
+
+                        // מחיקה מהלקוחות
+                        clientsRef.get().addOnSuccessListener(clientSnapshot -> {
+                            if (clientSnapshot.exists()) {
+                                for (DataSnapshot client : clientSnapshot.getChildren()) {
+                                    DatabaseReference clientAppointmentRef = clientsRef.child(client.getKey()).child(appointmentDateStr);
+                                    clientAppointmentRef.removeValue();
+                                }
+                            }
+                        });
+                    }
+                } catch (Exception e) {
+                    Log.e("DeleteAppointments", "❌ שגיאה בפענוח תאריך: " + appointmentDateStr);
+                }
+            }
+        });
+    }
 
     private void loadBarberWorkingHours() {
         if (currentUser == null) return;
