@@ -41,7 +41,7 @@ public class BarberBookingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_barber_booking, container, false);
 
         CalendarView calendarView = view.findViewById(R.id.calendarView);
-        calendarView.setMinDate(System.currentTimeMillis()); // Disable past dates
+        calendarView.setMinDate(System.currentTimeMillis());
         calendarView.setMaxDate(System.currentTimeMillis() + (1000 * 60 * 60 * 24 * 14));
 
         TextView tvName = view.findViewById(R.id.textViewBarberName);
@@ -64,7 +64,6 @@ public class BarberBookingFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (!snapshot.exists()) {
-//                            Log.e("BarberBookingFragment", "No barber found for email: " + safeEmail);
                             return;
                         }
                         Barber barber = snapshot.getValue(Barber.class);
@@ -72,9 +71,8 @@ public class BarberBookingFragment extends Fragment {
                             tvName.setText(barber.getName());
                             tvAddress.setText(barber.getShopAddress());
 
-                            // טוענים את ימי העבודה של הספר
                             Object workingDaysObj = snapshot.child("workingDays").getValue();
-                            workingDays.clear(); // חשוב לנקות לפני הטענה חדשה
+                            workingDays.clear();
 
                             if (workingDaysObj instanceof List) {
                                 List<?> daysList = (List<?>) workingDaysObj;
@@ -88,7 +86,7 @@ public class BarberBookingFragment extends Fragment {
                                         }
                                     }
                                 }
-                                Log.d("BarberBookingFragment", " Barber's working days: " + workingDays); // נוסיף הדפסה
+                                Log.d("BarberBookingFragment", " Barber's working days: " + workingDays);
                             } else {
                                 Log.e("BarberBookingFragment", " workingDays is not a valid list");
                             }
@@ -103,16 +101,13 @@ public class BarberBookingFragment extends Fragment {
                 calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
                     Calendar selectedCal = Calendar.getInstance();
                     selectedCal.set(year, month, dayOfMonth);
-                    int selectedDayOfWeek = selectedCal.get(Calendar.DAY_OF_WEEK) - 1; // 0=Sunday, 1=Monday...
+                    int selectedDayOfWeek = selectedCal.get(Calendar.DAY_OF_WEEK) - 1;
 
                     selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
-                    Log.d("BarberBookingFragment", "Selected date: " + selectedDate);
                 if (!workingDays.contains(selectedDayOfWeek)) {
-                    Log.w("BarberBookingFragment", " Barber does not work on this day!");
                     Toast.makeText(getContext(), "Barber does not work on this day!", Toast.LENGTH_SHORT).show();
                     recyclerViewAvailableAppointments.setVisibility(View.GONE);
                 } else {
-                    Log.i("BarberBookingFragment", " הספר עובד ביום הזה!");
                     recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                     loadAvailableTimeSlots(barberEmail, selectedDate);
                 }
@@ -175,9 +170,7 @@ public class BarberBookingFragment extends Fragment {
                         if (bookedAppointments.size() >= availableTimeSlots.size()) {
                             Toast.makeText(getContext(), "there is no empty appointments left", Toast.LENGTH_SHORT).show();
                         }
-//                        else{
-//                            Toast.makeText(getContext(), "horray there steel an empty appointment ", Toast.LENGTH_SHORT).show();
-//                        }
+
                         availableTimeSlots.removeAll(bookedAppointments);
                         updateRecyclerView(availableTimeSlots);
                     }
@@ -231,40 +224,6 @@ public class BarberBookingFragment extends Fragment {
                 .setNegativeButton("No", null)
                 .show();
     }
-//    private void cancelAppointment(String selectedTimeSlot) {
-//        if (currentUser == null || barberEmail == null || selectedDate == null) {
-//            Log.e("BarberBookingFragment", " Missing user or barber info.");
-//            return;
-//        }
-//
-//        String customerEmail = currentUser.getEmail().replace(".", "_");
-//        String barberSafeEmail = barberEmail.replace(".", "_");
-//
-//        DatabaseReference appointmentRef = FirebaseDatabase.getInstance().getReference("appointments")
-//                .child(barberSafeEmail).child(selectedDate).child(selectedTimeSlot);
-//        DatabaseReference clientAppointmentRef = FirebaseDatabase.getInstance().getReference("appointmentsByClient")
-//                .child(customerEmail).child(selectedDate).child(selectedTimeSlot);
-//
-//        clientAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
-//            Log.d("CancelAppointment", " התור נמחק אצל הלקוח");
-//            appointmentRef.removeValue().addOnSuccessListener(aVoid1 -> {
-//                Log.d("CancelAppointment", " התור נמחק אצל הספר");
-//                returnTimeSlotToAvailability(barberSafeEmail, selectedDate, selectedTimeSlot);
-//            }).addOnFailureListener(e -> Log.e("CancelAppointment", " שגיאה במחיקת התור אצל הספר", e));
-//        }).addOnFailureListener(e -> Log.e("CancelAppointment", " שגיאה במחיקת התור אצל הלקוח", e));
-//    }
-//
-//    private void returnTimeSlotToAvailability(String barberEmail, String selectedDate, String timeSlot) {
-//        DatabaseReference availableSlotsRef = FirebaseDatabase.getInstance()
-//                .getReference("appointments").child(barberEmail).child(selectedDate);
-//        availableSlotsRef.child(timeSlot).setValue("available")
-//                .addOnSuccessListener(aVoid -> {
-//                    Log.d("CancelAppointment", "השעה נוספה מחדש לרשימת הזמינות של הספר");
-//                    availableAppointments.add(timeSlot);
-//                    adapter.notifyDataSetChanged();
-//                })
-//                .addOnFailureListener(e -> Log.e("CancelAppointment", "שגיאה בהוספת השעה לרשימה הזמינות", e));
-//    }
 
     private void bookAppointment(String selectedTimeSlot) {
         if (currentUser == null || barberEmail == null || selectedDate == null) {
@@ -288,12 +247,10 @@ public class BarberBookingFragment extends Fragment {
         appointmentData.put("customerEmail", customerEmail);
         appointmentData.put("status", "booked");
 
-        // שמירה גם תחת `appointments` וגם תחת `appointmentsByClient`
         appointmentRef.setValue(appointmentData);
         clientAppointmentRef.setValue(appointmentData)
                 .addOnSuccessListener(aVoid -> {
                     Toast.makeText(getContext(), "Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
-                    Log.d("BarberBookingFragment", "Appointment booked successfully.");
 
                     // עדכון הרשימה כך שהתור שנבחר ייעלם
                     availableAppointments.remove(selectedTimeSlot);

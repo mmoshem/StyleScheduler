@@ -19,8 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-//import com.example.stylescheduler.Classes.Appointment;
 import com.example.stylescheduler.Classes.AvailableAppointmentsAdapter;
 import com.example.stylescheduler.Classes.Customer;
 import com.example.stylescheduler.Classes.CustomerAppointment;
@@ -31,10 +29,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class BarberHomePage extends Fragment  implements CustomerAppointmentAdapter.OnCancelClickListener{
@@ -47,7 +43,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     private AvailableAppointmentsAdapter adapter;
     private List<String> availableAppointments = new ArrayList<>();
     private List<Integer> workingDays = new ArrayList<>();
-    private String selectedDate;  // תאריך שנבחר מהלוח שנה
+    private String selectedDate;
     Button btnDeleteAll;
     String safeEmail;
 
@@ -66,13 +62,9 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         Button btnlogout=view.findViewById(R.id.btn_logout);
 
         button.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_barberHomePage_to_barberUpdateInfoFragment));
-        btnlogout.setOnClickListener(v -> signOut());//polina !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        btnlogout.setOnClickListener(v -> signOut());
 
-        // הגדרת ה-RecyclerView
         recyclerViewAvailableAppointments.setLayoutManager(new LinearLayoutManager(getContext()));
-        /*adapter = new AvailableAppointmentsAdapter(availableAppointments, timeSlot -> {
-            Log.d("RecyclerView", " Clicked time slot: " + timeSlot);
-        });*/
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
@@ -93,11 +85,10 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
-            int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK) - 1; // 0 = Sunday, 1 = Monday וכו'
+            int selectedDayOfWeek = selectedDate.get(Calendar.DAY_OF_WEEK) - 1;
 
             this.selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
 
-            // נבדוק אם יש תורים ביום הזה
             DatabaseReference appointmentsRef = FirebaseDatabase.getInstance()
                     .getReference("appointments")
                     .child(safeEmail)
@@ -107,15 +98,13 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 boolean hasAppointments = dataSnapshot.exists();
 
                 if (!workingDays.contains(selectedDayOfWeek) && !hasAppointments) {
-                    // 📌 אם אין תורים והספר לא עובד – נסתיר את הרשימה
                     recyclerViewAvailableAppointments.setVisibility(View.GONE);
                     btnDeleteAll.setVisibility(View.GONE);
-                    Toast.makeText(getContext(), " הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "The barber is not working on this day!", Toast.LENGTH_SHORT).show();
                 } else {
                     if(!hasAppointments) {
-                        Toast.makeText(getContext(), "לא נקבעו תורים ליום זה", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "No appointments scheduled for this day", Toast.LENGTH_SHORT).show();
                     }
-                    // 📌 אם יש תורים – נציג אותם גם אם היום הזה לא מוגדר כיום עבודה
                     recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                     btnDeleteAll.setVisibility(hasAppointments ? View.VISIBLE : View.GONE);
                     loadBarberAppointments(this.selectedDate);
@@ -126,18 +115,15 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
     }
 
-    //logout שינוי שלי !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     private void signOut() {
-        FirebaseAuth.getInstance().signOut(); // 🔹 מחיקת המשתמש המחובר
-        Toast.makeText(getContext(), "התנתקת בהצלחה", Toast.LENGTH_SHORT).show();
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
 
-        // 🔹 מעבר למסך ההתחברות
-        Intent intent = new Intent(getActivity(), MainActivity.class); // להחליף ב-LoginActivity אם יש לך
+        Intent intent = new Intent(getActivity(), MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     private void loadBarberInfo() {
         barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
@@ -169,7 +155,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                     return;
                 }
 
-                workingDays.clear(); // ננקה את הרשימה
+                workingDays.clear();
 
                 Object data = snapshot.child("workingDays").getValue();
                 Log.d("Firebase", "Data from Firebase: " + data);
@@ -177,17 +163,13 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 if (data instanceof List) {
                     List<?> daysList = (List<?>) data;
                     for (Object item : daysList) {
-                        Log.d("Firebase", "Raw item: " + item);
-
                         if (item instanceof Long) {
                             int dayNumber = ((Long) item).intValue();
                             workingDays.add(dayNumber);
-                            Log.d("Firebase", "Added numeric day: " + dayNumber);
                         } else if (item instanceof String) {
                             int dayNum = convertDayNameToNumber(item.toString().trim());
                             if (dayNum != -1) {
                                 workingDays.add(dayNum);
-                                Log.d("Firebase", "Converted and added day: " + dayNum);
                             } else {
                                 Log.e("Firebase", "Invalid day format: " + item);
                             }
@@ -206,9 +188,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         });
     }
 
-
-
-
     private int convertDayNameToNumber(String dayName) {
         switch (dayName.toLowerCase()) {
             case "sunday": return 0;
@@ -218,11 +197,9 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             case "thursday": return 4;
             case "friday": return 5;
             case "saturday": return 6;
-            default: return -1; // ערך לא תקין
+            default: return -1;
         }
     }
-
-
     private void deleteExpiredAppointments() {
         if (currentUser == null) return;
         String safeEmail = currentUser.getEmail().replace(".", "_");
@@ -235,9 +212,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();
-
-
-      //  SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
         appointmentsRef.get().addOnSuccessListener(dataSnapshot -> {
             if (!dataSnapshot.exists()) return;
@@ -270,42 +244,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             }
         });
     }
-
-//    private void loadBarberWorkingHours() {
-//        if (currentUser == null) return;
-//        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
-//        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (!snapshot.exists()) {
-//                    Log.d("Firebase", " No barber found in database.");
-//                    return;
-//                }
-//
-//                // שליפת שעות העבודה
-//                String startHour = snapshot.child("startHour").getValue(String.class);
-//                String endHour = snapshot.child("endHour").getValue(String.class);
-//
-//                if (startHour != null && endHour != null) {
-//                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
-//                    availableAppointments.clear();
-//                    availableAppointments.addAll(timeSlots);
-//                    adapter.notifyDataSetChanged();
-//
-//                    Log.d("Firebase", "Loaded available appointments: " + availableAppointments);
-//                } else {
-//                    Log.d("Firebase", "startHour or endHour is missing.");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.e("Firebase", "Failed to load barber details: " + error.getMessage());
-//            }
-//        });
-//    }
-
-
     private CustomerAppointmentAdapter customerAppointmentsAdapter;
     private HashMap<String, Customer> customerHashMap = new HashMap<>();
 
@@ -322,7 +260,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                             Log.d("Firebase", "No customers found in database.");
                             return;
                         }
-
                         for (DataSnapshot customer : dataSnapshot.getChildren()) {
                             String customerEmail = customer.child("email").getValue(String.class);
                             String customerName = customer.child("name").getValue(String.class);
@@ -369,66 +306,8 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                                 }
                             }
                         });
-        /*barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    Log.d("Firebase", "⚠️ No barber found in database.");
-                    return;
-                }
-
-                // שליפת שעות העבודה
-                String startHour = snapshot.child("startHour").getValue(String.class);
-                String endHour = snapshot.child("endHour").getValue(String.class);
-
-                if (startHour != null && endHour != null) {
-                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
-                    availableAppointments.clear();
-                    availableAppointments.addAll(timeSlots);
-                    adapter.notifyDataSetChanged();
-
-                    Log.d("Firebase", "✅ Loaded available appointments: " + availableAppointments);
-                } else {
-                    Log.d("Firebase", "⚠️ startHour or endHour is missing.");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "❌ Failed to load barber details: " + error.getMessage());
-            }
-        });*/
     }
 
-
-//    private List<String> generateTimeSlots(String startHour, String endHour) {
-//        List<String> timeSlots = new ArrayList<>();
-//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-//
-//        try {
-//            Date startTime = sdf.parse(startHour);
-//            Date endTime = sdf.parse(endHour);
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(startTime);
-//
-//            while (calendar.getTime().before(endTime)) {
-//                timeSlots.add(sdf.format(calendar.getTime()));
-//                calendar.add(Calendar.HOUR, 1);  // מחלק את שעות העבודה לתורים של שעה
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return timeSlots;
-//    }
-
-//    private int getDayOfWeek(int year, int month, int dayOfMonth) {
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.set(year, month, dayOfMonth);
-//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-//
-//        // התאמת ימי השבוע (באנדרואיד: ראשון = 1, שבת = 7)
-//        return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
-//    }
     private void deleteAllAppointmentsForDay(String date) {
         if (currentUser == null) return;
 
@@ -441,11 +320,10 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 .getReference("appointmentsByClient");
 
         new AlertDialog.Builder(requireContext())
-                .setTitle("מחיקת כל התורים")
-                .setMessage("האם אתה בטוח שברצונך למחוק את כל התורים ליום זה?")
-                .setPositiveButton("כן", (dialog, which) -> {
+                .setTitle("Delete all appointments")
+                .setMessage("Are you sure you want to delete all appointments for this day?")
+                .setPositiveButton("YES", (dialog, which) -> {
 
-                    // שלב 1: מחיקת כל התורים מהברבר (appointments)
                     barberAppointmentsRef.get().addOnSuccessListener(dataSnapshot -> {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot appointment : dataSnapshot.getChildren()) {
@@ -455,7 +333,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                                 if (customerEmail != null) {
                                     String safeCustomerEmail = customerEmail.replace(".", "_");
 
-                                    // שלב 2: מחיקת כל התורים מהלקוחות (appointmentsByClient)
                                     DatabaseReference customerAppointment = customerAppointmentsRef
                                             .child(safeCustomerEmail)
                                             .child(date)
@@ -464,27 +341,23 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                                 }
                             }
 
-                            // מחיקת כל הרשומה של התאריך מהברבר
                             barberAppointmentsRef.removeValue().addOnSuccessListener(aVoid -> {
                                 Toast.makeText(getContext(), "כל התורים נמחקו בהצלחה!", Toast.LENGTH_SHORT).show();
 
-                                // עדכון ה-RecyclerView
                                 customerAppointmentsAdapter.clear();
                                 recyclerViewAvailableAppointments.setVisibility(View.GONE);
 
-                                // הסתרת כפתור DELETE ALL אחרי המחיקה
-                            //    Button btnDeleteAll = getView().findViewById(R.id.btn_Delete);
                                 btnDeleteAll.setVisibility(View.GONE);
 
                             }).addOnFailureListener(e -> {
-                                Toast.makeText(getContext(), "שגיאה במחיקת התורים!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Error deleting appointments!", Toast.LENGTH_SHORT).show();
                             });
                         } else {
-                            Toast.makeText(getContext(), "אין תורים ליום זה!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "No appointments for this day!", Toast.LENGTH_SHORT).show();
                         }
                     });
                 })
-                .setNegativeButton("לא", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton("NO", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -498,11 +371,10 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         Log.d("Cancel", "Canceling appointment: " + appointmentDate + " at " + appointmentTime +
                 " barberEmail: " + safeEmail + " customerEmail: " + customerEmail);
 
-        // יצירת הודעת אישור לפני מחיקה
         new AlertDialog.Builder(requireContext())
-                .setTitle("ביטול תור")
-                .setMessage("האם אתה בטוח שברצונך לבטל את התור בשעה " + appointmentTime + "?")
-                .setPositiveButton("כן", (dialog, which) -> {
+                .setTitle("Appointment cancellation")
+                .setMessage("Are you sure you want to cancel the appointment at " + appointmentTime + "?")
+                .setPositiveButton("YES", (dialog, which) -> {
                     DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
                             .getReference("appointments")
                             .child(safeEmail)
@@ -515,21 +387,18 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                             .child(appointmentDate)
                             .child(appointmentTime);
 
-                    // מחיקת התור מהספר ומהלקוח
                     barberAppointmentRef.removeValue().addOnSuccessListener(aVoid -> {
                         customerAppointmentRef.removeValue().addOnSuccessListener(aVoid2 -> {
-                            Toast.makeText(getContext(), "התור בוטל בהצלחה", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "The appointment was successfully canceled.", Toast.LENGTH_SHORT).show();
                         }).addOnFailureListener(e -> {
-                            Toast.makeText(getContext(), "שגיאה במחיקת התור מהלקוח: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), "Error deleting the appointment from the client: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         });
                     }).addOnFailureListener(e -> {
-                        Toast.makeText(getContext(), "שגיאה בביטול התור: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Error canceling the appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
-
                 })
-                .setNegativeButton("לא", (dialog, which) -> dialog.dismiss())
+                .setNegativeButton("NO", (dialog, which) -> dialog.dismiss())
                 .show();
     }
-
 }
 
