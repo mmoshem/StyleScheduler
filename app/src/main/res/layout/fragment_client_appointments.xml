@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:textColor="@color/black"
         android:text="אין לך תורים מוזמנים כרגע"
         android:textSize="18sp"
         android:visibility="gone"
