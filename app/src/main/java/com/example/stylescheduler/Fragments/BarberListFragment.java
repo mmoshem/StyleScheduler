@@ -60,8 +60,8 @@ public class BarberListFragment extends Fragment {
                         }
 
 
-                        barber.getWorkSchedule().setStartHour((String) barberData.get("startHour"));
-                        barber.getWorkSchedule().setEndHour((String) barberData.get("endHour"));
+                        barber.setStartHour((String) barberData.get("startHour"));
+                        barber.setEndHour((String) barberData.get("endHour"));
 
                         Object workingDaysObj = barberData.get("workingDays");
                         List<Integer> convertedDays = new ArrayList<>();
@@ -70,7 +70,7 @@ public class BarberListFragment extends Fragment {
                             // Convert List<String> to List<Integer>
                             for (Object day : (List<?>) workingDaysObj) {
                                 if (day instanceof String) {
-                                    convertedDays.add(barber.getWorkSchedule().getDayNumber(day.toString()));
+                                    convertedDays.add(barber.getDayNumber(day.toString()));
                                 }
                             }
                             Log.d("BarberListFragment", "Converted working days: " + convertedDays);

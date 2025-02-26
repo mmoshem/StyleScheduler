@@ -31,9 +31,7 @@ public class CustomerAppointmentAdapter extends RecyclerView.Adapter<Appointment
         this.cancelClickListener = listener;
     }
 
-    public void setData(String date,
-                        List<CustomerAppointment> appointments,
-                        HashMap<String, Customer> customers) {
+    public void setData(String date, List<CustomerAppointment> appointments, HashMap<String, Customer> customers) {
         this.date = date;
         this.appointments = appointments;
         this.customers = customers;
@@ -59,12 +57,10 @@ public class CustomerAppointmentAdapter extends RecyclerView.Adapter<Appointment
         CustomerAppointment appointment = appointments.get(position);
         Customer c = customers.get(appointment.getCustomerEmail().replace(".", "_"));
         holder.tvBarberName.setText(c.getName());
-      //  holder.tvBarberAddress.setVisibility(View.GONE);
         holder.tvBarberAddress.setText(c.getPhoneNumber());
         holder.tvAppointmentDate.setText(date);
         holder.tvAppointmentTime.setText(appointment.getTime());
 
-        // Cancel button
         holder.btnCancel.setOnClickListener(v -> {
             if (cancelClickListener != null) {
                 cancelClickListener.onCancelClick(appointment, position);

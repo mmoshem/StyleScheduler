@@ -6,10 +6,7 @@ abstract class User {
     protected String userID;
     protected String name;
     protected String email;
-
-
-
-    protected String role;  // "barber" or "customer"
+    protected String role;
     protected String phoneNumber;
     protected String password;
     public User(String userID, String name, String email, String password, String role, String phoneNumber) {

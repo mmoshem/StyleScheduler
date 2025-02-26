@@ -34,9 +34,17 @@ public class Barber extends User {
     public void setWorkSchedule(WorkSchedule workSchedule) {
         this.workSchedule = workSchedule;
     }
-//    public String getRole(){
-//        return this.role;
-//    }
+
+    public void setEndHour(String endHour){
+        this.workSchedule.setEndHour(endHour);
+    }
+    public void setStartHour(String startHour) {
+        this.workSchedule.setStartHour(startHour);
+    }
+
+    public int getDayNumber(String day) {
+       return this.workSchedule.getDayNumber(day);
+    }
     public void setShopAddress(String shopAddress) {
         this.shopAddress = shopAddress;
     }
