@@ -3,6 +3,7 @@ package com.example.stylescheduler.Fragments;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.example.stylescheduler.Classes.AvailableAppointmentsAdapter;
 import com.example.stylescheduler.Classes.Customer;
 import com.example.stylescheduler.Classes.CustomerAppointment;
 import com.example.stylescheduler.Classes.CustomerAppointmentAdapter;
+import com.example.stylescheduler.MainActivity;
 import com.example.stylescheduler.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -48,6 +50,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     private String selectedDate;  // תאריך שנבחר מהלוח שנה
     Button btnDeleteAll;
     String safeEmail;
+
     public BarberHomePage() {}
 
     @Override
@@ -60,9 +63,10 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         btnDeleteAll = view.findViewById(R.id.btn_Delete);
         btnDeleteAll.setVisibility(view.GONE);
         Button button = view.findViewById(R.id.btn_update_info);
-
+        Button btnlogout=view.findViewById(R.id.btn_logout);
 
         button.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_barberHomePage_to_barberUpdateInfoFragment));
+        btnlogout.setOnClickListener(v -> signOut());//polina !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         // הגדרת ה-RecyclerView
         recyclerViewAvailableAppointments.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -121,6 +125,19 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         return view;
 
     }
+
+    //logout שינוי שלי !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut(); // 🔹 מחיקת המשתמש המחובר
+        Toast.makeText(getContext(), "התנתקת בהצלחה", Toast.LENGTH_SHORT).show();
+
+        // 🔹 מעבר למסך ההתחברות
+        Intent intent = new Intent(getActivity(), MainActivity.class); // להחליף ב-LoginActivity אם יש לך
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     private void loadBarberInfo() {
         barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
@@ -208,7 +225,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
     private void deleteExpiredAppointments() {
         if (currentUser == null) return;
-
         String safeEmail = currentUser.getEmail().replace(".", "_");
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance()
                 .getReference("appointments")
@@ -221,7 +237,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         Date now = calendar.getTime();
 
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+      //  SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
         appointmentsRef.get().addOnSuccessListener(dataSnapshot -> {
             if (!dataSnapshot.exists()) return;
@@ -255,39 +271,39 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         });
     }
 
-    private void loadBarberWorkingHours() {
-        if (currentUser == null) return;
-        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
-        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!snapshot.exists()) {
-                    Log.d("Firebase", " No barber found in database.");
-                    return;
-                }
-
-                // שליפת שעות העבודה
-                String startHour = snapshot.child("startHour").getValue(String.class);
-                String endHour = snapshot.child("endHour").getValue(String.class);
-
-                if (startHour != null && endHour != null) {
-                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
-                    availableAppointments.clear();
-                    availableAppointments.addAll(timeSlots);
-                    adapter.notifyDataSetChanged();
-
-                    Log.d("Firebase", "Loaded available appointments: " + availableAppointments);
-                } else {
-                    Log.d("Firebase", "startHour or endHour is missing.");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("Firebase", "Failed to load barber details: " + error.getMessage());
-            }
-        });
-    }
+//    private void loadBarberWorkingHours() {
+//        if (currentUser == null) return;
+//        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+//        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (!snapshot.exists()) {
+//                    Log.d("Firebase", " No barber found in database.");
+//                    return;
+//                }
+//
+//                // שליפת שעות העבודה
+//                String startHour = snapshot.child("startHour").getValue(String.class);
+//                String endHour = snapshot.child("endHour").getValue(String.class);
+//
+//                if (startHour != null && endHour != null) {
+//                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
+//                    availableAppointments.clear();
+//                    availableAppointments.addAll(timeSlots);
+//                    adapter.notifyDataSetChanged();
+//
+//                    Log.d("Firebase", "Loaded available appointments: " + availableAppointments);
+//                } else {
+//                    Log.d("Firebase", "startHour or endHour is missing.");
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.e("Firebase", "Failed to load barber details: " + error.getMessage());
+//            }
+//        });
+//    }
 
 
     private CustomerAppointmentAdapter customerAppointmentsAdapter;
@@ -385,34 +401,34 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     }
 
 
-    private List<String> generateTimeSlots(String startHour, String endHour) {
-        List<String> timeSlots = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+//    private List<String> generateTimeSlots(String startHour, String endHour) {
+//        List<String> timeSlots = new ArrayList<>();
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+//
+//        try {
+//            Date startTime = sdf.parse(startHour);
+//            Date endTime = sdf.parse(endHour);
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(startTime);
+//
+//            while (calendar.getTime().before(endTime)) {
+//                timeSlots.add(sdf.format(calendar.getTime()));
+//                calendar.add(Calendar.HOUR, 1);  // מחלק את שעות העבודה לתורים של שעה
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return timeSlots;
+//    }
 
-        try {
-            Date startTime = sdf.parse(startHour);
-            Date endTime = sdf.parse(endHour);
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(startTime);
-
-            while (calendar.getTime().before(endTime)) {
-                timeSlots.add(sdf.format(calendar.getTime()));
-                calendar.add(Calendar.HOUR, 1);  // מחלק את שעות העבודה לתורים של שעה
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return timeSlots;
-    }
-
-    private int getDayOfWeek(int year, int month, int dayOfMonth) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, dayOfMonth);
-        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
-
-        // התאמת ימי השבוע (באנדרואיד: ראשון = 1, שבת = 7)
-        return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
-    }
+//    private int getDayOfWeek(int year, int month, int dayOfMonth) {
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.set(year, month, dayOfMonth);
+//        int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
+//
+//        // התאמת ימי השבוע (באנדרואיד: ראשון = 1, שבת = 7)
+//        return dayOfWeek - 1; // כך שהשבוע יתחיל מ-0 = ראשון
+//    }
     private void deleteAllAppointmentsForDay(String date) {
         if (currentUser == null) return;
 
