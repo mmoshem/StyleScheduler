@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.play.services.tasks)
     implementation(libs.firebase.database)
     implementation(libs.firebase.messaging)
+    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

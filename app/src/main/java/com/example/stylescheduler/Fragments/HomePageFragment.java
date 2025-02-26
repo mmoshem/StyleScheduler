@@ -1,6 +1,8 @@
 package com.example.stylescheduler.Fragments;
+
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,48 +84,52 @@ public class HomePageFragment extends Fragment {
     private void loginUser(String email, String password, View view) {
         mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(getActivity(), task -> {
             if (task.isSuccessful()) {
-                storeFCMToken();
-                checkUserRoleAndNavigate(view);
+                FirebaseUser user = mAuth.getCurrentUser();
+                if (user != null) {
+                    storeFCMToken(user);
+                    checkUserRoleAndNavigate(view);
+                }
             } else {
                 Toast.makeText(getContext(), "Login failed. Check credentials.", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void storeFCMToken(FirebaseUser user) {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (!task.isSuccessful()) {
+                Log.w("FCM", "Fetching FCM token failed", task.getException());
+                return;
+            }
+
+            String token = task.getResult();
+            FirebaseDatabase.getInstance().getReference("users")
+                    .child(user.getUid())
+                    .child("fcmToken")
+                    .setValue(token)
+                    .addOnSuccessListener(aVoid -> Log.d("FCM", "Token stored successfully"))
+                    .addOnFailureListener(e -> Log.w("FCM", "Failed to store token", e));
+        });
+    }
+
     private void checkUserRoleAndNavigate(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            String safeEmail = user.getEmail().replace(".", "_");
-            DatabaseReference barbersRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
-            DatabaseReference customersRef = FirebaseDatabase.getInstance().getReference("customers").child(safeEmail);
+            String userId = user.getUid();
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
 
-            barbersRef.get().addOnCompleteListener(task -> {
+            userRef.child("role").get().addOnCompleteListener(task -> {
                 if (task.isSuccessful() && task.getResult().exists()) {
-                    Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
+                    String role = task.getResult().getValue(String.class);
+                    if ("barber".equals(role)) {
+                        Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
+                    } else {
+                        Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);
+                    }
                 } else {
-                    customersRef.get().addOnCompleteListener(task2 -> {
-                        if (task2.isSuccessful() && task2.getResult().exists()) {
-                            Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);
-                        } else {
-                            Toast.makeText(getContext(), "User role not found", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(getContext(), "User role not found", Toast.LENGTH_SHORT).show();
                 }
             });
         }
-    }
-
-    private void storeFCMToken() {
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
-            if (!task.isSuccessful()) {
-                return;
-            }
-            String token = task.getResult();
-            FirebaseUser user = mAuth.getCurrentUser();
-            if (user != null) {
-                DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference("Users").child(user.getUid());
-                databaseRef.child("fcmToken").setValue(token);
-            }
-        });
     }
 }
