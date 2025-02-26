@@ -30,7 +30,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class BarberHomePage extends Fragment  implements CustomerAppointmentAdapter.OnCancelClickListener{
@@ -215,35 +217,39 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         DatabaseReference clientsRef = FirebaseDatabase.getInstance()
                 .getReference("appointmentsByClient");
 
-        Date today = new Date();
+        Calendar calendar = Calendar.getInstance();
+        Date now = calendar.getTime();
+
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
         appointmentsRef.get().addOnSuccessListener(dataSnapshot -> {
             if (!dataSnapshot.exists()) return;
 
             for (DataSnapshot dateSnapshot : dataSnapshot.getChildren()) {
-                String appointmentDateStr = dateSnapshot.getKey();
+                String currDate = dateSnapshot.getKey();
 
-                try {
-                    Date appointmentDate = sdf.parse(appointmentDateStr);
-                    if (appointmentDate != null && appointmentDate.before(today)) {
-                        Log.d("DeleteAppointments", "📌 מחיקת תורים ליום שעבר: " + appointmentDateStr);
-
-                        // מחיקה מפיירבייס עבור הספר
-                        appointmentsRef.child(appointmentDateStr).removeValue();
-
-                        // מחיקה מהלקוחות
-                        clientsRef.get().addOnSuccessListener(clientSnapshot -> {
-                            if (clientSnapshot.exists()) {
-                                for (DataSnapshot client : clientSnapshot.getChildren()) {
-                                    DatabaseReference clientAppointmentRef = clientsRef.child(client.getKey()).child(appointmentDateStr);
-                                    clientAppointmentRef.removeValue();
+                for(DataSnapshot timeSnapshot : dateSnapshot.getChildren()){
+                    String timeStr = timeSnapshot.getKey();
+                    String currDateTimeStr = currDate + " " + timeStr;
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+                    try {
+                        Date targetDateTime = dateFormat.parse(currDateTimeStr);
+                        if (now.after(targetDateTime)) {
+                            appointmentsRef.child(currDate).child(timeStr).removeValue();
+                            clientsRef.get().addOnSuccessListener(clientSnapshot -> {
+                                if (clientSnapshot.exists()) {
+                                    for (DataSnapshot client : clientSnapshot.getChildren()) {
+                                        DatabaseReference clientAppointmentRef = clientsRef.child(client.getKey()).child(currDate).child(timeStr);
+                                        clientAppointmentRef.removeValue();
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
+
+                    } catch (ParseException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (Exception e) {
-                    Log.e("DeleteAppointments", "❌ שגיאה בפענוח תאריך: " + appointmentDateStr);
                 }
             }
         });
