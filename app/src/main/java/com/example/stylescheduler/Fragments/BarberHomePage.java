@@ -74,11 +74,11 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         customerAppointmentsAdapter = new CustomerAppointmentAdapter(this);
         recyclerViewAvailableAppointments.setAdapter(customerAppointmentsAdapter);
 
-        //הוספה שלי !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         btnDeleteAll.setOnClickListener(v -> {
             deleteAllAppointmentsForDay(selectedDate);
         });
-//מפה מתחיל השינוי שלי כרגע!!!!!!!!!!!!!!!!!!!!!
+
         calendarView.setOnDateChangeListener((view1, year, month, dayOfMonth) -> {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
@@ -102,6 +102,9 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                     btnDeleteAll.setVisibility(View.GONE);
                     Toast.makeText(getContext(), " הספר לא עובד ביום הזה!", Toast.LENGTH_SHORT).show();
                 } else {
+                    if(!hasAppointments) {
+                        Toast.makeText(getContext(), "לא נקבעו תורים ליום זה", Toast.LENGTH_SHORT).show();
+                    }
                     // 📌 אם יש תורים – נציג אותם גם אם היום הזה לא מוגדר כיום עבודה
                     recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
                     btnDeleteAll.setVisibility(hasAppointments ? View.VISIBLE : View.GONE);
@@ -109,7 +112,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 }
             });
         });
-//עד לפה !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         return view;
 
     }
@@ -201,42 +203,42 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     }
 
 
-//    private void loadBarberWorkingHours() {
-//        if (currentUser == null) return;
-//
-//        String safeEmail = currentUser.getEmail().replace(".", "_");
-//        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
-//
-//        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (!snapshot.exists()) {
-//                    Log.d("Firebase", " No barber found in database.");
-//                    return;
-//                }
-//
-//                // שליפת שעות העבודה
-//                String startHour = snapshot.child("startHour").getValue(String.class);
-//                String endHour = snapshot.child("endHour").getValue(String.class);
-//
-//                if (startHour != null && endHour != null) {
-//                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
-//                    availableAppointments.clear();
-//                    availableAppointments.addAll(timeSlots);
-//                    adapter.notifyDataSetChanged();
-//
-//                    Log.d("Firebase", "Loaded available appointments: " + availableAppointments);
-//                } else {
-//                    Log.d("Firebase", "startHour or endHour is missing.");
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.e("Firebase", "Failed to load barber details: " + error.getMessage());
-//            }
-//        });
-//    }
+    private void loadBarberWorkingHours() {
+        if (currentUser == null) return;
+
+        String safeEmail = currentUser.getEmail().replace(".", "_");
+        barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
+
+        barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    Log.d("Firebase", " No barber found in database.");
+                    return;
+                }
+
+                // שליפת שעות העבודה
+                String startHour = snapshot.child("startHour").getValue(String.class);
+                String endHour = snapshot.child("endHour").getValue(String.class);
+
+                if (startHour != null && endHour != null) {
+                    List<String> timeSlots = generateTimeSlots(startHour, endHour);
+                    availableAppointments.clear();
+                    availableAppointments.addAll(timeSlots);
+                    adapter.notifyDataSetChanged();
+
+                    Log.d("Firebase", "Loaded available appointments: " + availableAppointments);
+                } else {
+                    Log.d("Firebase", "startHour or endHour is missing.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Firebase", "Failed to load barber details: " + error.getMessage());
+            }
+        });
+    }
 
 
     private CustomerAppointmentAdapter customerAppointmentsAdapter;
@@ -276,53 +278,32 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         if (currentUser == null || customerHashMap.isEmpty()) return;
 
         String safeEmail = currentUser.getEmail().replace(".", "_");
-        DatabaseReference appointmentsRef = FirebaseDatabase.getInstance()
-                .getReference("appointments")
-                .child(safeEmail)
-                .child(date);
-        // ⭐ הוספת בדיקה לתאריך הנוכחי כדי למחוק תורים ישנים
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-        Calendar today = Calendar.getInstance(); // ⭐ מקבל את התאריך הנוכחי
-
-        appointmentsRef.get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
-                    @Override
-                    public void onSuccess(DataSnapshot dataSnapshot) {
-                        List<CustomerAppointment> showingAppointments = new ArrayList<>();
-
-                        if (dataSnapshot.exists()) {
-                            for (DataSnapshot appointment : dataSnapshot.getChildren()) {
-                                String time = appointment.getKey();
-                                String customerEmail = appointment.child("customerEmail").getValue(String.class);
-                                try {
-                                    Date appointmentDate = sdf.parse(date);
-                                    if (appointmentDate != null && appointmentDate.before(today.getTime())) {
-                                        // ⭐ אם התור כבר פג תוקפו, נמחק אותו
-                                        Log.d("Cleanup", "⭐ מחיקת תור שפג תוקפו: " + date + " בשעה " + time);
-                                        appointment.getRef().removeValue();
-                                        continue;
-                                    }
-                                } catch (Exception e) {
-                                    Log.e("Cleanup", "⚠️ שגיאה בפירוש התאריך: " + date, e);
+        DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments").child(safeEmail).child(date);
+        appointmentsRef.get()
+                        .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                            @Override
+                            public void onSuccess(DataSnapshot dataSnapshot) {
+                                if(!dataSnapshot.exists()) {
+                                    return;
                                 }
-                                CustomerAppointment ap = new CustomerAppointment(customerEmail, time);
-                                showingAppointments.add(ap);
+                                List<CustomerAppointment> showingAppointments = new ArrayList<>();
+
+                               for(DataSnapshot appointment : dataSnapshot.getChildren()) {
+                                        String time = appointment.getKey();
+                                        String customerEmail = appointment.child("customerEmail").getValue(String.class);
+                                        CustomerAppointment ap = new CustomerAppointment(customerEmail, time);
+                                        showingAppointments.add(ap);
+                                }
+                               customerAppointmentsAdapter.setData(date, showingAppointments, customerHashMap);
+                                if (showingAppointments.isEmpty()) {
+                                    btnDeleteAll.setVisibility(View.GONE);
+                                    recyclerViewAvailableAppointments.setVisibility(View.GONE);
+                                } else {
+                                    btnDeleteAll.setVisibility(View.VISIBLE);
+                                    recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
+                                }
                             }
-                        }
-
-                        customerAppointmentsAdapter.setData(date, showingAppointments, customerHashMap);
-
-                        // ❌ כאן יש בעיה: הכפתור יוסתר אם אין תורים, אבל צריך גם לבדוק אם הספר כן עובד ביום הזה
-                        if (showingAppointments.isEmpty()) {
-                            btnDeleteAll.setVisibility(View.GONE);
-                            recyclerViewAvailableAppointments.setVisibility(View.GONE); // ✅ נוסיף כדי להסתיר את הרשימה במקרה שאין תורים
-                        } else {
-                            btnDeleteAll.setVisibility(View.VISIBLE);
-                            recyclerViewAvailableAppointments.setVisibility(View.VISIBLE); // ✅ נוסיף כדי לוודא שהתורים יוצגו גם אם יום העבודה השתנה
-                        }
-                    }
-                });
-
-
+                        });
         /*barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
