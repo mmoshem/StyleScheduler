@@ -12,8 +12,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-//import com.example.stylescheduler.Classes.Appointment;
 import com.example.stylescheduler.Classes.AppointmentAdapter;
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
@@ -21,7 +19,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +33,6 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
     private TextView tvNoAppointments;
 
     public ClientAppointmentsFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -68,11 +64,8 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                 .getReference("appointmentsByClient")
                 .child(clientEmail);
 
-
-
         DatabaseReference barberRef = FirebaseDatabase.getInstance()
                 .getReference("barbers");
-
 
         barberRef.get()
             .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
@@ -90,8 +83,6 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                         barbers.put(barber.getEmail().replace(".", "_"), barber);
                     }
 
-                    // now we can show the appointments
-
                     clientAppointmentsRef.addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -101,12 +92,7 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                                 String dateKey = dateSnapshot.getKey();
 
                                 for (DataSnapshot appointmentSnapshot : dateSnapshot.getChildren()) {
-                                    // Create a new map for EACH appointment
                                     Map<String, String> appointment = new HashMap<>();
-
-                                    //Appointment ap = appointmentSnapshot.getValue(Appointment.class);
-
-                                    // Basic info
                                     appointment.put("date", dateKey);
                                     appointment.put("appointmentTime", appointmentSnapshot.getKey());
 
@@ -114,21 +100,17 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                                     if (barberEmail == null) barberEmail = "Unknown Email";
                                     appointment.put("barberEmail", barberEmail);
 
-                                    // Add the appointment to the list right away
                                     appointmentList.add(appointment);
 
                                     Barber b = barbers.get(barberEmail.replace(".", "_"));
 
-                                    // Update the map that is already in appointmentList
                                     appointment.put("name",b != null ? b.getName() : "Unknown Name");
                                     appointment.put("barberAddress", b != null ? b.getShopAddress() : "Unknown Address");
 
-                                    // Notify that data changed
                                     adapter.notifyDataSetChanged();
                                 }
                             }
 
-                            // Show/hide "No Appointments" message
                             if (appointmentList.isEmpty()) {
                                 tvNoAppointments.setVisibility(View.VISIBLE);
                                 recyclerView.setVisibility(View.GONE);
@@ -136,9 +118,6 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                                 tvNoAppointments.setVisibility(View.GONE);
                                 recyclerView.setVisibility(View.VISIBLE);
                             }
-
-                            // Initial notify so the list shows placeholders (date/time/email)
-                            // Detailed barber info will come in asynchronously.
                             adapter.notifyDataSetChanged();
                         }
 
@@ -149,16 +128,11 @@ public class ClientAppointmentsFragment extends Fragment implements AppointmentA
                     });
                 }
             });
-
-
     }
 
     @Override
     public void onCancelClick(Map<String, String> appointment, int position) {
-        if (appointment == null
-                || !appointment.containsKey("barberEmail")
-                || !appointment.containsKey("date")
-                || !appointment.containsKey("appointmentTime")) {
+        if (appointment == null || !appointment.containsKey("barberEmail") || !appointment.containsKey("date") || !appointment.containsKey("appointmentTime")) {
             Toast.makeText(getContext(), "Error: Missing appointment details", Toast.LENGTH_SHORT).show();
             return;
         }

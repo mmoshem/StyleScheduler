@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="@color/black"
-        android:text="אין לך תורים מוזמנים כרגע"
+        android:text="You have no scheduled appointments at the moment"
         android:textSize="18sp"
         android:visibility="gone"
         tools:visibility="gone" />
