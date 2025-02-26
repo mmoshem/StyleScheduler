@@ -45,6 +45,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     private List<Integer> workingDays = new ArrayList<>();
     private String selectedDate;  // תאריך שנבחר מהלוח שנה
     Button btnDeleteAll;
+    String safeEmail;
     public BarberHomePage() {}
 
     @Override
@@ -57,6 +58,8 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         btnDeleteAll = view.findViewById(R.id.btn_Delete);
         btnDeleteAll.setVisibility(view.GONE);
         Button button = view.findViewById(R.id.btn_update_info);
+
+
         button.setOnClickListener(v -> Navigation.findNavController(view).navigate(R.id.action_barberHomePage_to_barberUpdateInfoFragment));
 
         // הגדרת ה-RecyclerView
@@ -67,6 +70,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
+            safeEmail = currentUser.getEmail().replace(".", "_");
             loadBarberInfo();
             loadWorkingDays();
         }
@@ -87,7 +91,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
             this.selectedDate = dayOfMonth + "-" + (month + 1) + "-" + year;
 
             // נבדוק אם יש תורים ביום הזה
-            String safeEmail = currentUser.getEmail().replace(".", "_");
             DatabaseReference appointmentsRef = FirebaseDatabase.getInstance()
                     .getReference("appointments")
                     .child(safeEmail)
@@ -117,7 +120,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     }
 
     private void loadBarberInfo() {
-        String safeEmail = currentUser.getEmail().replace(".", "_");
         barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
 
         barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -137,8 +139,6 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     }
     private void loadWorkingDays() {
         if (currentUser == null) return;
-
-        String safeEmail = currentUser.getEmail().replace(".", "_");
         barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
 
         barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -205,10 +205,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
     private void loadBarberWorkingHours() {
         if (currentUser == null) return;
-
-        String safeEmail = currentUser.getEmail().replace(".", "_");
         barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
-
         barberRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -277,8 +274,8 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
         customerAppointmentsAdapter.clear();
         if (currentUser == null || customerHashMap.isEmpty()) return;
 
-        String safeEmail = currentUser.getEmail().replace(".", "_");
         DatabaseReference appointmentsRef = FirebaseDatabase.getInstance().getReference("appointments").child(safeEmail).child(date);
+
         appointmentsRef.get()
                         .addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                             @Override
@@ -367,10 +364,9 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
     private void deleteAllAppointmentsForDay(String date) {
         if (currentUser == null) return;
 
-        String barberEmail = currentUser.getEmail().replace(".", "_");
         DatabaseReference barberAppointmentsRef = FirebaseDatabase.getInstance()
                 .getReference("appointments")
-                .child(barberEmail)
+                .child(safeEmail)
                 .child(date);
 
         DatabaseReference customerAppointmentsRef = FirebaseDatabase.getInstance()
@@ -426,13 +422,13 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
 
     @Override
     public void onCancelClick(CustomerAppointment appointment, int position) {
-        String barberEmail = currentUser.getEmail().replace(".", "_");
+
         String customerEmail = appointment.getCustomerEmail().replace(".", "_");
         String appointmentDate = this.selectedDate;
         String appointmentTime = appointment.getTime();
 
         Log.d("Cancel", "Canceling appointment: " + appointmentDate + " at " + appointmentTime +
-                " barberEmail: " + barberEmail + " customerEmail: " + customerEmail);
+                " barberEmail: " + safeEmail + " customerEmail: " + customerEmail);
 
         // יצירת הודעת אישור לפני מחיקה
         new AlertDialog.Builder(requireContext())
@@ -441,7 +437,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                 .setPositiveButton("כן", (dialog, which) -> {
                     DatabaseReference barberAppointmentRef = FirebaseDatabase.getInstance()
                             .getReference("appointments")
-                            .child(barberEmail)
+                            .child(safeEmail)
                             .child(appointmentDate)
                             .child(appointmentTime);
 
