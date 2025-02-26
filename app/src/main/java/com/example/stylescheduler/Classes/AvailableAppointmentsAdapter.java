@@ -44,11 +44,11 @@ public class AvailableAppointmentsAdapter extends RecyclerView.Adapter<Available
         return availableAppointments.size();
     }
 
-    public void setAvailableAppointments(List<String> newAppointments) {
-        availableAppointments.clear();
-        availableAppointments.addAll(newAppointments);
-        notifyDataSetChanged();
-    }
+//    public void setAvailableAppointments(List<String> newAppointments) {
+//        availableAppointments.clear();
+//        availableAppointments.addAll(newAppointments);
+//        notifyDataSetChanged();
+//    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTimeSlot;
