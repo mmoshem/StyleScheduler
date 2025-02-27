@@ -1,9 +1,12 @@
 package com.example.stylescheduler.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.example.stylescheduler.Activities.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,6 +17,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,6 +31,7 @@ public class ClientHomePage extends Fragment {
     private TabLayout tabLayout;
     private FirebaseUser currentUser;
     String safeEmail;
+    ImageButton btlogout;
 
 
     public ClientHomePage() {}
@@ -34,6 +42,10 @@ public class ClientHomePage extends Fragment {
 
         tabLayout = view.findViewById(R.id.tabLayout);
         currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        btlogout=view.findViewById(R.id.bt_Logout);
+        btlogout.setOnClickListener(v -> signOut());
+
         if (currentUser != null) {
             safeEmail = currentUser.getEmail().replace(".", "_");
             deleteExpiredAppointments();
@@ -57,6 +69,15 @@ public class ClientHomePage extends Fragment {
         });
 
         return view;
+    }
+
+    private void signOut() {
+        FirebaseAuth.getInstance().signOut();
+        Toast.makeText(getContext(), "Logged out successfully", Toast.LENGTH_SHORT).show();
+
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
     }
     private void deleteExpiredAppointments() {
         if (currentUser == null) return;

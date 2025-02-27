@@ -8,7 +8,6 @@
     android:orientation="vertical"
     tools:context=".Fragments.ClientHomePage">
 
-    <!-- Tab Layout with a Button Aligned to the Right -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +18,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/actionButton">
+            android:layout_toStartOf="@id/bt_Logout">
 
             <com.google.android.material.tabs.TabItem
                 android:layout_width="wrap_content"
@@ -32,9 +31,8 @@
                 android:text="YOUR APPOINTMENT" />
         </com.google.android.material.tabs.TabLayout>
 
-        <!-- Button Aligned to the Right of Tabs -->
         <ImageButton
-            android:id="@+id/actionButton"
+            android:id="@+id/bt_Logout"
             android:layout_width="81dp"
             android:layout_height="38dp"
             android:layout_alignParentEnd="true"
@@ -44,7 +42,6 @@
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
-    <!-- Fragment Container for Navigation -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
