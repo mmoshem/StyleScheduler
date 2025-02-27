@@ -266,8 +266,7 @@ public class BarberBookingFragment extends Fragment {
                     clientAppointmentRef.setValue(appointmentData)
                             .addOnSuccessListener(aVoid -> {
                                 Toast.makeText(getContext(), "Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
-
-                                // עדכון הרשימה כך שהתור שנבחר ייעלם
+                                
                                 availableAppointments.remove(selectedTimeSlot);
                                 adapter.notifyDataSetChanged();
                             })
@@ -286,12 +285,12 @@ public class BarberBookingFragment extends Fragment {
         });
     }
     public void moveToTab2() {
-        int tabIndex = 1; // Change this to the tab index you want to select
+        int tabIndex = 1;
         TabLayout tabLayout = getActivity().findViewById(R.id.tabLayout);
 
         TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
         if (tab != null) {
-            tab.select(); // This will move to the selected tab
+            tab.select();
         }
     }
 
