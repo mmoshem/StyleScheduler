@@ -36,12 +36,6 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
         mAuth = FirebaseAuth.getInstance();
-
-
-        if(mAuth.getCurrentUser() != null) {
-            // listen to appointments
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("appointments");
-        }
     }
 
 

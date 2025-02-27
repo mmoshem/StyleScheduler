@@ -53,7 +53,7 @@ public class VacationDaysDialog extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         lv = view.findViewById(R.id.vacationDaysLv);
-        lv.setAdapter(new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, vacationDates.getVacationDates()));
+        lv.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.vacation_spinner, vacationDates.getVacationDates()));
 
         lv.setOnItemLongClickListener((parent, view1, position, id) -> {
             // remove the item from the list in the db..?

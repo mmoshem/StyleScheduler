@@ -5,20 +5,22 @@
     android:layout_height="match_parent"
     android:background="@drawable/p"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="80dp"
+>
 
     <ListView
         android:id="@+id/vacationDaysLv"
         android:layout_width="match_parent"
         android:layout_margin="8dp"
         android:layout_height="400dp"
-        tools:listitem="@layout/support_simple_spinner_dropdown_item"/>
+        tools:listitem="@layout/vacation_spinner"/>
 
     <TextView
         android:layout_width="match_parent"
         android:textSize="12sp"
-        android:paddingLeft="8dp"
-        android:textColor="#878585"
+        android:textColor="#181717"
+        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_height="wrap_content"
         android:text="Long click a date to remove it from vacation dates"/>
     <Button
