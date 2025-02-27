@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.stylescheduler.Classes.AvailableAppointmentsAdapter;
+import com.example.stylescheduler.Adapters.AvailableAppointmentsAdapter;
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;

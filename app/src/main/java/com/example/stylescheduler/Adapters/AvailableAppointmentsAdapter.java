@@ -1,4 +1,4 @@
-package com.example.stylescheduler.Classes;
+package com.example.stylescheduler.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,12 +43,6 @@ public class AvailableAppointmentsAdapter extends RecyclerView.Adapter<Available
     public int getItemCount() {
         return availableAppointments.size();
     }
-
-//    public void setAvailableAppointments(List<String> newAppointments) {
-//        availableAppointments.clear();
-//        availableAppointments.addAll(newAppointments);
-//        notifyDataSetChanged();
-//    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textViewTimeSlot;

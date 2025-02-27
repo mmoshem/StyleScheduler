@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.example.stylescheduler.Classes.Barber;
-import com.example.stylescheduler.Classes.BarberAdapter;
+import com.example.stylescheduler.Adapters.BarberAdapter;
 import com.example.stylescheduler.Classes.WorkSchedule;
 import com.example.stylescheduler.R;
 import com.google.firebase.database.*;

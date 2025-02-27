@@ -1,4 +1,4 @@
-package com.example.stylescheduler.Classes;
+package com.example.stylescheduler.Adapters;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.stylescheduler.Classes.Barber;
+import com.example.stylescheduler.Classes.WorkSchedule;
 import com.example.stylescheduler.R;
 import java.util.ArrayList;
 import java.util.List;

@@ -12,7 +12,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.stylescheduler.Classes.AppointmentAdapter;
+import com.example.stylescheduler.Adapters.AppointmentAdapter;
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
 import com.google.android.gms.tasks.OnSuccessListener;

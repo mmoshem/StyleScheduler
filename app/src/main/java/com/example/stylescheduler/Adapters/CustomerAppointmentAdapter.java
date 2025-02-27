@@ -1,20 +1,19 @@
-package com.example.stylescheduler.Classes;
+package com.example.stylescheduler.Adapters;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.stylescheduler.Classes.Customer;
+import com.example.stylescheduler.Classes.CustomerAppointment;
 import com.example.stylescheduler.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class CustomerAppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
 
