@@ -6,9 +6,9 @@ public class Barber extends User {
     private String shopAddress;
     private WorkSchedule workSchedule;
 
-//    public WorkSchedule getWorkSchedule() {
-//        return workSchedule;
-//    }
+    public WorkSchedule getWorkSchedule() {
+        return workSchedule;
+    }
     public Barber(String userID, String name, String email, String password,String shopAddress,String phoneNumber) {
         super(userID, name, email, password, "barber",phoneNumber);
         this.shopAddress = shopAddress;
@@ -34,9 +34,7 @@ public class Barber extends User {
     public void setWorkSchedule(WorkSchedule workSchedule) {
         this.workSchedule = workSchedule;
     }
-    public List<Integer> getWorkingDaysAsList(){
-        return this.workSchedule.getWorkingDays();
-    }
+
     public void setEndHour(String endHour){
         this.workSchedule.setEndHour(endHour);
     }
@@ -50,8 +48,4 @@ public class Barber extends User {
     public void setShopAddress(String shopAddress) {
         this.shopAddress = shopAddress;
     }
-    public void setWorkingDays(List<Integer> workingDays) {
-        this.workSchedule.setWorkingDays(workingDays);
-    }
-
 }
