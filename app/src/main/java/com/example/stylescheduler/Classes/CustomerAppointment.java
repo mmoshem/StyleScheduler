@@ -3,7 +3,6 @@ package com.example.stylescheduler.Classes;
 public class CustomerAppointment {
     private String customerEmail;
     private String time;
-
     public CustomerAppointment() {}
 
     public CustomerAppointment(String customerEmail, String time) {

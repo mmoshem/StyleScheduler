@@ -14,6 +14,11 @@ public class AvailableAppointmentsAdapter extends RecyclerView.Adapter<Available
     private List<String> availableAppointments;
     private OnItemClickListener listener;
 
+    public void deleteItemAtPos(int position) {
+        availableAppointments.remove(position);
+        notifyItemRemoved(position);
+    }
+
     public interface OnItemClickListener {
         void onItemClick(String timeSlot);
     }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/p"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ListView
+        android:id="@+id/vacationDaysLv"
+        android:layout_width="match_parent"
+        android:layout_margin="8dp"
+        android:layout_height="400dp"
+        tools:listitem="@layout/support_simple_spinner_dropdown_item"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:textSize="12sp"
+        android:paddingLeft="8dp"
+        android:textColor="#878585"
+        android:layout_height="wrap_content"
+        android:text="Long click a date to remove it from vacation dates"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add vacation day"
+        android:layout_margin="16dp"
+        android:id="@+id/cv"/>
+
+</LinearLayout>

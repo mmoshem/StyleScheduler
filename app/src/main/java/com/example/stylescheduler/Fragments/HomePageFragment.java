@@ -98,9 +98,11 @@ public class HomePageFragment extends Fragment {
             DatabaseReference customersRef = FirebaseDatabase.getInstance().getReference("customers").child(safeEmail);
 
             barbersRef.get().addOnCompleteListener(task -> {
+                // is barber
                 if (task.isSuccessful() && task.getResult().exists()) {
                     Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_barberHomePage);
                 } else {
+                    // is customer
                     customersRef.get().addOnCompleteListener(task2 -> {
                         if (task2.isSuccessful() && task2.getResult().exists()) {
                             Navigation.findNavController(view).navigate(R.id.action_homePageFragment_to_clientHomePage);

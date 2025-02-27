@@ -22,6 +22,15 @@ public class CustomerAppointmentAdapter extends RecyclerView.Adapter<Appointment
     private OnCancelClickListener cancelClickListener;
 
     private String date;
+
+    public void deleteItemAtPos(int position) {
+        if(position >= 0 && position < appointments.size()) {
+            appointments.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, appointments.size());
+        }
+    }
+
     public interface OnCancelClickListener {
         void onCancelClick(CustomerAppointment appointment, int position);
     }

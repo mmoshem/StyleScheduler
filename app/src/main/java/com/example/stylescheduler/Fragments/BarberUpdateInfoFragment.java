@@ -9,6 +9,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.example.stylescheduler.Classes.VacationDays;
 import com.example.stylescheduler.Classes.WorkSchedule;
 import com.example.stylescheduler.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,6 +59,18 @@ public class BarberUpdateInfoFragment extends Fragment {
         checkSaturday = view.findViewById(R.id.checkSaturday);
         checkSunday = view.findViewById(R.id.checkSunday);
 
+        Button vacationDatesBtn = view.findViewById(R.id.vacationDaysBtn);
+
+        vacationDatesBtn.setOnClickListener(v -> {
+            FirebaseDatabase.getInstance()
+                    .getReference("vacationDays")
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", "_"))
+                    .get()
+                    .addOnSuccessListener(snapshot -> {
+                        VacationDaysDialog dialog = new VacationDaysDialog(snapshot.getValue(VacationDays.class));
+                        dialog.show(getParentFragmentManager(), "vacation_dates");
+                    });
+        });
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.spinner_item, hours);
         adapter.setDropDownViewResource(R.layout.spinner_dropdown);
         spinnerStartHour.setAdapter(adapter);

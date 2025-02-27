@@ -1,5 +1,6 @@
 package com.example.stylescheduler.Fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.Adapters.AvailableAppointmentsAdapter;
 import com.example.stylescheduler.Classes.Barber;
+import com.example.stylescheduler.Classes.VacationDays;
 import com.example.stylescheduler.R;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -112,7 +114,30 @@ public class BarberBookingFragment extends Fragment {
                     recyclerViewAvailableAppointments.setVisibility(View.GONE);
                 } else {
                     recyclerViewAvailableAppointments.setVisibility(View.VISIBLE);
-                    loadAvailableTimeSlots(barberEmail, selectedDate);
+                    FirebaseDatabase.getInstance()
+                                    .getReference("vacationDays")
+                                            .child(barberEmail.replace(".", "_"))
+                                            .get()
+                                            .addOnSuccessListener(snap -> {
+                                                if (!snap.exists()) {
+                                                    loadAvailableTimeSlots(barberEmail, selectedDate);
+                                                    return;
+                                                }
+                                                VacationDays vacationDays = snap.getValue(VacationDays.class);
+                                                if (vacationDays == null) {
+                                                    loadAvailableTimeSlots(barberEmail, selectedDate);
+                                                    return;
+                                                }
+                                                if (vacationDays.contains(selectedDate)) {
+                                                    Toast.makeText(getContext(), "Barber is on vacation on this day!", Toast.LENGTH_SHORT).show();
+                                                    recyclerViewAvailableAppointments.setVisibility(View.GONE);
+                                                } else {
+                                                    loadAvailableTimeSlots(barberEmail, selectedDate);
+                                                }
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                loadAvailableTimeSlots(barberEmail, selectedDate);
+                                            });
                 }
             });
             } else {
@@ -137,6 +162,22 @@ public class BarberBookingFragment extends Fragment {
     }
 
 
+    private boolean isToday(String selectedDate) {
+
+
+        String[] dateParts = selectedDate.split("-");
+        if(dateParts[1].length() == 1) {
+            dateParts[1] = "0" + dateParts[1];
+        }
+        selectedDate = dateParts[0] + "-" + dateParts[1] + "-" + dateParts[2];
+
+        Log.d("BarberBookingFragment", "Selected date: " + selectedDate);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+        String today = sdf.format(new Date());
+        Log.d("BarberBookingFragment", "Today's date: " + today);
+        return today.equals(selectedDate);
+    }
+
     private void loadAvailableTimeSlots(String barberEmail, String selectedDate) {
         String safeEmail = barberEmail.replace(".", "_");
         DatabaseReference barberRef = FirebaseDatabase.getInstance().getReference("barbers").child(safeEmail);
@@ -158,7 +199,6 @@ public class BarberBookingFragment extends Fragment {
                     return;
                 }
 
-                List<String> availableTimeSlots = generateTimeSlots(startHour, endHour);
 
                 appointmentsRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -170,6 +210,10 @@ public class BarberBookingFragment extends Fragment {
                                 bookedAppointments.add(time);
                             }
                         }
+                        String date = appointmentsSnapshot.getKey();
+
+                        List<String> availableTimeSlots = generateTimeSlots(startHour, endHour, isToday(date));
+
                         if (bookedAppointments.size() >= availableTimeSlots.size()) {
                             Toast.makeText(getContext(), "there is no empty appointments left", Toast.LENGTH_SHORT).show();
                         }
@@ -192,7 +236,7 @@ public class BarberBookingFragment extends Fragment {
         });
     }
 
-    private List<String> generateTimeSlots(String startHour, String endHour) {
+    private List<String> generateTimeSlots(String startHour, String endHour, boolean today) {
         List<String> timeSlots = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
 
@@ -202,8 +246,12 @@ public class BarberBookingFragment extends Fragment {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(startTime);
 
-            while (calendar.getTime().before(endTime)) {
-                timeSlots.add(sdf.format(calendar.getTime()));
+            Calendar todayCal = Calendar.getInstance();
+
+            while (calendar.getTime().before(endTime) ) {
+                if (!today || calendar.get(Calendar.HOUR_OF_DAY) > todayCal.get(Calendar.HOUR_OF_DAY)) {
+                    timeSlots.add(sdf.format(calendar.getTime()));
+                }
                 calendar.add(Calendar.HOUR, 1);
             }
         } catch (Exception e) {

@@ -391,6 +391,7 @@ public class BarberHomePage extends Fragment  implements CustomerAppointmentAdap
                         }).addOnFailureListener(e -> {
                             Toast.makeText(getContext(), "Error deleting the appointment from the client: " + e.getMessage(), Toast.LENGTH_LONG).show();
                         });
+                        customerAppointmentsAdapter.deleteItemAtPos(position);
                     }).addOnFailureListener(e -> {
                         Toast.makeText(getContext(), "Error canceling the appointment: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     });
