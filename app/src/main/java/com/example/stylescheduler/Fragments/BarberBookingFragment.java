@@ -11,11 +11,14 @@ import android.view.ViewGroup;
 import android.widget.CalendarView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.stylescheduler.Adapters.AvailableAppointmentsAdapter;
 import com.example.stylescheduler.Classes.Barber;
 import com.example.stylescheduler.R;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.*;
@@ -240,25 +243,56 @@ public class BarberBookingFragment extends Fragment {
 
         DatabaseReference clientAppointmentRef = FirebaseDatabase.getInstance().getReference("appointmentsByClient")
                 .child(customerEmail).child(selectedDate).child(selectedTimeSlot);
+        clientAppointmentRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("you have already booked an appointment")
+                            .setMessage("do you want to check your booked appointments?")
+                            .setPositiveButton("Yes", (dialog, which) -> moveToTab2())
+                            .setNegativeButton("No", null)
+                            .show();
 
-        Map<String, Object> appointmentData = new HashMap<>();
-        appointmentData.put("appointmentTime", selectedTimeSlot);
-        appointmentData.put("barberEmail", barberEmail);
-        appointmentData.put("customerEmail", customerEmail);
-        appointmentData.put("status", "booked");
+                    Log.d("Firebase", "Appointment exists!");
+                } else {
+                    Map<String, Object> appointmentData = new HashMap<>();
+                    appointmentData.put("appointmentTime", selectedTimeSlot);
+                    appointmentData.put("barberEmail", barberEmail);
+                    appointmentData.put("customerEmail", customerEmail);
+                    appointmentData.put("status", "booked");
 
-        appointmentRef.setValue(appointmentData);
-        clientAppointmentRef.setValue(appointmentData)
-                .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
+                    appointmentRef.setValue(appointmentData);
+                    clientAppointmentRef.setValue(appointmentData)
+                            .addOnSuccessListener(aVoid -> {
+                                Toast.makeText(getContext(), "Appointment booked at " + selectedTimeSlot, Toast.LENGTH_SHORT).show();
 
-                    // עדכון הרשימה כך שהתור שנבחר ייעלם
-                    availableAppointments.remove(selectedTimeSlot);
-                    adapter.notifyDataSetChanged();
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("BarberBookingFragment", "Failed to book appointment.", e);
-                    Toast.makeText(getContext(), "Failed to book appointment. Try again.", Toast.LENGTH_SHORT).show();
-                });
+                                // עדכון הרשימה כך שהתור שנבחר ייעלם
+                                availableAppointments.remove(selectedTimeSlot);
+                                adapter.notifyDataSetChanged();
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("BarberBookingFragment", "Failed to book appointment.", e);
+                                Toast.makeText(getContext(), "Failed to book appointment. Try again.", Toast.LENGTH_SHORT).show();
+                            });
+                    Log.d("Firebase", "No appointment found.");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Firebase", "Database error: " + databaseError.getMessage());
+            }
+        });
     }
+    public void moveToTab2() {
+        int tabIndex = 1; // Change this to the tab index you want to select
+        TabLayout tabLayout = getActivity().findViewById(R.id.tabLayout);
+
+        TabLayout.Tab tab = tabLayout.getTabAt(tabIndex);
+        if (tab != null) {
+            tab.select(); // This will move to the selected tab
+        }
+    }
+
 }
