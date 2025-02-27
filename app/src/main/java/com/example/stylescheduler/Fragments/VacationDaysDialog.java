@@ -56,7 +56,6 @@ public class VacationDaysDialog extends DialogFragment {
         lv.setAdapter(new ArrayAdapter<>(requireContext(), R.layout.vacation_spinner, vacationDates.getVacationDates()));
 
         lv.setOnItemLongClickListener((parent, view1, position, id) -> {
-            // remove the item from the list in the db..?
             vacationDates.remove(position);
             Toast.makeText(requireContext(), "Date removed", Toast.LENGTH_SHORT).show();
             ((ArrayAdapter) lv.getAdapter()).notifyDataSetChanged();
@@ -69,7 +68,6 @@ public class VacationDaysDialog extends DialogFragment {
             d = new DatePickerDialog(requireContext(), (view12, year, month, dayOfMonth) -> {
                 String date = dayOfMonth + "-" + (month + 1) + "-" + year;
 
-                // cancel all appointments for this date
                 deleteAllAppointmentsForDay(date);
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), 1);
             d.show();
@@ -111,7 +109,7 @@ public class VacationDaysDialog extends DialogFragment {
                             }
 
                             barberAppointmentsRef.removeValue().addOnSuccessListener(aVoid -> {
-                                Toast.makeText(getContext(), "כל התורים נמחקו בהצלחה!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "All appointments have been successfully deleted!", Toast.LENGTH_SHORT).show();
 
 
                             }).addOnFailureListener(e -> {
